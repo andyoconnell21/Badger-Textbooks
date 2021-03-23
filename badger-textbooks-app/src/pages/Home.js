@@ -16,7 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 
-const idIndex = 0;
+const IDIndex = 0;
 const dataIndex = 1;
 
 class Home extends React.Component {
