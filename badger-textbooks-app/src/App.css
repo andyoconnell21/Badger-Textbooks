@@ -39,6 +39,7 @@
 
 .item_listing{
   background: white;
+  font-size: 12px;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -51,15 +52,15 @@
 }
 
 img {
-  align-items: center;
+  border: 5px solid black;
+  display: block;
   width:  200px;
   height: 200px;
-  object-fit: cover;
 }
 .box{
-  width: 500px;
+  width: 300px;
   border: 15px solid darkred;
-  padding: 50px;
+  padding: 40px;
   margin: 20px;
 }
 .edit-button{
