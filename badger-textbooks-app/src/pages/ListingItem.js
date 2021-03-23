@@ -13,14 +13,16 @@ import React from 'react';
 function ListingItem({seller, image, title, author, ISBN, desired_price, condition}) {
     return (
         <div className="box">
-            <img src={image} alt=""></img>
-            <h3>Book Title: {title}</h3>
-            <h3>Author: {author}</h3>
-            <h3>ISBN: {ISBN}</h3>
-            <h3>Asking Price: {desired_price * 1.00}</h3>
-            <h3>Book Condition: {condition}</h3>
-            <button> Check it out</button>
-            <button> Add to favorite</button>
+            <grid>
+                <img src={image} alt=""></img>
+                <h3>Book Title: {title}</h3>
+                <h3>Author: {author}</h3>
+                <h3>ISBN: {ISBN}</h3>
+                <h3>Asking Price: {desired_price * 1.00}</h3>
+                <h3>Book Condition: {condition}</h3>
+                <button> Check it out</button>
+                <button> Add to favorite</button>
+            </grid>
         </div>
     );
 }
