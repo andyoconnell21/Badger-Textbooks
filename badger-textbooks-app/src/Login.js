@@ -11,6 +11,11 @@ import {
   Link,
   Container,
   } from "@material-ui/core";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import React from "react";
 
 
@@ -20,6 +25,10 @@ class Login extends React.Component{
         this.state = {
           email: '',
           password: '',
+          hidden: false,
+          forgotPasswordEmail: '',
+          passwordError: false,
+          tempState: true
         }
       }
     
@@ -28,15 +37,40 @@ class Login extends React.Component{
       }
     
       setPassword = (event) => {
-        this.setState({password: event.target.state})
+        this.setState({password: event.target.value})
+      }
+
+      setForgotEmailPassword = (event) => {
+        this.setState({forgotPasswordEmail: event.target.value})
       }
     
+
       authWithAccountCreds = (event) => {
     
       }
     
       forgotPassword = (event) => {
-        alert("Password link sent")
+        event.preventDefault()
+
+        firebase.auth().sendPasswordResetEmail(this.state.forgotPasswordEmail).then(function() {
+          // Email sent.
+          this.setState({passwordError: false})
+          this.setState({tempState: false})
+        }).catch(function(error) {
+          //Error Caught
+        });
+
+        if(this.state.tempState == true){
+          this.setState({passwordError: true});
+        }
+      }
+
+      handleOpen = (event) => {
+        this.setState({hidden:true})
+      }
+
+      handleClose = (event) => {
+        this.setState({hidden:false})
       }
     
       createAccount = (event) => {
@@ -83,7 +117,7 @@ class Login extends React.Component{
                 <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Log In</Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" onClick={this.forgotPassword} variant="body2">
+                    <Link href="#" onClick={this.handleOpen} variant="body2">
                       Forgot password?
                     </Link>
                   </Grid>
@@ -94,6 +128,36 @@ class Login extends React.Component{
                   </Grid>
                 </Grid>
               </form>
+              <Dialog open={this.state.hidden}>
+                <DialogTitle >{"Reset Password"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Please enter the email associated with your account
+                  </DialogContentText>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    onChange = {this.setForgotEmailPassword}
+                    error = {this.state.passwordError}
+                    helperText = "No account associated with this emial"
+                    autoFocus
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.forgotPassword} color="primary">
+                    Send
+                  </Button>
+                  <Button onClick={this.handleClose} color="primary">
+                    Close
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </Container>
           </div>
         );
