@@ -25,8 +25,15 @@ class CreateAccount extends React.Component{
             lastName: '',
             email: '',
             password: '',
-            hidden: false
-        }
+            hidden: false,
+            createAccountError: false
+        };
+        this.createAccount = this.createAccount.bind(this)
+        this.setErrorHandler = this.setErrorHandler.bind(this)
+    }
+
+    setErrorHandler(){
+        this.setState({createAccountError: true})
     }
 
     setFirstName = (event) => {
@@ -62,9 +69,12 @@ class CreateAccount extends React.Component{
                 var user = userCredential.user
                 //Create alert for this
                 this.setState({hidden: true})
+                this.setState({createAccountError: false})
             })
             .catch((error) => {
-                //error
+                //Implement alert using an email that already exists
+                //Take error code and if an error occurs, update accordingly
+                this.setErrorHandler(true)
             })
         
         //Create a new user account and set the given data
@@ -128,6 +138,8 @@ class CreateAccount extends React.Component{
                             name="email"
                             type="email"
                             onChange = {this.setEmail}
+                            error = {this.state.createAccountError}
+                            helperText = "Email is already in use"
                             autoFocus
                             />
                         <TextField
