@@ -8,16 +8,20 @@
     Dependencies: Firebase must return a collection of listing documents for the specific user
  */
 
+import { ReactComponent } from '*.svg';
 import 'firebase/firestore';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { NavItem, NavLink } from 'react-bootstrap';
+import { Navbar,  } from 'rsuite';
 import ListingItem from "./ListingItem";
 
-function MyListings() {
+//function MyListings() {
     // const [newListings, setNewListings] = useState({
     //     []}
     //     []});
     const [items, setListings] = useState([
-        {   seller: "badger",
+        {
+            seller: "badger",
             image: "https://im1.book.com.tw/image/getImage?i=https://www.books.com.tw/img/F01/352/46/F013524602.jpg&v=5dc43dc7&w=348&h=348",
             title: "A Game of Thrones Leather-Cloth Boxed Set",
             author: 'George R. R. Martin',
@@ -53,21 +57,52 @@ function MyListings() {
             condition: "brand-new"
         },
     ]);
+//}
+class MyListings extends ReactComponent {
+    
+    handleLogout () {
+        firebase.auth().signOut().then(() => {
+          //Sign-out successful.
+        }).catch((error) => {
+          //An error happened.
+        });
+        window.location.href = '/'
+      }
 
-    return (
+    render() {
+        return (
         <div>
+            <Navbar>
+                <Navbar.Header>
+                    <a href="/">BadgerTextbooks</a>
+                </Navbar.Header>
+                <Navbar.Body>
+                    <Nav>   
+                        <NavItem>
+                            <NavLink href="/home">Home</NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink href="/mylistings">MyListings</NavLink>
+                        </NavItem>
+                        <Nav.Item>
+                            <button onClick={this.handleLogout}>Logout</button>
+                        </Nav.Item>
+                    </Nav>
+                </Navbar.Body>
+            </Navbar>
+            
             <button className="edit-button"> Create new Listings</button>
             <div className="grid-container">
                 <div className={"item_listing"}>
                     {items.map(item => (
                         <ListingItem key={item.seller}
-                                     seller={item.seller}
-                                     image={item.image}
-                                     title={item.title}
-                                     author={item.author}
-                                     ISBN={item.ISBN}
-                                     desired_price={item.desired_price}
-                                     condition={item.condition}
+                            seller={item.seller}
+                            image={item.image}
+                            title={item.title}
+                            author={item.author}
+                            ISBN={item.ISBN}
+                            desired_price={item.desired_price}
+                            condition={item.condition}
                         />
                     ))}
 
@@ -76,6 +111,7 @@ function MyListings() {
         </div>
 
     );
+    }
 }
 
 export default MyListings;
