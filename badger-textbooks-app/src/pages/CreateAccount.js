@@ -10,7 +10,11 @@ import {
   Link,
   Container,
   } from "@material-ui/core";
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import React from "react";
 
 class CreateAccount extends React.Component{
@@ -21,6 +25,7 @@ class CreateAccount extends React.Component{
             lastName: '',
             email: '',
             password: '',
+            hidden: false
         }
     }
 
@@ -40,6 +45,14 @@ class CreateAccount extends React.Component{
         this.setState({password: event.target.value})
     }
 
+    handleOpen = (event) => {
+        this.setState({hidden:true})
+    }
+
+    backToLogin = (event) => {
+        window.location.href = '/'
+    }
+
     createAccount = (event) => {
         event.preventDefault();
 
@@ -47,8 +60,8 @@ class CreateAccount extends React.Component{
         firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then((userCredential) => {
                 var user = userCredential.user
-                //account created
-                
+                //Create alert for this
+                this.setState({hidden: true})
             })
             .catch((error) => {
                 //error
@@ -61,7 +74,7 @@ class CreateAccount extends React.Component{
             password: this.state.password,
             name: fullName
         })          
-    }  
+    }   
 
     loginPage = (event) => {
         window.location.href = '/'
@@ -136,6 +149,19 @@ class CreateAccount extends React.Component{
                             </Link>
                         </Grid>
                     </form>
+                    <Dialog open={this.state.hidden}>
+                        <DialogTitle >{"Account Created"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Return to the login page to login to your account
+                            </DialogContentText>                        
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={this.backToLogin} color="primary">
+                            Back to Login
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Container>          
             </div>
         )
