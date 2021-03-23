@@ -46,14 +46,13 @@
   justify-content: space-around;
   align-items: flex-start;
   text-align:left;
-  column-count: 2;
 
 
 }
 
 img {
-  border: 5px solid black;
-  display: block;
+  border: 5px solid darkred;
+  padding: 40px;
   width:  200px;
   height: 200px;
 }
@@ -70,4 +69,14 @@ img {
   float: right;
   padding: 13px 30px;
   text-align: center;
+}
+grid{
+  display: grid;
+}
+.grid-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+
+
 }
