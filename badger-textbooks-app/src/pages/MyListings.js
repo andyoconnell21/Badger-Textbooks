@@ -8,7 +8,6 @@
     Dependencies: Firebase must return a collection of listing documents for the specific user
  */
 
-import firebase from 'firebase/app';
 import 'firebase/firestore';
 import React, {useState} from 'react';
 import ListingItem from "./ListingItem";
@@ -56,19 +55,24 @@ function MyListings() {
     ]);
 
     return (
-        <div className={"item_listing"}>
-            {items.map(item => (
-                <ListingItem seller={item.seller}
-                             image={item.image}
-                             title={item.title}
-                             author={item.author}
-                             ISBN={item.ISBN}
-                             desired_price={item.desired_price}
-                             condition={item.condition}
-                />
-            ))}
+        <div>
+            <button className="edit-button"> Create new Listings</button>
+            <div className={"item_listing"}>
+                {items.map(item => (
+                    <ListingItem key = {item.seller}
+                                 seller={item.seller}
+                                 image={item.image}
+                                 title={item.title}
+                                 author={item.author}
+                                 ISBN={item.ISBN}
+                                 desired_price={item.desired_price}
+                                 condition={item.condition}
+                    />
+                ))}
 
+            </div>
         </div>
+
     );
 }
 

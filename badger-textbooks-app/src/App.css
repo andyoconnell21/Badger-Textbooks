@@ -62,3 +62,11 @@ img {
   padding: 50px;
   margin: 20px;
 }
+.edit-button{
+  color: black;
+  font-size: 20px;
+  border: 2px solid black;
+  float: right;
+  padding: 13px 30px;
+  text-align: center;
+}
