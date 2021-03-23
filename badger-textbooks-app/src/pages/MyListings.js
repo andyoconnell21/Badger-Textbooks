@@ -57,19 +57,21 @@ function MyListings() {
     return (
         <div>
             <button className="edit-button"> Create new Listings</button>
-            <div className={"item_listing"}>
-                {items.map(item => (
-                    <ListingItem key = {item.seller}
-                                 seller={item.seller}
-                                 image={item.image}
-                                 title={item.title}
-                                 author={item.author}
-                                 ISBN={item.ISBN}
-                                 desired_price={item.desired_price}
-                                 condition={item.condition}
-                    />
-                ))}
+            <div className="grid-container">
+                <div className={"item_listing"}>
+                    {items.map(item => (
+                        <ListingItem key={item.seller}
+                                     seller={item.seller}
+                                     image={item.image}
+                                     title={item.title}
+                                     author={item.author}
+                                     ISBN={item.ISBN}
+                                     desired_price={item.desired_price}
+                                     condition={item.condition}
+                        />
+                    ))}
 
+                </div>
             </div>
         </div>
 
