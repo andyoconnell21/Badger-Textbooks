@@ -50,7 +50,7 @@ class Login extends React.Component{
     
 
       authWithAccountCreds = (event) => {
-        firebase.auth().signInWithEmailAndPassword(state.email, state.password)
+        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
         .then((userCredential) => {
         // Signed in
         var user = userCredential.user;
