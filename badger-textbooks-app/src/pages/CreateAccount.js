@@ -42,7 +42,26 @@ class CreateAccount extends React.Component{
 
     createAccount = (event) => {
         event.preventDefault();
-    }
+
+        //Create the user account with email and password
+        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then((userCredential) => {
+                var user = userCredential.user
+                //account created
+                
+            })
+            .catch((error) => {
+                //error
+            })
+        
+        //Create a new user account and set the given data
+        var fullName = this.state.firstName.concat(" ", this.state.lastName)
+        firebase.firestore().collection('users').doc().set({
+            email: this.state.email,
+            password: this.state.password,
+            name: fullName
+        })          
+    }  
 
     loginPage = (event) => {
         window.location.href = '/'
