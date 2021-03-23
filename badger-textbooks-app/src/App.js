@@ -15,6 +15,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateAccount from "./pages/CreateAccount"
 import Home from "./pages/Home"
 import Login from "./Login"
+import Listing from "./pages/Listing"
 import React from "react";
 import MyListings from "./pages/MyListings";
 
@@ -40,6 +41,7 @@ class App extends React.Component {
               <Route path="/" exact component={() => <Login />}/>
               <Route path="/createaccount" exact component={() => <CreateAccount />}/>
               <Route path="/home" exact component={() => <Home />} />
+              <Route path="/listing" exact component={() => <Listing />}/>
               <Route path="/mylistings" exact component={() => <MyListings/>} />
             </Switch>
           </Router>
