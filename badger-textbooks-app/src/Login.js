@@ -28,9 +28,13 @@ class Login extends React.Component{
           hidden: false,
           forgotPasswordEmail: '',
           passwordError: false,
-          tempState: true
         }
+        this.setErrorHandler = this.setErrorHandler.bind(this)
       }
+
+      setErrorHandler(){
+        this.setState({passwordError: true})
+      } 
     
       setEmail = (event) => {
         this.setState({email: event.target.value})
@@ -52,17 +56,15 @@ class Login extends React.Component{
       forgotPassword = (event) => {
         event.preventDefault()
 
-        firebase.auth().sendPasswordResetEmail(this.state.forgotPasswordEmail).then(function() {
+        firebase.auth().sendPasswordResetEmail(this.state.forgotPasswordEmail).then((userCredential) => {
           // Email sent.
           this.setState({passwordError: false})
-          this.setState({tempState: false})
-        }).catch(function(error) {
+        })
+        .catch((error) => {
           //Error Caught
+          this.setErrorHandler(true);
+          console.log(error)
         });
-
-        if(this.state.tempState == true){
-          this.setState({passwordError: true});
-        }
       }
 
       handleOpen = (event) => {
@@ -145,7 +147,7 @@ class Login extends React.Component{
                     type="email"
                     onChange = {this.setForgotEmailPassword}
                     error = {this.state.passwordError}
-                    helperText = "No account associated with this emial"
+                    helperText = "No account associated with this email"
                     autoFocus
                   />
                 </DialogContent>
