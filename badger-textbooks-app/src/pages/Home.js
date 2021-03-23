@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
+import CardMedia from '@material-ui/core/CardMedia';
 
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -116,6 +117,11 @@ class Home extends React.Component {
               {this.state.searchResults.map((item) => (
                 <Grid container spacing="2" style={{margin: "10px"}}>
                   <Grid item xs>
+                    <CardMedia>
+                      <img src={item[dataIndex].image_url} alt="Textbook Cover" width="50" height="60"/>
+                    </CardMedia>
+                  </Grid>
+                  <Grid item xs>
                       Title: {item[dataIndex].title}
                   </Grid>
                   <Grid item xs>
@@ -139,13 +145,18 @@ class Home extends React.Component {
               {this.state.listings.map((item) => (
                 <Grid container spacing="2" style={{margin: "10px"}}>
                   <Grid item xs>
+                    <CardMedia>
+                      <img src={item[dataIndex].image_url} alt="Textbook Cover" width="50" height="60"/>
+                    </CardMedia>
+                  </Grid>
+                  <Grid item xs>
                       Title: {item[dataIndex].title}
                   </Grid>
                   <Grid item xs>
                       Author: {item[dataIndex].author}
                   </Grid>
                   <Grid item xs>
-                      Price: ${item[dataIndex].price}
+                      Price: {item[dataIndex].price}
                   </Grid>
                   <Grid item xs>
                       Seller: {item[dataIndex].owner}
