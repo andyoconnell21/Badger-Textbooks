@@ -10,12 +10,13 @@ import {
   Typography,
   Link,
   Container,
-  } from "@material-ui/core";
+} from "@material-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CreateAccount from "./pages/CreateAccount"
 import Home from "./pages/Home"
 import Login from "./Login"
 import React from "react";
+import MyListings from "./pages/MyListings";
 
 const firebaseConfig = {
   apiKey: "AIzaSyATKX78GgcgavgsRD0eUozsDAVQ1zpaEEs",
@@ -29,21 +30,20 @@ const firebaseConfig = {
 
 var fire = firebase.initializeApp(firebaseConfig);
 
-
-
 class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <Router>
-          <Switch>
-            <Route path="/" exact component={() => <Login />}/>
-            <Route path="/createaccount" exact component={() => <CreateAccount />}/>
-            <Route path="/home" exact component={() => <Home />} />
-          </Switch>
-        </Router>
-      </div>
+        <div className="App">
+          <Router>
+            <Switch>
+              <Route path="/" exact component={() => <Login />}/>
+              <Route path="/createaccount" exact component={() => <CreateAccount />}/>
+              <Route path="/home" exact component={() => <Home />} />
+              <Route path="/mylistings" exact component={() => <MyListings/>} />
+            </Switch>
+          </Router>
+        </div>
     );
   }
 }

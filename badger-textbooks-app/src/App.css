@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+
+.item_listing{
+  background: white;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  text-align:left;
+  column-count: 2;
+
+
+}
+
+img {
+  align-items: center;
+  width:  200px;
+  height: 200px;
+  object-fit: cover;
+}
+.box{
+  width: 500px;
+  border: 15px solid darkred;
+  padding: 50px;
+  margin: 20px;
+}
