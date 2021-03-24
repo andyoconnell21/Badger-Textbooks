@@ -4,17 +4,12 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import {
   Button,
-  TextField,
-  Grid,
   AppBar,
   Typography,
-  Link,
-  Container,
   } from "@material-ui/core";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import textbook from './textbook.jpg'
 
 class Listings extends React.Component {
     constructor(props){
@@ -27,11 +22,12 @@ class Listings extends React.Component {
           date: new Date(),
           title: '',
           condition: '',
+          image: '',
         }
     }
 
     componentDidMount () {
-      var documentId = '0'
+      var documentId = sessionStorage.getItem('currentListing')
 
       firebase.firestore().collection("listings").doc(documentId).get()
         .then((doc) => {
@@ -43,11 +39,13 @@ class Listings extends React.Component {
             price: data.price,
             date: data.time_created.toDate(),
             title: data.title,
-            condition: data.condition
+            condition: data.condition,
+            image: data.image_url
           })
         })
     }
 
+    //Implement message system
     contactSeller = (event) => {
       
     }
@@ -66,7 +64,7 @@ class Listings extends React.Component {
         <h3>Class: {this.state.class}</h3>
         <h3>Condition: {this.state.condition}</h3>
         <h3>Price: ${this.state.price}</h3>
-        <img src={textbook} alt="textbook" style={{marginBottom: "15px"}}/>
+        <img src={this.state.image} alt="textbook" style={{marginBottom: "15px", width:'20%'}}/>
         <Accordion style={{width: "25%", margin: 'auto'}}>
           <AccordionSummary style={{backgroundColor: 'lightgrey'}}>
             <Typography style={{fontFamily: 'sans-serif', fontSize:'14px', fontWeight: 'bold', margin:'auto'}}>Other Information</Typography>
