@@ -1,27 +1,45 @@
 import React, {Component} from 'react';
 import '../w3.css'
 import '../App.css'
+import firebase from "firebase";
 
 //book title, author, ISBN, price wanted, condition of book, class_used
 export class CreateNewListing extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
             title: '',
             author: '',
             ISBN: 0,
             price: 0,
-            condition: 'Brand-new',
-            class_used: ''
+            condition: 'brand-new',
+            class_used: '',
         }
     }
 
-    handleUsernameChange = (event) => {
+    addListingItem = (event) => {
+        event.preventDefault();
+        const db = firebase.firestore();
+        db.settings({
+            timestampsInSnapshots: true
+        });
+        const userRef = db.collection('listings').add({
+            title: this.state.title,
+            author: this.state.author,
+            ISBN: this.state.ISBN,
+            price: this.state.price,
+            condition: this.state.condition,
+            class_used: this.state.class_used,
+        });
         this.setState({
-            username: event.target.value
-        })
-    }
+            title: '',
+            author: '',
+            ISBN: 0,
+            price: 0,
+            condition: 'brand-new',
+            class_used: '',
+        });
+    };
     handleSubmit = (e) => {
         alert(`${this.state.title} ${this.state.author}`)
         e.preventDefault()
@@ -113,19 +131,17 @@ export class CreateNewListing extends Component {
                     <select className="w3-input w3-hover-light-gray"
                             value={condition}
                             onChange={this.handleConditionChange}>
-                        <option value='brand-new'>Brand new</option>
-                        <option value='like-New'>Like New</option>
-                        <option value='good'>Good</option>
-                        <option value='fair'>Fair</option>
-                        <option value='poor'>Poor, but still usable</option>
+                        <option value='Brand-new'>Brand new</option>
+                        <option value='Like-New'>Like New</option>
+                        <option value='Good'>Good</option>
+                        <option value='Fair'>Fair</option>
+                        <option value='Poor'>Poor, but still usable</option>
                     </select>
                 </div>
-                <button type="submit" className="w3-btn w3-red">Create!</button>
-
+                <button type="submit" className="w3-btn w3-red" onSubmit={this.addListingItem}>Create!</button>
             </form>
         )
     }
 
 }
-
 export default CreateNewListing;
