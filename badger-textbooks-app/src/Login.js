@@ -106,7 +106,14 @@ class Login extends React.Component{
       }
 
       sendVerificationEmail = (event) => {
-
+        //Send verification email to user
+        var user = firebase.auth().currentUser;
+        console.log(user)
+        user.sendEmailVerification().then(function() {
+          //Email sent.
+        }).catch(function(error) {
+          //An error happened.
+        });
       }
 
     render() {
@@ -161,7 +168,7 @@ class Login extends React.Component{
                 </Grid>
               </form>
               <Dialog open={this.state.hidden}>
-                <DialogTitle >{"Verify Your Email"}</DialogTitle>
+                <DialogTitle >{"Reset Password"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
                     Please enter the email associated with your account
@@ -192,7 +199,7 @@ class Login extends React.Component{
               </Dialog>
 
               <Dialog open={this.state.verified}>
-                <DialogTitle >{"Reset Password"}</DialogTitle>
+                <DialogTitle >{"Verify Your Email"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
                     Your account has not been verified. Please verify your email or click below to send another email
