@@ -14,7 +14,7 @@ function ListingItem({seller, image, title, author, ISBN, desired_price, conditi
     return (
         <div className="box">
             <grid>
-                <img src={image} alt=""></img>
+                <img src={image} alt="" className="item-image"></img>
                 <h3>Book Title: {title}</h3>
                 <h3>Author: {author}</h3>
                 <h3>ISBN: {ISBN}</h3>

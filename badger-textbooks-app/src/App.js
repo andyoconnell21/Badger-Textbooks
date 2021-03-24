@@ -18,6 +18,7 @@ import Login from "./Login"
 import Listing from "./pages/Listing"
 import React from "react";
 import MyListings from "./pages/MyListings";
+import CreateNewListing from "./pages/CreateNewListings";
 
 const firebaseConfig = {
   apiKey: "AIzaSyATKX78GgcgavgsRD0eUozsDAVQ1zpaEEs",
@@ -43,6 +44,7 @@ class App extends React.Component {
               <Route path="/home" exact component={() => <Home />} />
               <Route path="/listing" exact component={() => <Listing />}/>
               <Route path="/mylistings" exact component={() => <MyListings/>} />
+              <Route path="/createnewlisting" exact component={() => <CreateNewListing/>} />
             </Switch>
           </Router>
         </div>
