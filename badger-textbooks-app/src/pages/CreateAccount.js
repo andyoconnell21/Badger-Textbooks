@@ -26,7 +26,8 @@ class CreateAccount extends React.Component{
             email: '',
             password: '',
             hidden: false,
-            createAccountError: false
+            createAccountError: false,
+            invalidEmail: false,
         };
         this.setErrorHandler = this.setErrorHandler.bind(this)
     }
@@ -62,8 +63,13 @@ class CreateAccount extends React.Component{
     createAccount = (event) => {
         event.preventDefault();
 
-        //Create the user account with email and password
-        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password) 
+        var splitEmail = this.state.email.split("@")
+        if(splitEmail[1] != 'wisc.edu'){
+            this.setState({invalidEmail: true})
+        }
+        else{
+            //Create the user account with email and password
+            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password) 
             .then((userCredential) => {
                 var user = userCredential.user
                 //Create alert for this
@@ -78,7 +84,6 @@ class CreateAccount extends React.Component{
                     //An error happened.
                 });
 
-
                 //Create a new user account and set the given data
                 var fullName = this.state.firstName.concat(" ", this.state.lastName)
                 firebase.firestore().collection('users').doc().set({
@@ -92,13 +97,15 @@ class CreateAccount extends React.Component{
                 //Take error code and if an error occurs, update accordingly
                 this.setErrorHandler(true)
             })   
-        
-        //Somehow do email verification
-        
+        }
     }   
 
     loginPage = (event) => {
         window.location.href = '/'
+    }
+
+    closeInvalidEmail = (event) => {
+        this.setState({invalidEmail: false})
     }
 
     render(){
@@ -185,6 +192,19 @@ class CreateAccount extends React.Component{
                         <DialogActions>
                         <Button onClick={this.backToLogin} color="primary">
                             Back to Login
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={this.state.invalidEmail}>
+                        <DialogTitle >{"Invalid Email"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Not a valid email. Your email must be a @wisc.edu email account
+                            </DialogContentText>                     
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={this.closeInvalidEmail} color="primary">
+                            Close
                         </Button>
                         </DialogActions>
                     </Dialog>
