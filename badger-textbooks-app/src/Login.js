@@ -153,7 +153,7 @@ class Login extends React.Component{
                   id="password"
                   onChange = {this.setPassword}
                 />
-                <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Log In</Button>
+                <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Sign In</Button>
                 <Grid container>
                   <Grid item xs>
                     <Link href="#" onClick={this.handleOpen} variant="body2">
