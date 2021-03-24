@@ -8,13 +8,16 @@
     Dependencies: Firebase must return a collection of listing documents for the specific user
  */
 
-import { ReactComponent } from 'react';
+import React ,{useState,useEffect} from 'react';
 import 'firebase/firestore';
-import React, { useState } from 'react';
-import { NavItem, NavLink } from 'react-bootstrap';
-import {Nav, Navbar,} from 'rsuite';
+import firebase from 'firebase/app';
 import ListingItem from "./ListingItem";
-import * as firebase from "google-auth-library";
+import history from '../history';
+import {Nav, NavItem, Navbar, NavLink} from 'react-bootstrap';
+
+
+// const db = firebase.firestore();
+
 
 function MyListings() {
 
@@ -57,27 +60,62 @@ function MyListings() {
         },
     ]
 );
-// class MyListings extends ReactComponent {
-//     handleLogout () {
-//         firebase.auth().signOut().then(() => {
-//           //Sign-out successful.
-//         }).catch((error) => {
-//           //An error happened.
-//         });
-//         window.location.href = '/'
-//       }
-
+// class MyListings extends React.Component {
+//
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             title: '',
+//             author: '',
+//             ISBN: 0,
+//             price: 0,
+//             condition:'brand-new',
+//             class_used: '',
+//         }
+//         this.handleLogout = this.handleLogout.bind(this);
+//     }
+    // componentDidMount () {
+    //
+    //     document.body.style.backgroundColor = '#494949'
+    //
+    //     //Adds current menu items to an array
+    //     var tempListings = [];
+    //
+    //     //Gets menu data
+    //     db.collection("listings").get().then((querySnapshot) => {
+    //         querySnapshot.forEach((doc) => {
+    //             let gather = [doc.id, doc.data(), false]
+    //             tempListings.push(gather)
+    //         });
+    //     });
+    //
+    // }
+    // // fetchListings = async() => {
+    // //     const response=db.collection('listings');
+    // //     const data=await response.get();
+    //
+    //
+    //
+    // handleLogout() {
+    //     firebase.auth().signOut().then(() => {
+    //         //Sign-out successful.
+    //     }).catch((error) => {
+    //         //An error happened.
+    //     });
+    //     window.location.href = '/'
+    // }
+    //
     // render() {
         return (
-        <div>
-            {/*<Navbar>*/}
-            {/*    <Navbar.Header>*/}
-            {/*        <a href="/">BadgerTextbooks</a>*/}
-            {/*    </Navbar.Header>*/}
-            {/*    <Navbar.Body>*/}
-            {/*        <Nav>   */}
-            {/*            <NavItem>*/}
-            {/*                <NavLink href="/home">Home</NavLink>*/}
+            <div>
+            {/*    <Navbar>*/}
+            {/*        <Navbar.Header>*/}
+            {/*            <a href="/">BadgerTextbooks</a>*/}
+            {/*        </Navbar.Header>*/}
+            {/*        <Navbar.Body>*/}
+            {/*            <Nav>*/}
+            {/*                <NavItem>*/}
+            {/*                    <NavLink href="/home">Home</NavLink>*/}
             {/*            </NavItem>*/}
             {/*            <NavItem>*/}
             {/*                <NavLink href="/mylistings">MyListings</NavLink>*/}
@@ -89,7 +127,7 @@ function MyListings() {
             {/*    </Navbar.Body>*/}
             {/*</Navbar>*/}
             
-            <button className="edit-button"> Create new Listings </button>
+            <button className="edit-button" onClick={() => history.push('/CreateNewListings')}> Create new Listings </button>
             <div className="grid-container">
                 <div className="item_listing">
                     {items.map(item => (
@@ -109,7 +147,7 @@ function MyListings() {
         </div>
 
     );
-    // }
+
 }
 
 export default MyListings;
