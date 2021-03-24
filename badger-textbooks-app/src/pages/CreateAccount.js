@@ -28,7 +28,6 @@ class CreateAccount extends React.Component{
             hidden: false,
             createAccountError: false
         };
-        this.createAccount = this.createAccount.bind(this)
         this.setErrorHandler = this.setErrorHandler.bind(this)
     }
 
@@ -64,26 +63,38 @@ class CreateAccount extends React.Component{
         event.preventDefault();
 
         //Create the user account with email and password
-        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password) 
             .then((userCredential) => {
                 var user = userCredential.user
                 //Create alert for this
                 this.setState({hidden: true})
                 this.setState({createAccountError: false})
+                
+                //Send verification email to user
+                var user = firebase.auth().currentUser;
+                user.sendEmailVerification().then(function() {
+                    //Email sent.
+                }).catch(function(error) {
+                    //An error happened.
+                });
+
+
+                //Create a new user account and set the given data
+                var fullName = this.state.firstName.concat(" ", this.state.lastName)
+                firebase.firestore().collection('users').doc().set({
+                    email: this.state.email,
+                    password: this.state.password,
+                    name: fullName
+                }) 
             })
             .catch((error) => {
                 //Implement alert using an email that already exists
                 //Take error code and if an error occurs, update accordingly
                 this.setErrorHandler(true)
-            })
+            })   
         
-        //Create a new user account and set the given data
-        var fullName = this.state.firstName.concat(" ", this.state.lastName)
-        firebase.firestore().collection('users').doc().set({
-            email: this.state.email,
-            password: this.state.password,
-            name: fullName
-        })          
+        //Somehow do email verification
+        
     }   
 
     loginPage = (event) => {
@@ -164,6 +175,9 @@ class CreateAccount extends React.Component{
                     <Dialog open={this.state.hidden}>
                         <DialogTitle >{"Account Created"}</DialogTitle>
                         <DialogContent>
+                            <DialogContentText>
+                                A verification email has been sent to you
+                            </DialogContentText>
                             <DialogContentText>
                                 Return to the login page to login to your account
                             </DialogContentText>                        
