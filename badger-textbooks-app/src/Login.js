@@ -28,6 +28,7 @@ class Login extends React.Component{
           hidden: false,
           forgotPasswordEmail: '',
           passwordError: false,
+          verified: false
         }
         this.setErrorHandler = this.setErrorHandler.bind(this)
       }
@@ -50,15 +51,27 @@ class Login extends React.Component{
     
 
       authWithAccountCreds = (event) => {
+        event.preventDefault();
+
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
         .then((userCredential) => {
-        // Signed in
-        var user = userCredential.user;
-        // ...
+          //Check to make sure user email is authenticated
+          var user = firebase.auth().currentUser
+          if(user != null){
+            if(user.emailVerified == true){
+              this.setState({verified: false})
+            }
+            else{
+              this.setState({verified:true})
+            }
+          }
+          if(this.state.verified == false){
+            window.location.href = '/home'
+          }
         })
         .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
+          var errorCode = error.code;
+          var errorMessage = error.message;
         });
       }
     
@@ -86,6 +99,14 @@ class Login extends React.Component{
     
       createAccount = (event) => {
         window.location.href = '/createaccount'
+      }
+
+      handleEmailClose = (event) => {
+        this.setState({verified:false})
+      }
+
+      sendVerificationEmail = (event) => {
+
       }
 
     render() {
@@ -140,7 +161,7 @@ class Login extends React.Component{
                 </Grid>
               </form>
               <Dialog open={this.state.hidden}>
-                <DialogTitle >{"Reset Password"}</DialogTitle>
+                <DialogTitle >{"Verify Your Email"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
                     Please enter the email associated with your account
@@ -167,6 +188,23 @@ class Login extends React.Component{
                   <Button onClick={this.handleClose} color="primary">
                     Close
                   </Button>
+                </DialogActions>
+              </Dialog>
+
+              <Dialog open={this.state.verified}>
+                <DialogTitle >{"Reset Password"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Your account has not been verified. Please verify your email or click below to send another email
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.sendVerificationEmail} color="primary">
+                      Send verification Email
+                    </Button>
+                    <Button onClick={this.handleEmailClose} color="primary">
+                      Close
+                    </Button>
                 </DialogActions>
               </Dialog>
             </Container>
