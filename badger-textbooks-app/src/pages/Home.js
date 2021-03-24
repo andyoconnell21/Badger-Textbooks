@@ -13,9 +13,12 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
 import CardMedia from '@material-ui/core/CardMedia';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import Box from '@material-ui/core/Box';
 
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
+import GotoIcon from '@material-ui/icons/NavigateNext';
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -113,41 +116,38 @@ class Home extends React.Component {
 
           <Container maxWidth='lg'>
             <Typography variant='h3'>Search Results</Typography>
-            <Card>
-              {this.state.searchResults.map((item) => (
-                <Grid container spacing="2" style={{margin: "10px"}}>
-                  <Grid item xs>
-                    <CardMedia>
-                      <img src={item[dataIndex].image_url} alt="Textbook Cover" width="50" height="60"/>
-                    </CardMedia>
-                  </Grid>
-                  <Grid item xs>
-                      Title: {item[dataIndex].title}
-                  </Grid>
-                  <Grid item xs>
-                      Author: {item[dataIndex].author}
-                  </Grid>
-                  <Grid item xs>
-                      Price: ${item[dataIndex].price}
-                  </Grid>
-                  <Grid item xs>
-                      Seller: {item[dataIndex].owner}
-                  </Grid>
-                  <Grid item xs>
-                      UW-Madison Class Used For: {item[dataIndex].class}
-                  </Grid>
+            {this.state.searchResults.map((item) => (
+              <Grid container spacing="2" style={{margin: "10px"}}>
+                <Grid item xs>
+                  <CardMedia>
+                    <img src={item[dataIndex].image_url} alt="Textbook Cover" width="2" height="3"/>
+                  </CardMedia>
                 </Grid>
-              ))}
-            </Card>
+                <Grid item xs>
+                    Title: {item[dataIndex].title}
+                </Grid>
+                <Grid item xs>
+                    Author: {item[dataIndex].author}
+                </Grid>
+                <Grid item xs>
+                    Price: ${item[dataIndex].price}
+                </Grid>
+                <Grid item xs>
+                    Seller: {item[dataIndex].owner}
+                </Grid>
+                <Grid item xs>
+                    UW-Madison Class Used For: {item[dataIndex].class}
+                </Grid>
+              </Grid>
+            ))}
 
             <Typography variant='h3'>Recent Listings</Typography>
-            <Card>
               {this.state.listings.map((item) => (
                 <Grid container spacing="2" style={{margin: "10px"}}>
                   <Grid item xs>
-                    <CardMedia>
-                      <img src={item[dataIndex].image_url} alt="Textbook Cover" width="50" height="60"/>
-                    </CardMedia>
+                    <Box width="5px" height="5px">
+                      <img src={item[dataIndex].image_url} alt="Textbook Cover"/>
+                    </Box>  
                   </Grid>
                   <Grid item xs>
                       Title: {item[dataIndex].title}
@@ -164,9 +164,17 @@ class Home extends React.Component {
                   <Grid item xs>
                       UW-Madison Class Used For: {item[dataIndex].class}
                   </Grid>
+                  <Grid item xs>
+                      <IconButton onClick={() => {
+                        sessionStorage.setItem('currentListing', item[idIndex]);
+                        console.log(sessionStorage.getItem('currentListing'));
+                        window.location.href = "/listing";
+                      }}>
+                        <GotoIcon/>
+                      </IconButton>
+                  </Grid>
                 </Grid>
               ))}
-            </Card>
         </Container>
       </div>
     );
