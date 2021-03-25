@@ -1,29 +1,35 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+
 import { withStyles } from '@material-ui/core/styles';
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import MenuIcon from "@material-ui/icons/Menu";
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
-import GotoIcon from '@material-ui/icons/NavigateNext';
+import MenuIcon from '@material-ui/icons/Menu';
+import AddIcon from '@material-ui/icons/Add';
+import MyListingsIcon from '@material-ui/icons/ListAlt';
+import AccountIcon from '@material-ui/icons/AccountCircle';
+import SavedIcon from '@material-ui/icons/Favorite';
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -110,12 +116,14 @@ class Home extends React.Component {
       listings: [],
       searchValue: "",
       searchFilter: "title",
-      searchResults: []
+      searchResults: [],
+      searchHidden: true,
+      menuOpen: false
     }
   }
 
   componentDidMount () {
-    document.body.style.backgroundColor = '#ffffff';
+    document.body.style.backgroundColor = '#dadfe1';
 
     var tempListings = []
     firebase.firestore().collection("listings").orderBy("time_created").limit(10).get().then((querySnapshot) => {
@@ -127,6 +135,13 @@ class Home extends React.Component {
             listings: tempListings
         });
     });
+  }
+
+  toggleMenu = (event) => {
+      var curr_state = this.state.menuOpen;
+      this.setState({
+        menuOpen: !curr_state
+      });
   }
   
   updateSearchFilter = (event) => {
@@ -143,7 +158,9 @@ class Home extends React.Component {
 
   clearSearchValue = (event) => {
     this.setState({
-      searchValue: ""
+      searchValue: "",
+      searchResults: [],
+      searchHidden: true
     });
   }
 
@@ -155,7 +172,8 @@ class Home extends React.Component {
           tempResults.push(gather)
       });
       this.setState({
-          searchResults: tempResults
+          searchResults: tempResults,
+          searchHidden: false
       });
     });
   }
@@ -165,77 +183,113 @@ class Home extends React.Component {
 
     return (
       <div>
-        <AppBar style ={{ background: '#FF3333' }} position="static">
-        <Toolbar>
-        <Select
-            style={{width: "15%"}}
-            labelId="filter-select-label"
-            value={this.state.searchFilter}
-            onChange={this.updateSearchFilter}
-          >
-             <MenuItem value={"title"}>Title</MenuItem>
-            <MenuItem value={"author"}>Author</MenuItem>
-            <MenuItem value={"class"}>Class</MenuItem>
-          </Select>
+        <AppBar style ={{ background:'#c5050c' }} position="static">
+          <Toolbar>
+            <IconButton onClick={this.toggleMenu}> 
+              <MenuIcon/>
+            </IconButton>
+            <Typography style={{marginInline: "10px"}}>Search Listings By...</Typography>
+            <Select
+              style={{width: "10%", marginInline: "10px", background: "#ed666a"}}
+              labelId="filter-select-label"
+              variant="outlined"
+              value={this.state.searchFilter}
+              onChange={this.updateSearchFilter}
+            >
+              <MenuItem value={"title"}>Title</MenuItem>
+              <MenuItem value={"author"}>Author</MenuItem>
+              <MenuItem value={"class"}>Class</MenuItem>
+            </Select>
+            <Card style={{width: "50%"}}>
+              <TextField
+                placeholder="Search..."
+                variant='outlined'
+                fullWidth
+                value={this.state.searchValue}
+                onChange={this.updateSearchValue}
+              />
+            </Card>
+            <IconButton onClick={this.clearSearchValue}> 
+              <ClearIcon/>
+            </IconButton>
+            <IconButton onClick={this.initSearch}> 
+              <SearchIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-          <InputBase
-            placeholder="Search"
-            classes={{
-             root: classes.inputRoot,
-             input: classes.inputInput,
-              }}
-            value={this.state.searchValue}
-            onChange={this.updateSearchValue}
-          />
-         <IconButton
-            onClick={this.clearSearchValue}
-          > 
-            <ClearIcon/>
-          </IconButton>
-          <IconButton
-            onClick={this.initSearch}
-          > 
-            <div className={classes.searchIcon}>
-            <SearchIcon />
-            </div>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Divider/>
-          <Container maxWidth='lg'>
-            <Typography variant='h3'>Search Results</Typography>
+        <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+          <List>
+              <ListItem button key="create_listing_nav" onClick={() => {window.location.href = "/createnewlisting";}}>
+                <ListItemIcon><AddIcon/></ListItemIcon>
+                <ListItemText primary="Create a New Listing" />
+              </ListItem>
+              <Divider/>
+              <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
+                <ListItemIcon><MyListingsIcon/></ListItemIcon>
+                <ListItemText primary="My Listings" />
+              </ListItem>
+              <Divider/>
+              <ListItem button key="saved_listings_nav">
+                <ListItemIcon><SavedIcon/></ListItemIcon>
+                <ListItemText primary="Saved Listings" />
+              </ListItem>
+              <Divider/>
+              <ListItem button key="account_nav">
+                <ListItemIcon><AccountIcon/></ListItemIcon>
+                <ListItemText primary="Account" />
+              </ListItem>
+          </List>
+        </Drawer>
+
+        <Container maxWidth='lg'>
+          <Typography variant='h3' hidden={this.state.searchHidden} style={{ margin: "10px"}}>Search Results</Typography>
+          <Card>
             {this.state.searchResults.map((item) => (
-              <Grid container spacing="2" style={{margin: "10px"}}>
-                <Grid item xs>
-                  <CardMedia>
-                    <img src={item[dataIndex].image_url} alt="Textbook Cover" width="2" height="3"/>
-                  </CardMedia>
+              <div>
+                <Grid container spacing="3" style={{margin: "10px"}}>
+                  <Grid item xs>
+                    <CardMedia>
+                      <img src={item[dataIndex].image_url} alt="Textbook Cover" width="50" height="60"/>
+                    </CardMedia>
+                  </Grid>
+                  <Grid item xs>
+                      Title: {item[dataIndex].title}
+                  </Grid>
+                  <Grid item xs>
+                      Author: {item[dataIndex].author}
+                  </Grid>
+                  <Grid item xs>
+                      Price: ${item[dataIndex].price}
+                  </Grid>
+                  <Grid item xs>
+                      Seller: {item[dataIndex].owner}
+                  </Grid>
+                  <Grid item xs>
+                      UW-Madison Class Used For: {item[dataIndex].class}
+                  </Grid>
+                  <Grid item xs >
+                    <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
+                      sessionStorage.setItem('currentListing', item[idIndex]);
+                      console.log(sessionStorage.getItem('currentListing'));
+                      window.location.href = "/listing";
+                    }}>
+                      Details 
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                    Title: {item[dataIndex].title}
-                </Grid>
-                <Grid item xs>
-                    Author: {item[dataIndex].author}
-                </Grid>
-                <Grid item xs>
-                    Price: ${item[dataIndex].price}
-                </Grid>
-                <Grid item xs>
-                    Seller: {item[dataIndex].owner}
-                </Grid>
-                <Grid item xs>
-                    UW-Madison Class Used For: {item[dataIndex].class}
-                </Grid>
-              </Grid>
+                <Divider/>
+              </div>
             ))}
+          </Card>
 
-            <Typography variant='h4'>Recent Listings</Typography>
-              {this.state.listings.map((item) => (
+          <Typography variant='h3' style={{ margin: "10px"}}>Recent Listings</Typography>
+          <Card>
+            {this.state.listings.map((item) => (
+              <div>
                 <Grid container spacing= "3" style={{margin: "10px"}}>
                   <Grid item xs>
-                    <Box width="25%" height="25%">
-                      <img src={item[dataIndex].image_url} alt="Textbook Cover"/>
-                    </Box>  
+                    <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover"/>
                   </Grid>
                   <Grid item xs >
                       Title: {item[dataIndex].title}
@@ -244,7 +298,7 @@ class Home extends React.Component {
                       Author: {item[dataIndex].author}
                   </Grid>
                   <Grid item xs>
-                      Price: {item[dataIndex].price}
+                      Price: ${item[dataIndex].price}
                   </Grid>
                   <Grid item xs>
                       Seller: {item[dataIndex].owner}
@@ -253,16 +307,19 @@ class Home extends React.Component {
                       UW-Madison Class Used For: {item[dataIndex].class}
                   </Grid>
                   <Grid item xs >
-                      <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
-                        sessionStorage.setItem('currentListing', item[idIndex]);
-                        console.log(sessionStorage.getItem('currentListing'));
-                        window.location.href = "/listing";
-                      }}>
-                       Details 
-                      </Button>
+                    <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
+                      sessionStorage.setItem('currentListing', item[idIndex]);
+                      console.log(sessionStorage.getItem('currentListing'));
+                      window.location.href = "/listing";
+                    }}>
+                      Details 
+                    </Button>
                   </Grid>
                 </Grid>
-              ))}
+                <Divider/>
+              </div>
+            ))}
+          </Card>
         </Container>
       </div>
     );
