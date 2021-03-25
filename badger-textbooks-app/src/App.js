@@ -32,6 +32,25 @@ const firebaseConfig = {
 
 var fire = firebase.initializeApp(firebaseConfig);
 
+//for chat system
+firebase.database().ref("messages").on("child_removed", function (snapshot) {
+  document.getElementById("message-" + snapshot.key).innerHTML = "This message has been deleted";
+});
+
+function deleteMessage(self) {
+  var messageId = self.getAttribute("data-id");
+  firebase.database().ref("messages").child(messageId).remove();
+}
+
+function sendMessage() {
+  var message = document.getElementById("message").value;
+  firebase.database().ref("messages").push().set({
+    "message": message,
+    "sender": myName
+  });
+  return false;
+}
+
 class App extends React.Component {
 
   render() {
@@ -45,6 +64,7 @@ class App extends React.Component {
               <Route path="/listing" exact component={() => <Listing />}/>
               <Route path="/mylistings" exact component={() => <MyListings/>} />
               <Route path="/createnewlisting" exact component={() => <CreateNewListing/>} />
+              <Route path="/chatPage" exact component={() => <chatPage/>} />
             </Switch>
           </Router>
         </div>
