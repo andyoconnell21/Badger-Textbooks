@@ -44,6 +44,14 @@ class Listings extends React.Component {
     }
 
     componentDidMount () {
+        
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (!user) {
+          //User is not siged in...redirect to login page
+          window.location.href = "/";
+        }
+      }); 
+        
       var documentId = sessionStorage.getItem('currentListing')
       document.body.style.backgroundColor = '#dadfe1';
 
