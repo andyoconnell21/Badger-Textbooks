@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/auth';
 
 import { withStyles } from '@material-ui/core/styles';
 import React from "react";
@@ -123,6 +124,13 @@ class Home extends React.Component {
   }
 
   componentDidMount () {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (!user) {
+        //User is not siged in...redirect to login page
+        window.location.href = "/";
+      }
+    }); 
+
     document.body.style.backgroundColor = '#dadfe1';
 
     var tempListings = []
@@ -265,9 +273,6 @@ class Home extends React.Component {
                   <Grid item xs>
                       Seller: {item[dataIndex].owner}
                   </Grid>
-                  <Grid item xs>
-                      UW-Madison Class Used For: {item[dataIndex].class}
-                  </Grid>
                   <Grid item xs >
                     <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
                       sessionStorage.setItem('currentListing', item[idIndex]);
@@ -302,9 +307,6 @@ class Home extends React.Component {
                   </Grid>
                   <Grid item xs>
                       Seller: {item[dataIndex].owner}
-                  </Grid>
-                  <Grid item xs >
-                      UW-Madison Class Used For: {item[dataIndex].class}
                   </Grid>
                   <Grid item xs >
                     <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
