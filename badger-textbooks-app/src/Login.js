@@ -28,7 +28,8 @@ class Login extends React.Component{
           hidden: false,
           forgotPasswordEmail: '',
           passwordError: false,
-          verified: false
+          verified: false,
+          correctLogin: false
         }
         this.setErrorHandler = this.setErrorHandler.bind(this)
       }
@@ -70,8 +71,8 @@ class Login extends React.Component{
           }
         })
         .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
+          //Wrong Account Information
+          this.setState({correctLogin: true})
         });
       }
     
@@ -85,7 +86,6 @@ class Login extends React.Component{
         .catch((error) => {
           //Error Caught
           this.setErrorHandler(true);
-          console.log(error)
         });
       }
 
@@ -103,6 +103,10 @@ class Login extends React.Component{
 
       handleEmailClose = (event) => {
         this.setState({verified:false})
+      }
+
+      handleWrongLoginInfo = (event) => {
+        this.setState({correctLogin: false})
       }
 
       sendVerificationEmail = (event) => {
@@ -210,6 +214,20 @@ class Login extends React.Component{
                       Send verification Email
                     </Button>
                     <Button onClick={this.handleEmailClose} color="primary">
+                      Close
+                    </Button>
+                </DialogActions>
+              </Dialog>
+
+              <Dialog open={this.state.correctLogin}>
+                <DialogTitle >{"Incorrect Login Information"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    The email or password is incorrect. Please try again
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleWrongLoginInfo} color="primary">
                       Close
                     </Button>
                 </DialogActions>
