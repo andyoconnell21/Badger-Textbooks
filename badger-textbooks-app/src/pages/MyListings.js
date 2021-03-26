@@ -55,6 +55,7 @@ class MyListings extends React.Component {
                 window.location.href = "/";
             }
             else {  
+                this.setState({ user: user.email });
                 firebase.firestore().collection("users").where("email", "==", user.email).get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         var data = doc.data();
@@ -67,8 +68,7 @@ class MyListings extends React.Component {
                             tempList.push(gather);
 
                             this.setState({
-                                listingsToDisplay: tempList,
-                                user: user.email
+                                listingsToDisplay: tempList
                             }); 
                         });
                     });
