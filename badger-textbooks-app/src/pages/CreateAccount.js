@@ -86,17 +86,21 @@ class CreateAccount extends React.Component{
 
                 //Create a new user account and set the given data
                 var fullName = this.state.firstName.concat(" ", this.state.lastName)
-                firebase.firestore().collection('users').doc().set({
+                firebase.firestore().collection('users').add({
                     email: this.state.email,
                     password: this.state.password,
-                    name: fullName
+                    name: fullName,
+                    address: "",
+                    phone: 0,
+                    listings: [],
+                    saved_listings: []
                 }) 
             })
             .catch((error) => {
                 //Implement alert using an email that already exists
                 //Take error code and if an error occurs, update accordingly
                 this.setErrorHandler(true)
-            })   
+            });  
         }
     }   
 
