@@ -51,6 +51,8 @@ class MyListings extends React.Component {
         }
     }
 
+    
+
     toggleMenu = (event) => {
         var curr_state = this.state.menuOpen;
         this.setState({
@@ -59,17 +61,26 @@ class MyListings extends React.Component {
     }
 
     componentDidMount() {
-        var status = localStorage.getItem('userStatues');
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+              //User is not siged in...redirect to login page
+              window.location.href = "/";
+            }
+          }); 
+
+        var status = localStorage.getItem('userStatus');
         if (status == 'invalid') {
             window.location.href = '/';
         }
         
-        let currentUser = firebase.auth().currentUser.email;
-        this.state.currentUser = currentUser;
-        
+        document.body.style.backgroundColor = '#dadfe1';
+
+        var currentUser = localStorage.getItem('currentUser')
+        this.state.currentUser = currentUser.email;
+
         var tempListings = [];
 
-        firebase.firestore().collection("listings").where("owner", "==", currentUser).get().then((querySnapshot) => {
+        firebase.firestore().collection("listings").where("owner", "==", this.state.currentUser).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var gather = [doc.id, doc.data(), false];
                 tempListings.push(gather);
