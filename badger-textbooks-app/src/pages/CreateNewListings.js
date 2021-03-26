@@ -38,7 +38,8 @@ export class CreateNewListing extends Component {
             condition: 'brand-new',
             class_used: '',
             alerOpen: false,
-            menuOpen: false
+            menuOpen: false,
+            imageURL: '',
         }
     }
 
@@ -105,6 +106,7 @@ export class CreateNewListing extends Component {
                 title: this.state.title,
                 owner: user_email,
                 time_created: date,
+                image_url: this.state.imageURL
             }).then(function(docRef) {
                 listingRef = docRef;
                 firebase.firestore().collection("users").where('email', '==', user_email).get().then((querySnapshot) => {
@@ -157,8 +159,25 @@ export class CreateNewListing extends Component {
         })
     }
 
+    handleImageChange = (e) => {
+        //Adds image to storage
+        const file = e.target.files[0]
+        var storage = firebase.storage()
+        var storageRef = storage.ref()
+        const fileRef = storageRef.child(file.name)
+        fileRef.put(file).then(() => {
+            //Saved image file path
+            storageRef.child(file.name).getDownloadURL().then((url) => {
+                this.setState({imageURL: url})
+            })
+        })
+
+
+        
+    }
+
     render() {
-        const {title, author, ISBN, price, condition, class_used} = this.state
+        const {title, author, ISBN, price, condition, class_used, image} = this.state
         return (
             <div>
                 <AppBar style ={{ background:'#c5050c' }} position="static">
@@ -275,6 +294,14 @@ export class CreateNewListing extends Component {
                             <option value='Poor'>Poor, but still usable</option>
                         </select>
                     </div>
+                    <div>
+                        <label>Image of Textbook: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            type='file'
+                            onChange={this.handleImageChange}
+                        />
+                    </div>
+
                     <Divider style={{margin: "10px"}}/>
                     <Button 
                         style={{color: '#ffffff', backgroundColor: '#c5050c'}}
