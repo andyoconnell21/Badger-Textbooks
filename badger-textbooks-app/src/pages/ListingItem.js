@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import {Button, Card} from "react-bootstrap"
+//import {Button, Card} from "react-bootstrap"
 // import "../Box.css";
 import * as MyListings from "@firebase/util";
 
@@ -33,7 +33,7 @@ import * as MyListings from "@firebase/util";
 function ListingItem({seller, image, title, author, ISBN, desired_price, condition}) {
     return (
         <grid>
-        <Card style={{width: '18rem'}} >
+        {/* <Card style={{width: '18rem'}} >
             <Card.Img variant="top" src={image} className="item-image"/>
             <Card.Body>
                 <Card.Text><b>Book name:</b> {title}</Card.Text>
@@ -43,7 +43,7 @@ function ListingItem({seller, image, title, author, ISBN, desired_price, conditi
                 <Card.Text><b>Condition: </b>{condition}</Card.Text>
                 <Button className='check-it-button'>Check it Out!</Button>
             </Card.Body>
-        </Card>
+        </Card> */}
         </grid>
     );
 }

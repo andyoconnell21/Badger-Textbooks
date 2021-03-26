@@ -12,7 +12,7 @@ import {
   Container,
 } from "@material-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateAccount from "./pages/CreateAccount"
 import Home from "./pages/Home"
 import Login from "./Login"
@@ -34,14 +34,14 @@ const firebaseConfig = {
 var fire = firebase.initializeApp(firebaseConfig);
 
 //for chat system
-firebase.database().ref("messages").on("child_removed", function (snapshot) {
-  document.getElementById("message-" + snapshot.key).innerHTML = "This message has been deleted";
-});
+// firebase.database().ref("messages").on("child_removed", function (snapshot) {
+//   document.getElementById("message-" + snapshot.key).innerHTML = "This message has been deleted";
+// });
 
-function deleteMessage(self) {
-  var messageId = self.getAttribute("data-id");
-  firebase.database().ref("messages").child(messageId).remove();
-}
+// function deleteMessage(self) {
+//   var messageId = self.getAttribute("data-id");
+//   firebase.database().ref("messages").child(messageId).remove();
+// }
 
 // function sendMessage() {
 //   var message = document.getElementById("message").value;

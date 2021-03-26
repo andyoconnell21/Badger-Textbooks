@@ -13,7 +13,7 @@ import 'firebase/firestore';
 import firebase from 'firebase/app';
 import ListingItem from "./ListingItem";
 import history from '../history';
-import {Button, Nav, NavItem, Navbar, NavLink} from 'react-bootstrap';
+//import {Button, Nav, NavItem, Navbar, NavLink} from 'react-bootstrap';
 // import {Button} from "@material-ui/core";
 import * as listings from "@firebase/util";
 //

@@ -2,7 +2,29 @@ import React, {Component} from 'react';
 import '../w3.css'
 import '../App.css'
 import firebase from "firebase";
-import {Button} from "@material-ui/core";
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import MenuIcon from '@material-ui/icons/Menu';
+import HomeIcon from '@material-ui/icons/Home';
+import MyListingsIcon from '@material-ui/icons/ListAlt';
+import AccountIcon from '@material-ui/icons/AccountCircle';
+import SavedIcon from '@material-ui/icons/Favorite';
 
 //book title, author, ISBN, price wanted, condition of book, class_used
 export class CreateNewListing extends Component {
@@ -15,13 +37,77 @@ export class CreateNewListing extends Component {
             price: 0,
             condition: 'brand-new',
             class_used: '',
+            alerOpen: false,
+            menuOpen: false
         }
     }
-    handleSubmit = (e) => {
-        alert(`${this.state.title} ${this.state.author}`)
-        e.preventDefault()
 
+    componentDidMount () {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) {
+            //User is not siged in...redirect to login page
+            window.location.href = "/";
+          }
+        }); 
     }
+    
+    //HANDLESUBMIT NOW ADDS LISTING TO DATABASE. FUNCTION DEPRECATED.
+    // addListingItem = (event) => {
+    //     event.preventDefault();
+    //     const db = firebase.firestore();
+    //     db.settings({
+    //         timestampsInSnapshots: true
+    //     });
+    //     const userRef = db.collection('listings').add({
+    //         title: this.state.title,
+    //         author: this.state.author,
+    //         ISBN: this.state.ISBN,
+    //         price: this.state.price,
+    //         condition: this.state.condition,
+    //         class_used: this.state.class_used,
+    //     });
+    //     this.setState({
+    //         title: '',
+    //         author: '',
+    //         ISBN: 0,
+    //         price: 0,
+    //         condition: 'brand-new',
+    //         class_used: '',
+    //         menuOpen: false
+    //     });
+    // };
+
+    toggleMenu = (event) => {
+        var curr_state = this.state.menuOpen;
+        this.setState({
+          menuOpen: !curr_state
+        });
+    }
+
+    handleSubmit = (e) => {
+        if (this.state.author === "" || this.state.class === "" || this.state.title === "") {
+            this.setState({
+                alertOpen: true
+            });
+        } else {
+            var user = firebase.auth().currentUser.email;
+            var date = Date().toLocaleString();
+
+            firebase.firestore().collection('listings').add({
+                ISBN: this.state.ISBN,
+                author: this.state.author,
+                class: this.state.class_used,
+                condition: this.state.condition,
+                price: this.state.price,
+                title: this.state.title,
+                owner: user,
+                time_created: date,
+            }).then(() => {
+                window.location.href = "/home";
+            })
+        }
+    }
+
     handleTitleChange = (e) => {
         this.setState({
             title: e.target.value
@@ -33,126 +119,159 @@ export class CreateNewListing extends Component {
             author: e.target.value
         })
     }
+
     handleISBNChange = (e) => {
         this.setState({
             ISBN: e.target.value
         })
     }
+
     handlePriceChange = (e) => {
         this.setState({
             price: e.target.value
         })
     }
+
     handleClassChange = (e) => {
         this.setState({
             class_used: e.target.value
         })
     }
+
     handleConditionChange = (e) => {
         this.setState({
             condition: e.target.value
         })
     }
-    backToListing = (event) => {
-        window.location.href = '/mylistings'
-    }
-
-    addListingItem = (event) => {
-        firebase.firestore().collection('listings').doc().set({
-                title: this.state.title,
-                author: this.state.author,
-                ISBN: this.state.ISBN,
-                price: this.state.price,
-                condition: this.state.condition,
-                class_used: this.state.class_used,
-        })
-        this.componentDidMount();
-    };
-    componentDidMount(){
-        var tempListingData = [];
-        firebase.firestore().collection("listings").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                var gather = [doc.id, doc.data(), false]
-                tempListingData.push(gather)
-            });
-            this.setState({
-                listings: tempListingData
-            });
-        });
-
-    }
-
-
 
     render() {
         const {title, author, ISBN, price, condition, class_used} = this.state
         return (
-            <form onSubmit={this.handleSubmit} className="form-box" style={{fontFamily: 'sans-serif',fontSize: '16px'}}>
-                <Button style={{border: '0',fontFamily: 'sans-serif', backgroundColor: 'lightgrey', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Return</Button>
-                <div>
-                    <h1 className="w3-container w3-red">Create a New Listing</h1>
-                    <label><b>Book Title: </b> </label>
-                    <input className="w3-input w3-hover-light-gray"
-                           type='text'
-                           size="sm"
-                           value={title}
-                           onChange={this.handleTitleChange}
-                    />
-                </div>
-                <div>
-                    <label><b>Author: </b> </label>
-                    <input className="w3-input w3-hover-light-gray"
-                           size="sm"
-                           type='text'
-                           value={author}
-                           onChange={this.handleAuthorChange}
-                    />
-                </div>
-                <div>
-                    <label>ISBN: </label>
-                    <input className="w3-input w3-hover-light-gray"
-                           type='text'
-                           value={ISBN}
-                           pattern="[0-9]+"
-                           onChange={this.handleISBNChange}
-                    />
-                </div>
+            <div>
+                <AppBar style ={{ background:'#c5050c' }} position="static">
+                    <Toolbar>
+                        <IconButton onClick={this.toggleMenu}> 
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography 
+                            variant='h6' 
+                            style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '25px', margin: '25px', textAlign: 'center'}}
+                        >Create New Listing</Typography>
+                    </Toolbar>
+                </AppBar>
 
-                <div>
-                    <label>Desired Price: </label>
-                    <input className="w3-input w3-hover-light-gray"
-                           type='number'
-                           value={price}
-                           onChange={this.handlePriceChange}
-                    />
-                </div>
-                <div>
-                    <label>Class Required: </label>
-                    <input className="w3-input w3-hover-light-gray"
-                           type='text'
-                           value={class_used}
-                           onChange={this.handleClassChange}
-                    />
-                </div>
-                <div>
-                    <label>Condition: </label>
-                    <select className="w3-input w3-hover-light-gray"
-                            value={condition}
-                            onChange={this.handleConditionChange}>
-                        <option value='Brand-new'>Brand new</option>
-                        <option value='Like-New'>Like New</option>
-                        <option value='Good'>Good</option>
-                        <option value='Fair'>Fair</option>
-                        <option value='Poor'>Poor, but still usable</option>
-                    </select>
-                </div>
-                <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%',
-                    marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}} onSubmit={this.addListingItem}>Create!</Button>
+                <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+                    <List>
+                        <ListItem button key="home_nav" onClick={() => {window.location.href = "/home";}}>
+                            <ListItemIcon><HomeIcon/></ListItemIcon>
+                            <ListItemText primary="Home" />
+                        </ListItem>
+                        <Divider/>
+                        <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
+                            <ListItemIcon><MyListingsIcon/></ListItemIcon>
+                            <ListItemText primary="My Listings" />
+                        </ListItem>
+                        <Divider/>
+                        <ListItem button key="saved_listings_nav" disabled>
+                            <ListItemIcon><SavedIcon/></ListItemIcon>
+                            <ListItemText primary="Saved Listings" />
+                        </ListItem>
+                        <Divider/>
+                        <ListItem button key="account_nav" disabled>
+                            <ListItemIcon><AccountIcon/></ListItemIcon>
+                            <ListItemText primary="Account" />
+                        </ListItem>
+                    </List>
+                </Drawer>
 
-            </form>
+                <Dialog
+                    open={this.state.alertOpen}
+                    onClose={() => {this.setState({alertOpen: false})}}
+                >
+                    <DialogTitle>{"Oops! Looks like we are missing some information."}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        Make sure that all fields marked by a * have been filled out.
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button 
+                        style={{color: '#c5050c'}}
+                        onClick={() => {this.setState({alertOpen: false})}} 
+                        color="primary" 
+                        autoFocus
+                    >
+                        OK
+                    </Button>
+                    </DialogActions>
+                </Dialog>
 
-    )
+                <form className="form-box" style={{width: "80%", backgroundColor: '#d2b48c'}}>
+                    <div>
+                        <label>Book Title*: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            type='text'
+                            size="sm"
+                            value={title}
+                            onChange={this.handleTitleChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Author*: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            size="sm"
+                            type='text'
+                            value={author}
+                            onChange={this.handleAuthorChange}
+                        />
+                    </div>
+                    <div>
+                        <label>ISBN: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            type='text'
+                            value={ISBN}
+                            pattern="[0-9]+"
+                            onChange={this.handleISBNChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Desired Price: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            type='number'
+                            value={price}
+                            onChange={this.handlePriceChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Class Used For*: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            type='text'
+                            value={class_used}
+                            onChange={this.handleClassChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Condition: </label>
+                        <select className="w3-input w3-hover-light-gray"
+                                value={condition}
+                                onChange={this.handleConditionChange}>
+                            <option value='Brand-new'>Brand new</option>
+                            <option value='Like-New'>Like New</option>
+                            <option value='Good'>Good</option>
+                            <option value='Fair'>Fair</option>
+                            <option value='Poor'>Poor, but still usable</option>
+                        </select>
+                    </div>
+                    <Divider style={{margin: "10px"}}/>
+                    <Button 
+                        style={{color: '#ffffff', backgroundColor: '#c5050c'}}
+                        variant="contained" 
+                        fullWidth 
+                        onClick={this.handleSubmit}
+                    >Create</Button>
+                </form>
+            </div>
+        )
     }
-
 }
 export default CreateNewListing;
