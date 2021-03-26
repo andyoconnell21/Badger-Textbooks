@@ -40,6 +40,7 @@ export class CreateNewListing extends Component {
             alerOpen: false,
             menuOpen: false,
             imageURL: '',
+            listingCreated: false
         }
     }
 
@@ -107,8 +108,9 @@ export class CreateNewListing extends Component {
                 owner: user_email,
                 time_created: date,
                 image_url: this.state.imageURL
-            }).then(function(docRef) {
+            }).then((docRef) => {
                 listingRef = docRef;
+                this.setState({listingCreated: true})
                 firebase.firestore().collection("users").where('email', '==', user_email).get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         userRef = doc.id;
@@ -171,9 +173,10 @@ export class CreateNewListing extends Component {
                 this.setState({imageURL: url})
             })
         })
+    }
 
-
-        
+    handleCloseCreatedListing = (e) => {
+        this.setState({listingCreated: false})
     }
 
     render() {
@@ -310,8 +313,23 @@ export class CreateNewListing extends Component {
                         onClick={this.handleSubmit}
                     >Create</Button>
                 </form>
+
+                <Dialog open={this.state.listingCreated}>
+                    <DialogTitle >{"Listing Created"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Your listing has been created and has been added to the marketplace
+                        </DialogContentText>                     
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleCloseCreatedListing} color="primary">
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }
 }
+
 export default CreateNewListing;
