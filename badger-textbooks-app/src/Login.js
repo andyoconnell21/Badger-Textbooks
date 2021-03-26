@@ -29,7 +29,9 @@ class Login extends React.Component{
           forgotPasswordEmail: '',
           passwordError: false,
           verified: false,
-          correctLogin: false
+          invalidEmail: false,
+          invalidPassword: false,
+          incorrectEmail: false
         }
         this.setErrorHandler = this.setErrorHandler.bind(this)
       }
@@ -54,26 +56,37 @@ class Login extends React.Component{
       authWithAccountCreds = (event) => {
         event.preventDefault();
 
-        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then((userCredential) => {
-          //Check to make sure user email is authenticated
-          var user = firebase.auth().currentUser
-          if(user != null){
-            if(user.emailVerified == true){
-              this.setState({verified: false})
+        var splitEmail = this.state.email.split("@")
+        if(splitEmail[1] != 'wisc.edu'){
+            this.setState({incorrectEmail: true})
+        }
+        else{
+          firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+          .then((userCredential) => {
+            //Check to make sure user email is authenticated
+            var user = firebase.auth().currentUser
+            if(user != null){
+              if(user.emailVerified == true){
+                this.setState({verified: false})
+              }
+              else{
+                this.setState({verified:true})
+              }
             }
-            else{
-              this.setState({verified:true})
+            if(this.state.verified == false){
+              window.location.href = '/home'
             }
-          }
-          if(this.state.verified == false){
-            window.location.href = '/home'
-          }
-        })
-        .catch((error) => {
-          //Wrong Account Information
-          this.setState({correctLogin: true})
-        });
+          })
+          .catch((error) => {
+            //Wrong Account Information
+            if(error.code == "auth/user-not-found"){
+              this.setState({invalidEmail: true})
+            }
+            if(error.code == "auth/wrong-password"){
+              this.setState({invalidPassword: true})
+            }
+          });
+        }
       }
     
       forgotPassword = (event) => {
@@ -106,7 +119,11 @@ class Login extends React.Component{
       }
 
       handleWrongLoginInfo = (event) => {
-        this.setState({correctLogin: false})
+        this.setState({
+          invalidPassword: false,
+          invalidEmail: false,
+          incorrectEmail: false
+        })
       }
 
       sendVerificationEmail = (event) => {
@@ -118,6 +135,10 @@ class Login extends React.Component{
         }).catch(function(error) {
           //An error happened.
         });
+      }
+
+      navigateCreateAccount = (event) => {
+        window.location.href = './createaccount'
       }
 
     render() {
@@ -133,6 +154,7 @@ class Login extends React.Component{
               <Typography component="h1" variant="h4" style={{textAlign: 'center'}}>
                 Sign in
               </Typography>
+
               <form onSubmit={this.authWithAccountCreds}>
                 <TextField
                   variant="outlined"
@@ -158,6 +180,7 @@ class Login extends React.Component{
                   onChange = {this.setPassword}
                 />
                 <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Sign In</Button>
+
                 <Grid container>
                   <Grid item xs>
                     <Link href="#" onClick={this.handleOpen} variant="body2">
@@ -171,6 +194,7 @@ class Login extends React.Component{
                   </Grid>
                 </Grid>
               </form>
+
               <Dialog open={this.state.hidden}>
                 <DialogTitle >{"Reset Password"}</DialogTitle>
                 <DialogContent>
@@ -219,11 +243,42 @@ class Login extends React.Component{
                 </DialogActions>
               </Dialog>
 
-              <Dialog open={this.state.correctLogin}>
-                <DialogTitle >{"Incorrect Login Information"}</DialogTitle>
+              <Dialog open={this.state.invalidEmail}>
+                <DialogTitle >{"Email Not Found"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    The email or password is incorrect. Please try again
+                    There is no account associated with this email
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.navigateCreateAccount} color="primary">
+                      Create Account
+                    </Button>
+                    <Button onClick={this.handleWrongLoginInfo} color="primary">
+                      Close
+                    </Button>
+                </DialogActions>
+              </Dialog>
+
+              <Dialog open={this.state.invalidPassword}>
+                <DialogTitle >{"Invalid Password"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    The password you have entered is incorrect. Please try again
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleWrongLoginInfo} color="primary">
+                      Close
+                    </Button>
+                </DialogActions>
+              </Dialog>
+
+              <Dialog open={this.state.incorrectEmail}>
+                <DialogTitle >{"Invalid Email"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    You have entered an invalid email. Please check to make sure you are using a valid @wisc.edu email.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
