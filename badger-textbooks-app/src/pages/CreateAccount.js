@@ -160,8 +160,8 @@ class CreateAccount extends React.Component{
                             name="email"
                             type="email"
                             onChange = {this.setEmail}
-                            error = {this.state.createAccountError}
-                            helperText = "Email is already in use"
+                            // error = {this.state.createAccountError}
+                            // helperText = "Email is already in use"
                             autoFocus
                             />
                         <TextField
