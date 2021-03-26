@@ -17,6 +17,7 @@ import React from "react";
 
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import Divider from '@material-ui/core/Divider';
@@ -34,7 +35,10 @@ import MyListingsIcon from '@material-ui/icons/ListAlt';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import SavedIcon from '@material-ui/icons/Favorite';
 
-class MyListings extends ReactComponent {
+const idIndex = 0;
+const dataIndex = 1;
+
+class MyListings extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -56,9 +60,10 @@ class MyListings extends ReactComponent {
             window.location.href = '/';
         }
 
+        let currentUser = firebase.auth().currentUser;
         var tempListings = [];
 
-        firebase.firestore().collection("listsings").where("owner", "==", firebase.auth().currentUser).get().then((querySnapshot) => {
+        firebase.firestore().collection("listings").where("owner", "==", currentUser.toString()).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var gather = [doc.id, doc.data(), false];
                 tempListings.push(gather);
@@ -67,6 +72,7 @@ class MyListings extends ReactComponent {
                 currentListings: tempListings
             });
         });
+        console.log(this.currentListings);
     }
 
     render() {
@@ -101,7 +107,7 @@ class MyListings extends ReactComponent {
                     </List>
                 </Drawer>
                 <Container>
-                    <Typography variant='h3' style={{ margin: "10px" }}>Recent Listings</Typography>
+                    <Typography variant='h3' style={{ margin: "10px" }}>Your Current Listings</Typography>
                     <Card>
                         {this.state.currentListings.map((item) => (
                             <div>
