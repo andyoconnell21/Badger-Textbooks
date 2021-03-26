@@ -90,8 +90,11 @@ export class CreateNewListing extends Component {
                 alertOpen: true
             });
         } else {
-            var user = firebase.auth().currentUser.email;
+            var user_email = firebase.auth().currentUser.email;
             var date = Date().toLocaleString();
+
+            var listingRef;
+            var userRef;
 
             firebase.firestore().collection('listings').add({
                 ISBN: this.state.ISBN,
@@ -100,11 +103,21 @@ export class CreateNewListing extends Component {
                 condition: this.state.condition,
                 price: this.state.price,
                 title: this.state.title,
-                owner: user,
+                owner: user_email,
                 time_created: date,
-            }).then(() => {
-                window.location.href = "/home";
-            })
+            }).then(function(docRef) {
+                listingRef = docRef;
+                firebase.firestore().collection("users").where('email', '==', user_email).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        userRef = doc.id;
+                    });
+                    firebase.firestore().collection("users").doc(userRef).update({
+                        listings: firebase.firestore.FieldValue.arrayUnion(listingRef)
+                    }).then(() => {
+                        window.location = "/mylistings";
+                    });
+                });
+            });
         }
     }
 

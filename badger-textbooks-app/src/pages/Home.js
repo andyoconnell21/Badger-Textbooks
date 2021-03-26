@@ -132,7 +132,7 @@ class Home extends React.Component {
       }
     }); 
 
-    document.body.style.backgroundColor = '#dadfe1';
+    document.body.style.backgroundColor = '#d2b48c';
 
     var tempListings = []
     firebase.firestore().collection("listings").orderBy("time_created", "desc").limit(10).get().then((querySnapshot) => {
