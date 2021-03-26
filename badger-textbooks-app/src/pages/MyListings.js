@@ -1,22 +1,11 @@
-/*Create MyListings UI
- 1. Create Listing
-    Provide input boxes for users to provide information such as book title, author, ISBN, price wanted, condition of book, etc.
-    Send all of that data to the database.
-    Dependencies: ability to input all possible information about the book they are listing, user must have been able to login
- 2. Display Listings
-    Provide a list of all of the user’s listings.
-    Dependencies: Firebase must return a collection of listing documents for the specific user
- */
-//
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-import { withStyles } from '@material-ui/core/styles';
 import React from "react";
 
+import Toolbar from '@material-ui/core/Toolbar';
 import Container from '@material-ui/core/Container';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -33,10 +22,9 @@ import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddIcon from '@material-ui/icons/Add';
-import MyListingsIcon from '@material-ui/icons/ListAlt';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import SavedIcon from '@material-ui/icons/Favorite';
-import { Toolbar } from '@material-ui/core';
+
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -45,9 +33,9 @@ class MyListings extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            currentListings: [],
+            listingsToDisplay: [],
             menuOpen: false,
-            currentUser: null
+            user: null
         }
     }
 
@@ -59,34 +47,34 @@ class MyListings extends React.Component {
     }
 
     componentDidMount() {
+        var listIDs = [];
+        var tempList = [];
         firebase.auth().onAuthStateChanged(function(user) {
-            if (user != null && user !== undefined) {
-                this.state.currentUser = user.email;
-              
-            } else {
+            if (!user) {
+                //User is not siged in...redirect to login page
                 window.location.href = "/";
             }
-          }); 
+            else {  
+                firebase.firestore().collection("users").where("email", "==", user.email).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        var data = doc.data();
+                        listIDs = data.listings;
+                        console.log(data.listings); 
+                    });
+                    listIDs.forEach((id) => {
+                        firebase.firestore().collection("listings").doc(id.id).get().then((l) => {
+                            var gather = [l.id, l.data()];
+                            tempList.push(gather);
 
-        var status = localStorage.getItem('userStatus');
-        if (status == 'invalid') {
-            window.location.href = '/';
-        }
-        
-        document.body.style.backgroundColor = '#dadfe1';
-
-        var tempListings = [];
-
-        firebase.firestore().collection("listings").where("owner", "==", this.state.currentUser).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                var gather = [doc.id, doc.data(), false];
-                tempListings.push(gather);
-            });
-            this.setState({
-                currentListings: tempListings
-            });
-        });
-        console.log(this.currentListings);
+                            this.setState({
+                                listingsToDisplay: tempList,
+                                user: user.email
+                            }); 
+                        });
+                    });
+                });
+            }
+        }.bind(this));
     }
 
     render() {
@@ -98,7 +86,7 @@ class MyListings extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant='h6' style={{ fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto' }}>
-                            {this.state.currentUser}'s Listings
+                            {this.state.user}'s Listings
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -115,11 +103,6 @@ class MyListings extends React.Component {
                             <ListItemText primary="Create a New Listing" />
                         </ListItem>
                         <Divider />
-                        <ListItem button key="my_listings_nav" onClick={() => { window.location.href = "/mylistings"; }}>
-                            <ListItemIcon><MyListingsIcon /></ListItemIcon>
-                            <ListItemText primary="My Listings" />
-                        </ListItem>
-                        <Divider />
                         <ListItem button key="saved_listings_nav" disabled>
                             <ListItemIcon><SavedIcon /></ListItemIcon>
                             <ListItemText primary="Saved Listings" />
@@ -134,7 +117,7 @@ class MyListings extends React.Component {
 
                 <Container>
                     <Card>
-                        {this.state.currentListings.map((item) => (
+                        {this.state.listingsToDisplay.map((item) => (
                             <div>
                                 <Grid container spacing="3" style={{ margin: "10px" }}>
                                     <Grid item xs>
@@ -167,10 +150,6 @@ class MyListings extends React.Component {
             </div>
         )
     }
-
 }
 
-
-
 export default MyListings
-
