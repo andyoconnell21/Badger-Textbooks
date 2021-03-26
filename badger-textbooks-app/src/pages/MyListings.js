@@ -27,6 +27,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AppBar from '@material-ui/core/AppBar';
+import IconButton from '@material-ui/core/IconButton';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -34,6 +36,7 @@ import AddIcon from '@material-ui/icons/Add';
 import MyListingsIcon from '@material-ui/icons/ListAlt';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import SavedIcon from '@material-ui/icons/Favorite';
+import { Toolbar } from '@material-ui/core';
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -43,7 +46,8 @@ class MyListings extends React.Component {
         super(props)
         this.state = {
             currentListings: [],
-            menuOpen: false
+            menuOpen: false,
+            currentUser: null
         }
     }
 
@@ -60,24 +64,11 @@ class MyListings extends React.Component {
             window.location.href = '/';
         }
         
-        let currentUser = null;
-        
-        var user = firebase.auth().currentUser;
-        
-        if (user) {
-            currentUser = firebase.auth().currentUser.email;
-        }
-        else {
-            window.location.href = '/';
-        }
-        
-        if (!currentUser) {
-            window.location.href = '/';
-        }
+        this.state.currentUser = firebase.auth().currentUser.email;
         
         var tempListings = [];
 
-        firebase.firestore().collection("listings").where("owner", "==", currentUser).get().then((querySnapshot) => {
+        firebase.firestore().collection("listings").where("owner", "==", this.state.currentUser).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var gather = [doc.id, doc.data(), false];
                 tempListings.push(gather);
@@ -92,6 +83,17 @@ class MyListings extends React.Component {
     render() {
         return (
             <div>
+                <AppBar style={{ background: '#c5050c' }} position="static">
+                    <Toolbar>
+                        <IconButton onClick={this.toggleMenu}>
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant='h6' style={{ fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto' }}>
+                            {this.state.currentUser}'s Listings
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+
                 <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
                     <List>
                         <ListItem button key="home_nav" onClick={() => { window.location.href = "/home"; }}>
@@ -120,8 +122,8 @@ class MyListings extends React.Component {
                         </ListItem>
                     </List>
                 </Drawer>
+
                 <Container>
-                    <Typography variant='h3' style={{ margin: "10px" }}>Your Current Listings</Typography>
                     <Card>
                         {this.state.currentListings.map((item) => (
                             <div>
