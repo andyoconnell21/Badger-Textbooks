@@ -8,199 +8,138 @@
     Dependencies: Firebase must return a collection of listing documents for the specific user
  */
 //
-import React, {useState, useEffect} from 'react';
-import 'firebase/firestore';
 import firebase from 'firebase/app';
-import ListingItem from "./ListingItem";
-import history from '../history';
-//import {Button, Nav, NavItem, Navbar, NavLink} from 'react-bootstrap';
-// import {Button} from "@material-ui/core";
-import * as listings from "@firebase/util";
-//
-// class MyListings extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             title: "A Game of Thrones Leather-Cloth Boxed Set",
-//             image: "https://im1.book.com.tw/image/getImage?i=https://www.books.com.tw/img/F01/352/46/F013524602.jpg&v=5dc43dc7&w=348&h=348",
-//             author: 'George R. R. Martin',
-//             ISBN: 9781101965481,
-//             desired_price: 60.00,
-//             condition:'brand-new',
-//             class_used: 'lit 312'
-//         }
-//     }
-//
-//     // key: 0,
-//     // seller: '';
-//     // image: '';
-//     // title: '',
-//     // author: '',
-//     // ISBN: '',
-//     // desired_price: 0,
-//     // condition: 'brand-new'
-//
-//
-//     componentDidMount() {
-//         document.body.style.backgroundColor = '#494949'
-//
-//         //Adds current listing items to an array
-//         var tempListingItems = [];
-//
-//         firebase.firestore().collection("listings").get().then((querySnapshot) => {
-//             querySnapshot.forEach((doc) => {
-//                 var gather = [doc.id, doc.data(), false]
-//                 tempListingItems.push(gather)
-//             });
-//             this.setState({
-//                 listings: tempListingItems
-//             });
-//         });
-//
-//     }
-//
-//     render() {
-//         return (
-//                 <div className="item_listing">
-//                     <h1>{listings}></h1>
-//
-//
-//                 </div>
-//         )
-//     }
-// }
-// export default MyListings
+import 'firebase/firestore';
+import 'firebase/auth';
 
-//     <ListingItem key={item.seller}
-//         seller={item.seller}
-//         image={item.image}
-//         title={item.title}
-//         author={item.author}
-//         ISBN={item.ISBN}
-//         desired_price={item.desired_price}
-//         condition={item.condition}
-//     />
-// ))}
-//
-//
-//
-// // const db = firebase.firestore();
-// // let goToCreate = (event) => {
-// //     window.location.href = '/createnewlistings'
-// // }
-function MyListings() {
+import { withStyles } from '@material-ui/core/styles';
+import React from "react";
 
+import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
-    const [items, setListings] = useState([
-            {
-                seller: "badger",
-                image: "https://im1.book.com.tw/image/getImage?i=https://www.books.com.tw/img/F01/352/46/F013524602.jpg&v=5dc43dc7&w=348&h=348",
-                title: "A Game of Thrones Leather-Cloth Boxed Set",
-                author: 'George R. R. Martin',
-                ISBN: 9781101965481,
-                desired_price: 60.00,
-                condition: "brand-new"
-            },
-            {
-                seller: "badger",
-                image: "https://smartbaroda.com/wp-content/uploads/2020/05/Harry-Potter-book-set-2.jpg",
-                title: "Harry Potter Book Set",
-                author: 'JK Rowling',
-                ISBN: 9780545010221,
-                desired_price: 30.00,
-                condition: "brand-new",
-            },
-            {
-                seller: "badger",
-                image: "https://1.bp.blogspot.com/-vK3WLD_h-9Y/XU7USszN0OI/AAAAAAAAKFE/_4d_HtEktjkhqOZXZl31k_4YGDBxBnWlQCEwYBhgL/s400/thumbnail_20190805_085314.jpg",
-                title: "Codename Villanelle",
-                author: 'Luke Jennings',
-                ISBN: 9781473666412,
-                desired_price: 7.00,
-                condition: "brand-new"
-            },
-            {
-                seller: "badger",
-                image: "https://i5.walmartimages.com/asr/d1425bba-18c3-45b1-871f-6fc06e0ff6b7_1.d59864698b8bc44a8ffcccabf2d05d40.jpeg?odnWidth=1000&odnHeight=1000&odnBg=ffffff",
-                title: "The Tattooist of Auschwitz",
-                author: 'Heather Morris',
-                ISBN: 9781760403171,
-                desired_price: 5.00,
-                condition: "brand-new"
-            },
-        ]
-    );
-// class MyListings extends React.Component {
-//
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             title: '',
-//             author: '',
-//             ISBN: 0,
-//             price: 0,
-//             condition:'brand-new',
-//             class_used: '',
-//         }
-//         this.handleLogout = this.handleLogout.bind(this);
-//     }
+import HomeIcon from '@material-ui/icons/Home';
+import MenuIcon from '@material-ui/icons/Menu';
+import AddIcon from '@material-ui/icons/Add';
+import MyListingsIcon from '@material-ui/icons/ListAlt';
+import AccountIcon from '@material-ui/icons/AccountCircle';
+import SavedIcon from '@material-ui/icons/Favorite';
 
-    // fetchListings = async() => {
-    //     const response=db.collection('listings');
-    //     const data=await response.get();
-    //
+class MyListings extends ReactComponent {
+    constructor(props) {
+        super(props)
+        this.state = {
+            currentListings: [],
+            menuOpen: false
+        }
+    }
 
-    // handleLogout() {
-    //     firebase.auth().signOut().then(() => {
-    //         //Sign-out successful.
-    //     }).catch((error) => {
-    //         //An error happened.
-    //     });
-    //     window.location.href = '/'
-    // }
-    //
-    // render() {
-    return (
-//             <div>
-//             {/*    <Navbar>*/}
-//             {/*        <Navbar.Header>*/}
-//             {/*            <a href="/">BadgerTextbooks</a>*/}
-//             {/*        </Navbar.Header>*/}
-//             {/*        <Navbar.Body>*/}
-//             {/*            <Nav>*/}
-//             {/*                <NavItem>*/}
-//             {/*                    <NavLink href="/home">Home</NavLink>*/}
-//             {/*            </NavItem>*/}
-//             {/*            <NavItem>*/}
-//             {/*                <NavLink href="/mylistings">MyListings</NavLink>*/}
-//             {/*            </NavItem>*/}
-//             {/*            <Nav.Item>*/}
-//             {/*                <button onClick={this.handleLogout}>Logout</button>*/}
-//             {/*            </Nav.Item>*/}
-//             {/*        </Nav>*/}
-//             {/*    </Navbar.Body>*/}
-//             {/*</Navbar>*/}
-        <div>
-            <div className="item_listing">
-                {items.map(item => (
-                    <ListingItem key={item.seller}
-                                 seller={item.seller}
-                                 image={item.image}
-                                 title={item.title}
-                                 author={item.author}
-                                 ISBN={item.ISBN}
-                                 desired_price={item.desired_price}
-                                 condition={item.condition}
-                    />
-                ))}
+    toggleMenu = (event) => {
+        var curr_state = this.state.menuOpen;
+        this.setState({
+            menuOpen: !curr_state
+        });
+    }
+
+    componentDidMount() {
+        var status = localStorage.getItem('userStatues');
+        if (status == 'invalid') {
+            window.location.href = '/';
+        }
+
+        var tempListings = [];
+
+        firebase.firestore().collection("listsings").where("owner", "==", firebase.auth().currentUser).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var gather = [doc.id, doc.data(), false];
+                tempListings.push(gather);
+            });
+            this.setState({
+                currentListings: tempListings
+            });
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+                    <List>
+                        <ListItem button key="home_nav" onClick={() => { window.location.href = "/home"; }}>
+                            <ListItemIcon><HomeIcon /></ListItemIcon>
+                            <ListItemText primary="Home" />
+                        </ListItem>
+                        <Divider />
+                        <ListItem button key="create_listing_nav" onClick={() => { window.location.href = "/createnewlisting"; }}>
+                            <ListItemIcon><AddIcon /></ListItemIcon>
+                            <ListItemText primary="Create a New Listing" />
+                        </ListItem>
+                        <Divider />
+                        <ListItem button key="my_listings_nav" onClick={() => { window.location.href = "/mylistings"; }}>
+                            <ListItemIcon><MyListingsIcon /></ListItemIcon>
+                            <ListItemText primary="My Listings" />
+                        </ListItem>
+                        <Divider />
+                        <ListItem button key="saved_listings_nav" disabled>
+                            <ListItemIcon><SavedIcon /></ListItemIcon>
+                            <ListItemText primary="Saved Listings" />
+                        </ListItem>
+                        <Divider />
+                        <ListItem button key="account_nav" disabled>
+                            <ListItemIcon><AccountIcon /></ListItemIcon>
+                            <ListItemText primary="Account" />
+                        </ListItem>
+                    </List>
+                </Drawer>
+                <Container>
+                    <Typography variant='h3' style={{ margin: "10px" }}>Recent Listings</Typography>
+                    <Card>
+                        {this.state.currentListings.map((item) => (
+                            <div>
+                                <Grid container spacing="3" style={{ margin: "10px" }}>
+                                    <Grid item xs>
+                                        <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover" />
+                                    </Grid>
+                                    <Grid item xs >
+                                        Title: {item[dataIndex].title}
+                                    </Grid>
+                                    <Grid item xs>
+                                        Author: {item[dataIndex].author}
+                                    </Grid>
+                                    <Grid item xs>
+                                        Price: ${item[dataIndex].price}
+                                    </Grid>
+                                    <Grid item xs >
+                                        <Button style={{ backgroundColor: '#c5050c' }} onClick={() => {
+                                            sessionStorage.setItem('currentListing', item[idIndex]);
+                                            console.log(sessionStorage.getItem('currentListing'));
+                                            window.location.href = "/listing";
+                                        }}>
+                                            Details
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Divider />
+                            </div>
+                        ))}
+                    </Card>
+                </Container>
             </div>
-            <button className="add-button"> Create new Listings</button>
-        </div>
-
-
-    );
+        )
+    }
 
 }
+
+
 
 export default MyListings
 
