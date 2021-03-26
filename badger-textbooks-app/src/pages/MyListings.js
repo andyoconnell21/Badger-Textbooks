@@ -64,11 +64,12 @@ class MyListings extends React.Component {
             window.location.href = '/';
         }
         
-        this.state.currentUser = firebase.auth().currentUser.email;
+        let currentUser = firebase.auth().currentUser.email;
+        this.state.currentUser = currentUser;
         
         var tempListings = [];
 
-        firebase.firestore().collection("listings").where("owner", "==", this.state.currentUser).get().then((querySnapshot) => {
+        firebase.firestore().collection("listings").where("owner", "==", currentUser).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var gather = [doc.id, doc.data(), false];
                 tempListings.push(gather);
