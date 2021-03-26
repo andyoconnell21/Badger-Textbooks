@@ -51,8 +51,6 @@ class MyListings extends React.Component {
         }
     }
 
-    
-
     toggleMenu = (event) => {
         var curr_state = this.state.menuOpen;
         this.setState({
@@ -62,9 +60,11 @@ class MyListings extends React.Component {
 
     componentDidMount() {
         firebase.auth().onAuthStateChanged(function(user) {
-            if (!user) {
-              //User is not siged in...redirect to login page
-              window.location.href = "/";
+            if (user != null && user !== undefined) {
+                this.state.currentUser = user.email;
+              
+            } else {
+                window.location.href = "/";
             }
           }); 
 
@@ -74,9 +74,6 @@ class MyListings extends React.Component {
         }
         
         document.body.style.backgroundColor = '#dadfe1';
-
-        var currentUser = localStorage.getItem('currentUser')
-        this.state.currentUser = currentUser.email;
 
         var tempListings = [];
 
