@@ -59,11 +59,25 @@ class MyListings extends React.Component {
         if (status == 'invalid') {
             window.location.href = '/';
         }
-
-        let currentUser = firebase.auth().currentUser;
+        
+        let currentUser = null;
+        
+        var user = firebase.auth().currentUser;
+        
+        if (user) {
+            currentUser = firebase.auth().currentUser.email;
+        }
+        else {
+            window.location.href = '/';
+        }
+        
+        if (!currentUser) {
+            window.location.href = '/';
+        }
+        
         var tempListings = [];
 
-        firebase.firestore().collection("listings").where("owner", "==", currentUser.toString()).get().then((querySnapshot) => {
+        firebase.firestore().collection("listings").where("owner", "==", currentUser).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var gather = [doc.id, doc.data(), false];
                 tempListings.push(gather);
