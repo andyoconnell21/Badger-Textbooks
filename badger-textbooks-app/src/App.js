@@ -12,6 +12,7 @@ import {
   Container,
 } from "@material-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateAccount from "./pages/CreateAccount"
 import Home from "./pages/Home"
 import Login from "./Login"
@@ -42,14 +43,14 @@ function deleteMessage(self) {
   firebase.database().ref("messages").child(messageId).remove();
 }
 
-function sendMessage() {
-  var message = document.getElementById("message").value;
-  firebase.database().ref("messages").push().set({
-    "message": message,
-    "sender": myName
-  });
-  return false;
-}
+// function sendMessage() {
+//   var message = document.getElementById("message").value;
+//   firebase.database().ref("messages").push().set({
+//     "message": message,
+//     "sender": myName
+//   });
+//   return false;
+// }
 
 class App extends React.Component {
 

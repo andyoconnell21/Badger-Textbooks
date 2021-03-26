@@ -39,53 +39,71 @@
 }
 
 .item_listing{
+  height: calc(100% - 15px);
+  margin-bottom: 15px;
   background: white;
   font-size: 12px;
   border-radius: 30px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-start;
+  flex-direction: row;
+  /*align-items: flex-start;*/
   text-align:left;
+  margin-left: 12px;
+  margin-right: 12px;
+
+  /*column-count: 3;*/
 
 
 }
 .item-image {
-  border: 5px solid #bc5a45;
-  padding: 40px;
-  width:  200px;
-  height: 200px;
+  /*border: 5px solid #c5050c;*/
+  padding: 50px;
+  width:  600px;
+  height: 250px;
 }
 /*button for check it out and add to fav*/
 .box{
   width: 300px;
   font-size: 12px;
-  border: 10px solid #9B0000;
+  border: 10px solid #c5050c;
   padding: 40px;
   margin: 20px;
 }
-.edit-button{
-  color: black;
-  font-size: 20px;
-  border: 2px solid black;
-  float: right;
+.add-button{
+  color: white;
+  font-size: 18px;
+  border: 0;
+  float: bottom;
   padding: 13px 30px;
   text-align: center;
+  background-color: #c5050c;
+  border-radius: 4px;
 }
-.grid{
-  display: grid;
-  margin:auto;/* nice thing of auto margin if display:flex; it center both horizontal and vertical :) */
 
+.check-it-button{
+  color: white;
+  font-size: 12px;
+  border: 0;
+  float: bottom;
+  padding: 13px 30px;
+  text-align: center;
+  background-color: #282c34;
+  border-radius: 4px;
 }
-.grid-container{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+
+.grid {
+  margin: auto; /* nice thing of auto margin if display:flex; it center both horizontal and vertical :) */
 }
+
+/*}*/
+/*.grid-container{*/
+/*  display: grid;*/
+/*  grid-template-columns: 1fr 1fr;*/
+/*}*/
 .form-box {
   font-size: 12px;
   height:100vh;
   width: fit-content;
-  background-color: #F7EFE7;
   margin:auto;/* nice thing of auto margin if display:flex; it center both horizontal and vertical :) */
   padding: 100px; /*makes it look neat*/
   text-align: left;
