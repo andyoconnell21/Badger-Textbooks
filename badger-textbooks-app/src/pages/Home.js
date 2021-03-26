@@ -22,6 +22,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Box from '@material-ui/core/Box';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
 import SearchIcon from '@material-ui/icons/Search';
@@ -134,7 +135,7 @@ class Home extends React.Component {
     document.body.style.backgroundColor = '#dadfe1';
 
     var tempListings = []
-    firebase.firestore().collection("listings").orderBy("time_created").limit(10).get().then((querySnapshot) => {
+    firebase.firestore().collection("listings").orderBy("time_created", "desc").limit(10).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             var gather = [doc.id, doc.data()]
             tempListings.push(gather)
@@ -238,12 +239,12 @@ class Home extends React.Component {
                 <ListItemText primary="My Listings" />
               </ListItem>
               <Divider/>
-              <ListItem button key="saved_listings_nav">
+              <ListItem button key="saved_listings_nav" disabled>
                 <ListItemIcon><SavedIcon/></ListItemIcon>
                 <ListItemText primary="Saved Listings" />
               </ListItem>
               <Divider/>
-              <ListItem button key="account_nav">
+              <ListItem button key="account_nav" disabled>
                 <ListItemIcon><AccountIcon/></ListItemIcon>
                 <ListItemText primary="Account" />
               </ListItem>
@@ -258,7 +259,7 @@ class Home extends React.Component {
                 <Grid container spacing="3" style={{margin: "10px"}}>
                   <Grid item xs>
                     <CardMedia>
-                      <img src={item[dataIndex].image_url} alt="Textbook Cover" width="50" height="60"/>
+                      <img src={item[dataIndex].image_url} alt="Cover Unavailable" width="50" height="60"/>
                     </CardMedia>
                   </Grid>
                   <Grid item xs>

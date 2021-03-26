@@ -63,7 +63,7 @@ class Listings extends React.Component {
             class: data.class,
             owner: data.owner,
             price: data.price,
-            date: data.time_created.toDate(),
+            date: data.time_created,
             title: data.title,
             condition: data.condition,
             image: data.image_url,
@@ -115,12 +115,12 @@ class Listings extends React.Component {
                 <ListItemText primary="My Listings" />
               </ListItem>
               <Divider/>
-              <ListItem button key="saved_listings_nav">
+              <ListItem button key="saved_listings_nav" disabled>
                 <ListItemIcon><SavedIcon/></ListItemIcon>
                 <ListItemText primary="Saved Listings" />
               </ListItem>
               <Divider/>
-              <ListItem button key="account_nav">
+              <ListItem button key="account_nav" disabled>
                 <ListItemIcon><AccountIcon/></ListItemIcon>
                 <ListItemText primary="Account" />
               </ListItem>
