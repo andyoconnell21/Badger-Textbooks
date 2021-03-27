@@ -41,6 +41,5 @@ describe("Render Testing of Create Account Page", () =>{
     expect(createAccountText).toBeInTheDocument();
   })
 })
-  
-  
+ 
 });
