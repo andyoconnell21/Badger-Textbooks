@@ -51,32 +51,6 @@ export class CreateNewListing extends Component {
           }
         }); 
     }
-    
-    //HANDLESUBMIT NOW ADDS LISTING TO DATABASE. FUNCTION DEPRECATED.
-    // addListingItem = (event) => {
-    //     event.preventDefault();
-    //     const db = firebase.firestore();
-    //     db.settings({
-    //         timestampsInSnapshots: true
-    //     });
-    //     const userRef = db.collection('listings').add({
-    //         title: this.state.title,
-    //         author: this.state.author,
-    //         ISBN: this.state.ISBN,
-    //         price: this.state.price,
-    //         condition: this.state.condition,
-    //         class_used: this.state.class_used,
-    //     });
-    //     this.setState({
-    //         title: '',
-    //         author: '',
-    //         ISBN: 0,
-    //         price: 0,
-    //         condition: 'brand-new',
-    //         class_used: '',
-    //         menuOpen: false
-    //     });
-    // };
 
     toggleMenu = (event) => {
         var curr_state = this.state.menuOpen;
@@ -100,10 +74,12 @@ export class CreateNewListing extends Component {
             firebase.firestore().collection('listings').add({
                 ISBN: this.state.ISBN,
                 author: this.state.author,
-                class: this.state.class_used,
+                search_author: this.state.author.toLowerCase(),
+                class: this.state.class_used.toLowerCase(),
                 condition: this.state.condition,
                 price: this.state.price,
                 title: this.state.title,
+                search_title: this.state.title.toLowerCase(),
                 owner: user_email,
                 time_created: date,
                 image_url: this.state.imageURL

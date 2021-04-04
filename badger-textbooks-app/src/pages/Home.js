@@ -2,18 +2,17 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-import { withStyles } from '@material-ui/core/styles';
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
-import CardMedia from '@material-ui/core/CardMedia';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -23,7 +22,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -32,83 +32,10 @@ import AddIcon from '@material-ui/icons/Add';
 import MyListingsIcon from '@material-ui/icons/ListAlt';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import SavedIcon from '@material-ui/icons/Favorite';
+import BackIcon from '@material-ui/icons/ArrowBackIos';
 
 const idIndex = 0;
 const dataIndex = 1;
-
-const styles = theme => ({
-  root: {
-  width: "100%",
-  minWidth: 1080
-  },
-  menu: {
-  marginTop: 15,
-  marginBottom: 15,
-  display: 'flex',
-  justifyContent: 'center'
-  },
-  paper: {
-  marginLeft: 18,
-  marginRight: 18
-  },
-  progress: {
-  margin: theme.spacing.unit * 2
-  },
-  grow: {
-  flexGrow: 1,
-  },
-  menuButton: {
-  marginLeft: -12,
-  marginRight: 20,
-  },
-  title: {
-  display: 'none',
-  [theme.breakpoints.up('sm')]: {
-  display: 'block',
-  },
-  },
-  search: {
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: fade(theme.palette.common.white, 0.15),
-  '&:hover': {
-  backgroundColor: fade(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-  marginLeft: theme.spacing.unit,
-  width: 'auto',
-  },
-  },
-  searchIcon: {
-    width: theme.spacing.unit * 9,
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    },
-  inputRoot: {
-  color: 'inherit',
-  width: '50%',
-  },
-  inputInput: {
-  paddingTop: theme.spacing.unit,
-  paddingRight: theme.spacing.unit,
-  paddingBottom: theme.spacing.unit,
-  paddingLeft: theme.spacing.unit * 10,
-  transition: theme.transitions.create('width'),
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-  width: 120,
-  '&:focus': {
-  width: 200,
-  },
-  },
-  }
-  });
   
 class Home extends React.Component {
 
@@ -116,8 +43,11 @@ class Home extends React.Component {
     super(props)
     this.state = {
       listings: [],
+      searchActive: false,
+      defaultDisplay: 'block',
+      searchDisplay: 'none',
       searchValue: "",
-      searchFilter: "title",
+      searchFilter: "search_title",
       searchResults: [],
       searchHidden: true,
       menuOpen: false
@@ -147,10 +77,28 @@ class Home extends React.Component {
   }
 
   toggleMenu = (event) => {
-      var curr_state = this.state.menuOpen;
+    var curr_state = this.state.menuOpen;
+    this.setState({
+      menuOpen: !curr_state
+    });
+  }
+
+  toggleActiveSearch = (event) => {
+    var curr_state = this.state.searchActive;
+    if (curr_state) {
       this.setState({
-        menuOpen: !curr_state
+        searchActive: !curr_state,
+        defaultDisplay: 'block',
+        searchDisplay: 'none'
       });
+    } else {
+      this.setState({
+        searchActive: !curr_state,
+        defaultDisplay: 'none',
+        searchDisplay: 'block'
+      });
+    }
+
   }
   
   updateSearchFilter = (event) => {
@@ -175,7 +123,7 @@ class Home extends React.Component {
 
   initSearch = (event) => {
     var tempResults = []
-    firebase.firestore().collection("listings").where(this.state.searchFilter, "==", this.state.searchValue).get().then((querySnapshot) => {
+    firebase.firestore().collection("listings").where(this.state.searchFilter, "==", this.state.searchValue.toLowerCase()).get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
           var gather = [doc.id, doc.data()]
           tempResults.push(gather)
@@ -188,42 +136,75 @@ class Home extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-
     return (
       <div>
         <AppBar style ={{ background:'#c5050c' }} position="static">
           <Toolbar>
-            <IconButton onClick={this.toggleMenu}> 
-              <MenuIcon/>
-            </IconButton>
-            <Typography style={{marginInline: "10px"}}>Search Listings By...</Typography>
-            <Select
-              style={{width: "10%", marginInline: "10px", background: "#ed666a"}}
-              labelId="filter-select-label"
-              variant="outlined"
-              value={this.state.searchFilter}
-              onChange={this.updateSearchFilter}
-            >
-              <MenuItem value={"title"}>Title</MenuItem>
-              <MenuItem value={"author"}>Author</MenuItem>
-              <MenuItem value={"class"}>Class</MenuItem>
-            </Select>
-            <Card style={{width: "50%"}}>
-              <TextField
-                placeholder="Search..."
-                variant='outlined'
-                fullWidth
-                value={this.state.searchValue}
-                onChange={this.updateSearchValue}
-              />
-            </Card>
-            <IconButton onClick={this.clearSearchValue}> 
-              <ClearIcon/>
-            </IconButton>
-            <IconButton onClick={this.initSearch}> 
-              <SearchIcon />
-            </IconButton>
+            <Box hidden={this.state.searchActive}>
+              <IconButton onClick={this.toggleMenu}> 
+                <MenuIcon/>
+              </IconButton>
+            </Box>
+
+            <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
+              <Typography variant="h3" fullWidth>
+                Badger-Textbooks
+              </Typography>
+            </Box>
+
+            <Box hidden={this.state.searchActive}>
+              <IconButton onClick={this.toggleActiveSearch}> 
+                <SearchIcon/>
+              </IconButton>
+            </Box>
+
+            <Box hidden={!this.state.searchActive}>
+              <IconButton onClick={this.toggleActiveSearch}> 
+                <BackIcon/>
+              </IconButton>
+            </Box>
+
+            <Box hidden={!this.state.searchActive} style={{marginRight: "10px", width: "10%"}}>
+              <FormControl style={{width: '100%'}}>
+                <InputLabel id="filter-select-label" style={{marginLeft: "2px"}}>Search by...</InputLabel>
+                <Select
+                  style={{width: "100%"}}
+                  labelId="filter-select-label"
+                  variant="outlined"
+                  value={this.state.searchFilter}
+                  onChange={this.updateSearchFilter}
+                >
+                  <MenuItem value={"search_title"}>Title</MenuItem>
+                  <MenuItem value={"search_author"}>Author</MenuItem>
+                  <MenuItem value={"class"}>Class</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Box hidden={!this.state.searchActive} style={{flexGrow: 1}}>
+              <Card fullWidth>
+                <TextField
+                  placeholder="Search..."
+                  variant='outlined'
+                  fullWidth
+                  value={this.state.searchValue}
+                  onChange={this.updateSearchValue}
+                />
+              </Card>
+            </Box>
+
+            <Box hidden={!this.state.searchActive}>
+              <IconButton onClick={this.clearSearchValue}> 
+                <ClearIcon/>
+              </IconButton>
+            </Box>
+
+            <Box hidden={!this.state.searchActive}>
+              <IconButton onClick={this.initSearch} hidden={true}> 
+                <SearchIcon />
+              </IconButton>
+            </Box>
+
           </Toolbar>
         </AppBar>
 
@@ -251,82 +232,130 @@ class Home extends React.Component {
           </List>
         </Drawer>
 
-        <Container maxWidth='lg'>
-          <Typography variant='h3' hidden={this.state.searchHidden} style={{ margin: "10px"}}>Search Results</Typography>
-          <Card>
+        <Box style={{display: this.state.searchDisplay, margin:'20px'}}>
+          <Typography variant='h4' color="textSecondary" style={{ margin: "10px"}}>
+            Results ({this.state.searchResults.length})
+          </Typography>
+          <Grid container spacing="3">
             {this.state.searchResults.map((item) => (
-              <div>
-                <Grid container spacing="3" style={{margin: "10px"}}>
-                  <Grid item xs>
-                    <CardMedia>
-                      <img src={item[dataIndex].image_url} alt="Cover Unavailable" width="50" height="60"/>
-                    </CardMedia>
-                  </Grid>
-                  <Grid item xs>
-                      Title: {item[dataIndex].title}
-                  </Grid>
-                  <Grid item xs>
-                      Author: {item[dataIndex].author}
-                  </Grid>
-                  <Grid item xs>
-                      Price: ${item[dataIndex].price}
-                  </Grid>
-                  <Grid item xs>
-                      Seller: {item[dataIndex].owner}
-                  </Grid>
-                  <Grid item xs >
-                    <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
+              <Grid item>
+                <Card style={{width: "300px"}}>
+                  <CardContent>
+                    <Grid container>
+                      <Grid item>
+                        <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover"/>
+                      </Grid>
+                      <Grid item xs >
+                        <Typography variant='h6'>
+                          {item[dataIndex].title}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                    <Grid container>
+                      <Grid item xs>
+                        <Typography color="textSecondary" style={{}}>
+                          Price:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs>
+                        <Typography color="textSecondary">
+                          ${item[dataIndex].price}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item xs>
+                        <Typography color="textSecondary">
+                          Seller:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs>
+                        <Typography color="textSecondary">
+                          {item[dataIndex].owner}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                
+                  <CardActions>
+                    <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
                       sessionStorage.setItem('currentListing', item[idIndex]);
                       console.log(sessionStorage.getItem('currentListing'));
                       window.location.href = "/listing";
                     }}>
-                      Details 
+                      See Details 
                     </Button>
-                  </Grid>
-                </Grid>
-                <Divider/>
-              </div>
+                  </CardActions>
+                </Card>
+              </Grid>
             ))}
-          </Card>
+          </Grid>
+        </Box>
 
-          <Typography variant='h3' style={{ margin: "10px"}}>Recent Listings</Typography>
-          <Card>
+        <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
+          <Typography variant='h4' style={{ margin: "10px"}}>
+            Check out these recent listings...
+          </Typography>
+          <Grid container spacing="3">
             {this.state.listings.map((item) => (
-              <div>
-                <Grid container spacing= "3" style={{margin: "10px"}}>
-                  <Grid item xs>
-                    <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover"/>
-                  </Grid>
-                  <Grid item xs >
-                      Title: {item[dataIndex].title}
-                  </Grid>
-                  <Grid item xs>
-                      Author: {item[dataIndex].author}
-                  </Grid>
-                  <Grid item xs>
-                      Price: ${item[dataIndex].price}
-                  </Grid>
-                  <Grid item xs>
-                      Seller: {item[dataIndex].owner}
-                  </Grid>
-                  <Grid item xs >
-                    <Button style = {{backgroundColor: '#c5050c'}} onClick={() => {
+              <Grid item>
+                <Card style={{width: "300px"}}>
+                  <CardContent>
+                    <Grid container>
+                      <Grid item>
+                        <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover"/>
+                      </Grid>
+                      <Grid item xs >
+                        <Typography variant='h6'>
+                          {item[dataIndex].title}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                    <Grid container>
+                      <Grid item xs>
+                        <Typography color="textSecondary" style={{}}>
+                          Price:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs>
+                        <Typography color="textSecondary">
+                          ${item[dataIndex].price}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item xs>
+                        <Typography color="textSecondary">
+                          Seller:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs>
+                        <Typography color="textSecondary">
+                          {item[dataIndex].owner}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                
+                  <CardActions>
+                    <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
                       sessionStorage.setItem('currentListing', item[idIndex]);
                       console.log(sessionStorage.getItem('currentListing'));
                       window.location.href = "/listing";
                     }}>
-                      Details 
+                      See Details 
                     </Button>
-                  </Grid>
-                </Grid>
-                <Divider/>
-              </div>
+                  </CardActions>
+                </Card>
+              </Grid>
             ))}
-          </Card>
-        </Container>
+          </Grid>
+        </Box>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(Home);
+export default Home;
