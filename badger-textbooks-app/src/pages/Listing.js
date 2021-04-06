@@ -163,6 +163,7 @@ class Listings extends React.Component {
             fontSize: '18px'}} 
             onClick={() => {
               sessionStorage.setItem("receiverEmail", this.state.owner);
+              sessionStorage.setItem("returnLocation", "/listing");
               window.location.href = "/testChatPage";
             }}>
             Chat with Seller! 

@@ -87,7 +87,7 @@ class TestChat extends React.Component {
                 return new Date(a.date) - new Date(b.date);
             }); 
             this.setState({ messages: tempMessages });
-          })
+        });
     });
   }
 
@@ -97,7 +97,7 @@ class TestChat extends React.Component {
             <AppBar position='static'>
                 <Toolbar>
                     <IconButton
-                        onClick={() => { window.location.href = "/listing"; }}
+                        onClick={() => { window.location.href = sessionStorage.getItem("returnLocation"); }}
                     >
                         <BackIcon/>
                     </IconButton>

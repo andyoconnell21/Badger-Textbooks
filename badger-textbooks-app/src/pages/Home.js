@@ -33,6 +33,7 @@ import MyListingsIcon from '@material-ui/icons/ListAlt';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import SavedIcon from '@material-ui/icons/Favorite';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
+import ChatIcon from '@material-ui/icons/Chat';
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -218,6 +219,11 @@ class Home extends React.Component {
               <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
                 <ListItemIcon><MyListingsIcon/></ListItemIcon>
                 <ListItemText primary="My Listings" />
+              </ListItem>
+              <Divider/>
+              <ListItem button key="chat_list_nav" onClick={() => {window.location.href = "/chatlistpage";}}>
+                <ListItemIcon><ChatIcon/></ListItemIcon>
+                <ListItemText primary="My Conversations" />
               </ListItem>
               <Divider/>
               <ListItem button key="saved_listings_nav" disabled>
