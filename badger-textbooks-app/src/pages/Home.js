@@ -175,8 +175,8 @@ class Home extends React.Component {
                   value={this.state.searchFilter}
                   onChange={this.updateSearchFilter}
                 >
-                  <MenuItem value={"search_title"}>Title</MenuItem>
-                  <MenuItem value={"search_author"}>Author</MenuItem>
+                  <MenuItem value={"title"}>Title</MenuItem>
+                  <MenuItem value={"author"}>Author</MenuItem>
                   <MenuItem value={"class"}>Class</MenuItem>
                 </Select>
               </FormControl>
