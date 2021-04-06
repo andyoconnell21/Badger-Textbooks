@@ -297,25 +297,27 @@ class Home extends React.Component {
           <Typography variant='h4' style={{ margin: "10px"}}>
             Check out these recent listings...
           </Typography>
-          <Grid container spacing="3">
+          <Grid container spacing="3" justify='center'>
             {this.state.listings.map((item) => (
               <Grid item>
                 <Card style={{width: "300px"}}>
                   <CardContent>
-                    <Grid container>
+                    <Grid container style={{height: '60px'}}>
                       <Grid item>
-                        <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover"/>
+                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
                       </Grid>
-                      <Grid item xs >
-                        <Typography variant='h6'>
-                          {item[dataIndex].title}
-                        </Typography>
+                      <Grid item xs>
+                        <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
+                          <Typography variant='h6'>
+                            {item[dataIndex].title}
+                          </Typography>
+                        </div>
                       </Grid>
                     </Grid>
                     <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
                     <Grid container>
                       <Grid item xs>
-                        <Typography color="textSecondary" style={{}}>
+                        <Typography color="textSecondary" style={{left: 0}}>
                           Price:
                         </Typography>
                       </Grid>
