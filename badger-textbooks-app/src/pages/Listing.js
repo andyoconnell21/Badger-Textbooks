@@ -72,11 +72,6 @@ class Listings extends React.Component {
         })
     }
 
-    //Implement message system
-    contactSeller = (event) => {
-      
-    }
-
     toggleMenu = (event) => {
       var curr_state = this.state.menuOpen;
       this.setState({
@@ -152,7 +147,26 @@ class Listings extends React.Component {
             </Typography>
           </AccordionDetails>
         </Accordion>
-        <Button onClick={this.contactSeller} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '25%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Contact Seller</Button>
+        
+        <Button 
+          fullWidth 
+          style={{
+            marginTop: "10px", 
+            marginBottom: '10px', 
+            border: '0', 
+            backgroundColor: '#c5050c', 
+            width: '25%', 
+            marginRight: '25%', 
+            marginLeft: '25%', 
+            cursor: 'pointer', 
+            color: 'white', 
+            fontSize: '18px'}} 
+            onClick={() => {
+              sessionStorage.setItem("receiverEmail", this.state.owner);
+              window.location.href = "/testChatPage";
+            }}>
+            Chat with Seller! 
+          </Button>
       </div>
      )
   }
