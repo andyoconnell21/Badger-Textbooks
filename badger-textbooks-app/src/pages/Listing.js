@@ -174,6 +174,44 @@ class Listings extends React.Component {
                   </Typography>
                 </AccordionDetails>
               </Accordion>
+                <Button
+                    fullWidth
+                    style={{
+                        marginTop: "10px",
+                        marginBottom: '10px',
+                        border: '0',
+                        backgroundColor: '#c5050c',
+                        width: '25%',
+                        marginRight: '25%',
+                        marginLeft: '25%',
+                        cursor: 'pointer',
+                        color: 'white',
+                        fontSize: '18px'
+                    }}
+                    onClick={() => {
+                        var documentId = sessionStorage.getItem('currentListing')
+                        sessionStorage.setItem('currentListing',documentId);
+                        window.location.href = "/editlisting";
+                    }}>
+                    Edit Listing
+                </Button>
+                <Button
+                    fullWidth
+                    style={{
+                        marginTop: "10px",
+                        marginBottom: '10px',
+                        border: '0',
+                        backgroundColor: '#c5050c',
+                        width: '25%',
+                        marginRight: '25%',
+                        marginLeft: '25%',
+                        cursor: 'pointer',
+                        color: 'white',
+                        fontSize: '18px'
+                    }}
+                >
+                    Remove Listing
+                </Button>
               <Button 
                 fullWidth 
                 style={{
