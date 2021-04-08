@@ -61,6 +61,8 @@ class App extends React.Component {
               <Route path="/chatPage" exact component={() => <chatPage/>} />
               <Route path="/testChatPage" exact component={() => <TestChatPage/>}/>
               <Route path="/chatlistpage" exact component={() => <ChatListPage/>}/>
+              <Route path="/editlisting" exact component={() => <EditListing/>}/>
+
             </Switch>
           </Router>
         </div>
