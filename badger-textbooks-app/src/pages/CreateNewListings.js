@@ -215,6 +215,7 @@ export class CreateNewListing extends Component {
                     <div>
                         <label>Book Title*: </label>
                         <input className="w3-input w3-hover-light-gray"
+                            title='titleInput'
                             type='text'
                             size="sm"
                             value={title}
@@ -224,6 +225,7 @@ export class CreateNewListing extends Component {
                     <div>
                         <label>Author*: </label>
                         <input className="w3-input w3-hover-light-gray"
+                            title='authorInput'
                             size="sm"
                             type='text'
                             value={author}
@@ -233,6 +235,7 @@ export class CreateNewListing extends Component {
                     <div>
                         <label>ISBN: </label>
                         <input className="w3-input w3-hover-light-gray"
+                            title='isbnInput'
                             type='text'
                             value={ISBN}
                             pattern="[0-9]+"
@@ -242,6 +245,7 @@ export class CreateNewListing extends Component {
                     <div>
                         <label>Desired Price: </label>
                         <input className="w3-input w3-hover-light-gray"
+                            title='priceInput'
                             type='number'
                             value={price}
                             onChange={this.handlePriceChange}
@@ -250,6 +254,7 @@ export class CreateNewListing extends Component {
                     <div>
                         <label>Class Used For*: </label>
                         <input className="w3-input w3-hover-light-gray"
+                            title='classInput'
                             type='text'
                             value={class_used}
                             onChange={this.handleClassChange}
@@ -258,6 +263,7 @@ export class CreateNewListing extends Component {
                     <div>
                         <label>Condition: </label>
                         <select className="w3-input w3-hover-light-gray"
+                                title='conditionInput'
                                 value={condition}
                                 onChange={this.handleConditionChange}>
                             <option value='Brand-new'>Brand new</option>
