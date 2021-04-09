@@ -76,6 +76,10 @@ class Login extends React.Component{
             if(this.state.verified == false){
               window.location.href = '/home'
             }
+            //set info in localstorage
+            localStorage.setItem('email', this.state.email);
+            localStorage.setItem('password', this.state.password);
+            localStorage.setItem('userStatus', 'customer');
           })
           .catch((error) => {
             //Wrong Account Information
