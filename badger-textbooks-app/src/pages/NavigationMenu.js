@@ -49,7 +49,7 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="My Listings" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="chat_list_nav" title="chat_nav_btn" selected={this.state.pageName === "/chatlistpage"} onClick={() => this.handleClick("/chatlistpage")}>
+                    <ListItem button key="chat_list_nav" title="chat_nav_btn" selected={this.state.pageName === "/chatlist"} onClick={() => this.handleClick("/chatlist")}>
                         <ListItemIcon><ChatIcon/></ListItemIcon>
                         <ListItemText primary="My Conversations" />
                     </ListItem>

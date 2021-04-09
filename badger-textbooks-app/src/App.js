@@ -10,7 +10,7 @@ import Listing from "./pages/Listing"
 import React from "react";
 import MyListings from "./pages/MyListings";
 import CreateNewListing from "./pages/CreateNewListings";
-import ChatPage from "./pages/chatPage";
+import Chat from "./pages/ChatPage";
 import ChatListPage from "./pages/ChatListPage";
 import EditListingPage from "./pages/EditListing";
 import MyAccountPage from "./pages/MyAccountPage";
@@ -40,8 +40,8 @@ class App extends React.Component {
               <Route path="/listing" exact component={() => <Listing />}/>
               <Route path="/mylistings" exact component={() => <MyListings/>} />
               <Route path="/createnewlisting" exact component={() => <CreateNewListing/>} />
-              <Route path="/chatpage" exact component={() => <ChatPage/>}/>
-              <Route path="/chatlistpage" exact component={() => <ChatListPage/>}/>
+              <Route path="/chat" exact component={() => <Chat/>}/>
+              <Route path="/chatlist" exact component={() => <ChatListPage/>}/>
               <Route path="/editlisting" exact component={() => <EditListingPage/>}/>
               <Route path="/myAccount" exact component={() => <MyAccountPage/>}/>
             </Switch>

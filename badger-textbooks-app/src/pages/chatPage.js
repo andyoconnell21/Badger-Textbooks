@@ -94,7 +94,7 @@ class Chat extends React.Component {
   render() {
     return (
         <div>
-            <AppBar position='static'>
+            <AppBar position='static' style ={{ background: '#c5050c' }}>
                 <Toolbar>
                     <IconButton
                         title="back_btn"
@@ -102,7 +102,7 @@ class Chat extends React.Component {
                     >
                         <BackIcon/>
                     </IconButton>
-                    <Typography variant="h4">
+                    <Typography variant="h4" style={{ flexGrow: 1 }}>
                         Conversation with {sessionStorage.getItem('receiverEmail')}
                     </Typography>
                 </Toolbar>
@@ -122,7 +122,7 @@ class Chat extends React.Component {
                 </Box>
             </Container>
 
-            <AppBar position='fixed' style={{ bottom: 0, top: 'auto'}}>
+            <AppBar position='fixed' style={{ background: '#c5050c', bottom: 0, top: 'auto'}}>
                 <Toolbar>
                     <Box style={{flexGrow: 1, marginRight: '10px'}}>
                     <Card>

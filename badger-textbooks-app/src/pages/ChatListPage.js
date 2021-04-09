@@ -125,14 +125,14 @@ class ChatList extends React.Component {
                     <NavigationMenu/>
                 </Drawer>
 
-                <AppBar position='static'>
+                <AppBar position='static' style ={{ background: '#c5050c' }}>
                     <Toolbar>
                         <Box hidden={this.state.searchActive}>
                             <IconButton title="menu_btn" onClick={this.toggleMenu}> 
                                 <MenuIcon/>
                             </IconButton>
                         </Box>
-                        <Typography variant="h4">
+                        <Typography variant="h4" style={{ flexGrow: 1 }}>
                             My Conversations
                         </Typography>
                     </Toolbar>
@@ -147,8 +147,8 @@ class ChatList extends React.Component {
                                             button 
                                             onClick={() => {
                                                 sessionStorage.setItem("receiverEmail", name);
-                                                sessionStorage.setItem("returnLocation", "/chatlistpage")
-                                                window.location.assign("/chatpage");
+                                                sessionStorage.setItem("returnLocation", "/chatlist")
+                                                window.location.assign("/chat");
                                             }}
                                         >
                                             <ListItemText primary={name} secondary="Placeholder for most recent message." />
