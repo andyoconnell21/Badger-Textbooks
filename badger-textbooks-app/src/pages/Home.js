@@ -135,6 +135,9 @@ class Home extends React.Component {
       });
     });
   }
+  addDefaultSrc(ev) {
+    ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
+  }
 
   render() {
     return (
@@ -290,7 +293,8 @@ class Home extends React.Component {
                   <CardContent>
                     <Grid container style={{height: '60px'}}>
                       <Grid item>
-                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                        <img onError={this.addDefaultSrc} className="img-responsive"
+                             src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
                       </Grid>
                       <Grid item xs>
                         <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
