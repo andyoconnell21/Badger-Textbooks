@@ -238,22 +238,6 @@ class Listings extends React.Component {
                     Edit Listing
                 </Button>
               </Grid>
-              <Grid hidden={this.state.userAuthed}>
-                <Button
-                    fullWidth
-                    style={{
-                      marginTop: "10px", 
-                      marginBottom: '10px', 
-                      border: '0', 
-                      backgroundColor: '#c5050c', 
-                      width: '75%', 
-                      cursor: 'pointer', 
-                      color: 'white', 
-                      fontSize: '18px'
-                    }}
-                >
-                    Remove Listing
-                </Button>
               </Grid>
               <Grid hidden={this.state.chatNotNeeded}>
                 <Button 
