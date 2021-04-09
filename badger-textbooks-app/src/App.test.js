@@ -5,6 +5,7 @@ import Login from './Login'
 import CreateAccount from './pages/CreateAccount';
 import Listing from './pages/Listing'
 import CreateNewListing from './pages/CreateNewListings'
+import MyListings from './pages/MyListings';
 
 describe("Testing Home-Page", () => {
   test('basic render test', () => {
@@ -244,6 +245,39 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
     expect(classInput.value).toBe('Comp Sci 506')
   })
  
+})
+
+// MYLISTINGS PAGE TESTS
+describe("Render and Unit Testing of MyListings Page", () => {
+  test("Basic Render Test of MyListings Page", () => {
+    render(<MyListings />);
+  });
+
+  test("Render MyListing Text", () => {
+    const headerText = screen.getByText("'s Listings");
+    const activeText = screen.getByText("Active Listings");
+    const disabledText = screen.getByText("Disabled Listings");
+
+    expect(headerText).toBeInTheDocument();
+    expect(activeText).toBeInTheDocument();
+    expect(disabledText).toBeInTheDocument();
+  })
+
+  test("Click menu button", () => {
+    const { queryByTitle } = render(<MyListings/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Navigation Menu");
+    expect(navigation_text).toBeInTheDocument();
+  })
+
+  test("Click details button", () => {
+    const {queryByTitle} = render(<MyListings/>);
+    const details_button = queryByTitle("details_button");
+    fireEvent.click(details_button);
+    const details_text = screen.getByText("Listing of Textbook");
+    expect(details_text).toBeInTheDocument();
+  })
 })
 
 

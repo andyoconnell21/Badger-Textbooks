@@ -79,7 +79,7 @@ class MyListings extends React.Component {
             <div>
                 <AppBar style={{ background: '#c5050c' }} position="static">
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu}>
                             <MenuIcon />
                         </IconButton>
                         <Typography variant='h6' style={{ fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto' }}>
@@ -142,7 +142,7 @@ class MyListings extends React.Component {
                                 </CardContent>
                                 
                                 <CardActions>
-                                    <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                    <Button title="details_button" fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
                                     sessionStorage.setItem('currentListing', item[idIndex]);
                                     window.location.href = "/listing";
                                     }}>
