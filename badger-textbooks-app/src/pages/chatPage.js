@@ -97,7 +97,8 @@ class Chat extends React.Component {
             <AppBar position='static'>
                 <Toolbar>
                     <IconButton
-                        onClick={() => { window.location.href = sessionStorage.getItem("returnLocation"); }}
+                        title="back_btn"
+                        onClick={() => { window.location.assign(sessionStorage.getItem("returnLocation")); }}
                     >
                         <BackIcon/>
                     </IconButton>

@@ -48,7 +48,8 @@ class Home extends React.Component {
       searchFilter: "search_title",
       searchResults: [],
       searchHidden: true,
-      menuOpen: false
+      menuOpen: false,
+      email: ""
     }
   }
 
@@ -58,7 +59,7 @@ class Home extends React.Component {
         //User is not siged in...redirect to login page
         window.location.href = "/";
       }
-    }); 
+    });
 
     document.body.style.backgroundColor = '#d2b48c';
 
@@ -135,6 +136,7 @@ class Home extends React.Component {
       });
     });
   }
+
   addDefaultSrc(ev) {
     ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
   }
@@ -201,7 +203,7 @@ class Home extends React.Component {
             </Box>
 
             <Box hidden={!this.state.searchActive}>
-              <IconButton onClick={this.clearSearchValue}> 
+              <IconButton title="clear_btn" onClick={this.clearSearchValue}> 
                 <ClearIcon/>
               </IconButton>
             </Box>

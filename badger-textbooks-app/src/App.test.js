@@ -6,75 +6,24 @@ import CreateAccount from './pages/CreateAccount';
 import Listing from './pages/Listing'
 import CreateNewListing from './pages/CreateNewListings'
 import MyListings from './pages/MyListings';
+import NavigationMenu from './pages/NavigationMenu';
+import ChatListPage from './pages/ChatListPage';
+import ChatPage from './pages/ChatPage';
 
-describe("Testing Home-Page", () => {
-  test('basic render test', () => {
-    render(<Home/>)
+
+let assignMock = jest.fn();
+delete window.location;
+window.location = { assign: assignMock };
+afterEach(() => {
+  assignMock.mockClear();
+});
+
+
+//APP PAGE TESTS
+describe("Render Testing For App Component", () =>{
+  test("Basic Render Test For App", () => {
+    render(<App />);
   })
-
-  test('home page renders text', () => {
-    render (<Home/>)
-    const headerText = screen.getByText("Badger-Textbooks")
-    expect(headerText).toBeInTheDocument();
-  })
-
-  test("click menu button", () => {
-    const { queryByTitle } = render(<Home/>);
-    const menu_btn = queryByTitle("menu_btn");
-    fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Navigation Menu");
-
-    expect(navigation_text).toBeInTheDocument();
-  })
-
-  test("switch to search mode", () => {
-    const { queryByTitle } = render(<Home/>);
-    const search_btn = queryByTitle("search_btn");
-    fireEvent.click(search_btn);
-    const back_btn = queryByTitle("back_btn");
-
-    expect(back_btn).toBeInTheDocument();
-  })
-
-  test("switch back from search mode", () => {
-    const { queryByTitle } = render(<Home/>);
-    const search_btn = queryByTitle("search_btn");
-    fireEvent.click(search_btn);
-    const back_btn = queryByTitle("back_btn");
-    fireEvent.click(back_btn);
-
-    expect(search_btn).toBeInTheDocument();
-  })
-
-  test("update search filter", () => {
-    const { queryByTitle, getByTestId } = render(<Home/>);
-    const search_btn = queryByTitle("search_btn");
-    fireEvent.click(search_btn);
-
-    const filter_slct = getByTestId('filter_slct').querySelector('input');
-    expect(screen.getByText("Title")).toBeInTheDocument();
-    fireEvent.change(filter_slct, {
-      target: { value: "search_author" },
-    });
-    expect(screen.getByText("Author")).toBeInTheDocument();
-  })
-
-  //CURRENTLY FAILING
-  // test("update search value", () => {
-  //   const { queryByTitle, getByTestId } = render(<Home/>);
-  //   const search_btn = queryByTitle("search_btn");
-  //   fireEvent.click(search_btn);
-
-  //   const field = getByTestId('search_input').querySelector('input');
-  //   fireEvent.change(field, { target: { value: "test" } });
-
-  //   const execute_btn = queryByTitle("execute_btn");
-  //   fireEvent.click(execute_btn);
-    
-  //   expect(screen.getByText("Results(\n0\n)")).toBeInTheDocument();
-  // })
-
-
 });
 
 
@@ -190,10 +139,130 @@ describe("Render and Unit Testing of Create Account Page", () =>{
   })
 });
 
+
+//NAVIGATION MENU TESTS
+describe("Testing Navigation Menu", () => {
+  test('basic render test', () => {
+      render(<NavigationMenu/>)
+  })
+
+  test('click home button', () => {
+      const { queryByTitle } = render(<NavigationMenu/>);
+      const home_nav_btn = queryByTitle("home_nav_btn");
+      fireEvent.click(home_nav_btn);
+      expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+
+  test('click create button', () => {
+      const { queryByTitle } = render(<NavigationMenu/>);
+      const crea_nav_btn = queryByTitle("crea_nav_btn");
+      fireEvent.click(crea_nav_btn);
+      expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+
+  test('click listing button', () => {
+      const { queryByTitle } = render(<NavigationMenu/>);
+      const list_nav_btn = queryByTitle("list_nav_btn");
+      fireEvent.click(list_nav_btn);
+      expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+
+  test('click chat button', () => {
+      const { queryByTitle } = render(<NavigationMenu/>);
+      const chat_nav_btn = queryByTitle("chat_nav_btn");
+      fireEvent.click(chat_nav_btn); 
+      expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+});
+
+
+//HOME PAGE TESTS
+describe("Testing Home-Page", () => {
+  test('basic render test', () => {
+    render(<Home/>)
+  })
+
+  test('home page renders text', () => {
+    render (<Home/>)
+    const headerText = screen.getByText("Badger-Textbooks")
+    expect(headerText).toBeInTheDocument();
+  })
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<Home/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Navigation Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+
+  test("switch to search mode", () => {
+    const { queryByTitle } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+    const back_btn = queryByTitle("back_btn");
+
+    expect(back_btn).toBeInTheDocument();
+  })
+
+  test("switch back from search mode", () => {
+    const { queryByTitle } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+    const back_btn = queryByTitle("back_btn");
+    fireEvent.click(back_btn);
+
+    expect(search_btn).toBeInTheDocument();
+  })
+
+  test("update search filter", () => {
+    const { queryByTitle, getByTestId } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+
+    const filter_slct = getByTestId('filter_slct').querySelector('input');
+    expect(screen.getByText("Title")).toBeInTheDocument();
+    fireEvent.change(filter_slct, {
+      target: { value: "search_author" },
+    });
+    expect(screen.getByText("Author")).toBeInTheDocument();
+  })
+
+  test("update search value", () => {
+    const { queryByTitle, getByTestId } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+
+    const field = getByTestId('search_input').querySelector('input');
+    fireEvent.change(field, { target: { value: "test" } });
+
+    const execute_btn = queryByTitle("execute_btn");
+    fireEvent.click(execute_btn);
+    
+    expect(field.value).toBe('test')
+  })
+
+  test("update then clear search value", () => {
+      const { queryByTitle, getByTestId } = render(<Home/>);
+      const search_btn = queryByTitle("search_btn");
+      fireEvent.click(search_btn);
+  
+      const field = getByTestId('search_input').querySelector('input');
+      fireEvent.change(field, { target: { value: "test" } });
+  
+      const clear_btn = queryByTitle("clear_btn");
+      fireEvent.click(clear_btn);
+      
+      expect(field.value).toBe('')
+    })
+});
+
+
 //LISTINGS PAGE TESTS
 describe("Render Testing of Listings Page", () => {
- 
-})
+});
+
 
 //CREATE NEW LISTING PAGE TESTS
 describe("Render and Unit Testing of Create New Listing Page", () => {
@@ -244,8 +313,8 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
     expect(isbnInput.value).toBe('12345678910')
     expect(classInput.value).toBe('Comp Sci 506')
   })
- 
 })
+
 
 // MYLISTINGS PAGE TESTS
 describe("Render and Unit Testing of MyListings Page", () => {
@@ -280,4 +349,33 @@ describe("Render and Unit Testing of MyListings Page", () => {
   })
 })
 
+//CHAT LIST PAGE TESTS
+describe("Testing ChatListPage", () => {
+  test('basic render test', () => {
+      render(<ChatListPage/>)
+  })
 
+  test("click menu button", () => {
+      const { queryByTitle } = render(<ChatListPage/>);
+      const menu_btn = queryByTitle("menu_btn");
+      fireEvent.click(menu_btn);
+      const navigation_text = screen.getByText("Navigation Menu");
+  
+      expect(navigation_text).toBeInTheDocument();
+  })
+});
+
+//CHAT PAGE TESTS
+describe("Testing ChatPage", () => {
+  test('basic render test', () => {
+      render(<ChatPage/>)
+  })
+
+  test("click back button", () => {
+      const { queryByTitle } = render(<ChatPage/>);
+      const back_btn = queryByTitle("back_btn");
+      fireEvent.click(back_btn);
+
+      expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+});

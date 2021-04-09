@@ -128,7 +128,7 @@ class ChatList extends React.Component {
                 <AppBar position='static'>
                     <Toolbar>
                         <Box hidden={this.state.searchActive}>
-                            <IconButton onClick={this.toggleMenu}> 
+                            <IconButton title="menu_btn" onClick={this.toggleMenu}> 
                                 <MenuIcon/>
                             </IconButton>
                         </Box>
@@ -144,12 +144,12 @@ class ChatList extends React.Component {
                                 {this.state.chats.map((name) => (
                                     <div>
                                         <ListItem 
-                                        button 
-                                        onClick={() => {
-                                            sessionStorage.setItem("receiverEmail", name);
-                                            sessionStorage.setItem("returnLocation", "/chatlistpage")
-                                            window.location.href = "/testChatPage";
-                                        }}
+                                            button 
+                                            onClick={() => {
+                                                sessionStorage.setItem("receiverEmail", name);
+                                                sessionStorage.setItem("returnLocation", "/chatlistpage")
+                                                window.location.assign("/chatpage");
+                                            }}
                                         >
                                             <ListItemText primary={name} secondary="Placeholder for most recent message." />
                                             <ListItemIcon><NavigateNextIcon/></ListItemIcon>

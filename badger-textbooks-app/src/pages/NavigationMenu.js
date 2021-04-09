@@ -23,7 +23,7 @@ class NavigationMenu extends React.Component {
     }
 
     handleClick(page) {
-        window.location.href = page;
+        window.location.assign(page);
     }
 
     render() {
@@ -34,22 +34,22 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="Navigation Menu"/>
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="home_nav" selected={this.state.pageName === "/home"} onClick={() => this.handleClick("/home")}>
+                    <ListItem button key="home_nav" title="home_nav_btn" selected={this.state.pageName === "/home"} onClick={() => this.handleClick("/home")}>
                         <ListItemIcon><HomeIcon/></ListItemIcon>
                         <ListItemText primary="Home" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="create_listing_nav" selected={this.state.pageName === "/createnewlisting"} onClick={() => this.handleClick("/createnewlisting")}>
+                    <ListItem button key="create_listing_nav" title="crea_nav_btn" selected={this.state.pageName === "/createnewlisting"} onClick={() => this.handleClick("/createnewlisting")}>
                         <ListItemIcon><AddIcon/></ListItemIcon>
                         <ListItemText primary="Create a New Listing" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="my_listings_nav" selected={this.state.pageName === "/mylistings"} onClick={() => this.handleClick("/mylistings")}>
+                    <ListItem button key="my_listings_nav" title="list_nav_btn" selected={this.state.pageName === "/mylistings"} onClick={() => this.handleClick("/mylistings")}>
                         <ListItemIcon><MyListingsIcon/></ListItemIcon>
                         <ListItemText primary="My Listings" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="chat_list_nav" selected={this.state.pageName === "/chatlistpage"} onClick={() => this.handleClick("/chatlistpage")}>
+                    <ListItem button key="chat_list_nav" title="chat_nav_btn" selected={this.state.pageName === "/chatlistpage"} onClick={() => this.handleClick("/chatlistpage")}>
                         <ListItemIcon><ChatIcon/></ListItemIcon>
                         <ListItemText primary="My Conversations" />
                     </ListItem>
