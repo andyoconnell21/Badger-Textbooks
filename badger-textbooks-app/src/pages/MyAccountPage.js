@@ -26,7 +26,6 @@ class MyAccountPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
       username: '',
       password: '',
       description: '',
@@ -36,6 +35,7 @@ class MyAccountPage extends React.Component {
       passwordInput: '',
       descriptionInput: '',
       moodInput: '',
+      imageURL: '',
     //   addressInput: '',
       editVis: '',
       acceptVis: 'none',
@@ -69,7 +69,6 @@ class MyAccountPage extends React.Component {
     .then((doc) => {
         var data = doc.data();
         this.setState({
-          type: data.type,
           username: data.username,
           password: data.password,
           description: data.description,
@@ -79,7 +78,8 @@ class MyAccountPage extends React.Component {
           passwordInput: data.password,
           descriptionInput: data.description,
           moodInput: data.mood,
-          addressInput: data.address,
+        // addressInput: data.address,
+          imageURL: data.imageURL
         });
       })
   }
@@ -113,6 +113,7 @@ class MyAccountPage extends React.Component {
       passwordInput: this.state.password,
       descriptionInput: this.state.description,
       moodInput: this.state.mood,
+      imageURL: this.state.imageURL,
     //   addressInput: this.state.address,
       editVis: '',
       acceptVis: 'none',
@@ -130,7 +131,7 @@ class MyAccountPage extends React.Component {
       password: this.state.passwordInput,
       description: this.state.descriptionInput,
       mood: this.state.moodInput,
-    //   address: this.state.addressInput
+      imageURL: this.state.imageURL,
     }).then(() => 
       firebase.firestore().collection('users').doc(docID).get()
       .then((doc) => {
@@ -140,12 +141,12 @@ class MyAccountPage extends React.Component {
           password: data.password,
           description: data.description,
           mood: data.mood,
-        //   address: data.address,
+          imageURL: data.imageURL,
           usernameInput: data.username,
           passwordInput: data.password,
           descriptionInput: data.description,
           moodInput: data.mood,
-        //   addressInput: data.address,
+
           editVis: '',
           acceptVis: 'none',
           cancelVis: 'none'
@@ -163,6 +164,20 @@ class MyAccountPage extends React.Component {
         console.log(error.code)
     });
   }
+
+  handleImageChange = (event) => {
+    //Adds image to storage
+    const file = event.target.files[0]
+    var storage = firebase.storage()
+    var storageRef = storage.ref()
+    const fileRef = storageRef.child(file.name)
+    fileRef.put(file).then(() => {
+        //Saved image file path
+        storageRef.child(file.name).getDownloadURL().then((url) => {
+            this.setState({imageURL: url})
+        })
+    })
+    }
    
   //change for line 269: {this.displayPayment()}
   render () {
@@ -279,6 +294,13 @@ class MyAccountPage extends React.Component {
                 </Grid>
               </Grid>
 
+              <div>
+                        <label>My Profile Photo: </label>
+                        <input className="w3-input w3-hover-light-gray"
+                            type='file'
+                            onChange={this.handleImageChange}
+                        />
+                    </div>
 
               {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
