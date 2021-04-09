@@ -2,6 +2,9 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
+
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -17,10 +20,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -28,12 +28,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import MenuIcon from '@material-ui/icons/Menu';
-import AddIcon from '@material-ui/icons/Add';
-import MyListingsIcon from '@material-ui/icons/ListAlt';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import SavedIcon from '@material-ui/icons/Favorite';
+
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-import ChatIcon from '@material-ui/icons/Chat';
+
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -90,16 +87,19 @@ class Home extends React.Component {
       this.setState({
         searchActive: !curr_state,
         defaultDisplay: 'block',
-        searchDisplay: 'none'
+        searchDisplay: 'none',
+        searchValue: "",
+        searchResults: []
       });
     } else {
       this.setState({
         searchActive: !curr_state,
         defaultDisplay: 'none',
-        searchDisplay: 'block'
+        searchDisplay: 'block',
+        searchValue: "",
+        searchResults: []
       });
     }
-
   }
   
   updateSearchFilter = (event) => {
@@ -139,38 +139,40 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <AppBar style ={{ background:'#c5050c' }} position="static">
+        <AppBar style ={{ background: '#c5050c' }} position="static">
           <Toolbar>
+
             <Box hidden={this.state.searchActive}>
-              <IconButton onClick={this.toggleMenu}> 
+              <IconButton title="menu_btn" onClick={this.toggleMenu}> 
                 <MenuIcon/>
               </IconButton>
             </Box>
 
             <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
-              <Typography variant="h3" fullWidth>
-                Badger-Textbooks
+              <Typography variant="h3">
+                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
               </Typography>
             </Box>
 
             <Box hidden={this.state.searchActive}>
-              <IconButton onClick={this.toggleActiveSearch}> 
+              <IconButton title="search_btn" onClick={this.toggleActiveSearch}> 
                 <SearchIcon/>
               </IconButton>
             </Box>
 
             <Box hidden={!this.state.searchActive}>
-              <IconButton onClick={this.toggleActiveSearch}> 
+              <IconButton title="back_btn" onClick={this.toggleActiveSearch}> 
                 <BackIcon/>
               </IconButton>
             </Box>
 
             <Box hidden={!this.state.searchActive} style={{marginRight: "10px", width: "10%"}}>
               <FormControl style={{width: '100%'}}>
-                <InputLabel id="filter-select-label" style={{marginLeft: "2px"}}>Search by...</InputLabel>
+                <InputLabel id="filter-select-label" style={{marginLeft: "2px", color: '#ffffff'}}>Search by...</InputLabel>
                 <Select
-                  style={{width: "100%"}}
                   labelId="filter-select-label"
+                  data-testid="filter_slct"
+                  style={{width: "100%", color: '#ffffff'}}
                   variant="outlined"
                   value={this.state.searchFilter}
                   onChange={this.updateSearchFilter}
@@ -183,8 +185,9 @@ class Home extends React.Component {
             </Box>
 
             <Box hidden={!this.state.searchActive} style={{flexGrow: 1}}>
-              <Card fullWidth>
+              <Card>
                 <TextField
+                  data-testid="search_input"
                   placeholder="Search..."
                   variant='outlined'
                   fullWidth
@@ -201,7 +204,7 @@ class Home extends React.Component {
             </Box>
 
             <Box hidden={!this.state.searchActive}>
-              <IconButton onClick={this.initSearch} hidden={true}> 
+              <IconButton title="execute_btn" onClick={this.initSearch} hidden={true}> 
                 <SearchIcon />
               </IconButton>
             </Box>
@@ -209,52 +212,29 @@ class Home extends React.Component {
           </Toolbar>
         </AppBar>
 
-        <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-          <List>
-              <ListItem button key="create_listing_nav" onClick={() => {window.location.href = "/createnewlisting";}}>
-                <ListItemIcon><AddIcon/></ListItemIcon>
-                <ListItemText primary="Create a New Listing" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
-                <ListItemIcon><MyListingsIcon/></ListItemIcon>
-                <ListItemText primary="My Listings" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="chat_list_nav" onClick={() => {window.location.href = "/chatlistpage";}}>
-                <ListItemIcon><ChatIcon/></ListItemIcon>
-                <ListItemText primary="My Conversations" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="saved_listings_nav" disabled>
-                <ListItemIcon><SavedIcon/></ListItemIcon>
-                <ListItemText primary="Saved Listings" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="account_nav" disabled>
-                <ListItemIcon><AccountIcon/></ListItemIcon>
-                <ListItemText primary="Account" />
-              </ListItem>
-          </List>
+        <Drawer title="nav_menu" anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+          <NavigationMenu/>
         </Drawer>
 
         <Box style={{display: this.state.searchDisplay, margin:'20px'}}>
           <Typography variant='h4' color="textSecondary" style={{ margin: "10px"}}>
             Results ({this.state.searchResults.length})
           </Typography>
-          <Grid container spacing="3">
+          <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
             {this.state.searchResults.map((item) => (
               <Grid item>
                 <Card style={{width: "300px"}}>
                   <CardContent>
                     <Grid container>
                       <Grid item>
-                        <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover"/>
+                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
                       </Grid>
                       <Grid item xs >
-                        <Typography variant='h6'>
-                          {item[dataIndex].title}
-                        </Typography>
+                        <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
+                          <Typography variant='h6'>
+                            {item[dataIndex].title}
+                          </Typography>
+                        </div>
                       </Grid>
                     </Grid>
                     <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
@@ -300,10 +280,10 @@ class Home extends React.Component {
         </Box>
 
         <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
-          <Typography variant='h4' style={{ margin: "10px"}}>
+          <Typography variant='h4' style={{ margin: "10px" }}>
             Check out these recent listings...
           </Typography>
-          <Grid container spacing="3" justify='center'>
+          <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
             {this.state.listings.map((item) => (
               <Grid item>
                 <Card style={{width: "300px"}}>

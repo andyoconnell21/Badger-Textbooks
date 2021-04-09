@@ -3,7 +3,6 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateAccount from "./pages/CreateAccount"
 import Home from "./pages/Home"
 import Login from "./Login"
@@ -11,8 +10,9 @@ import Listing from "./pages/Listing"
 import React from "react";
 import MyListings from "./pages/MyListings";
 import CreateNewListing from "./pages/CreateNewListings";
-import TestChatPage from "./pages/testChatPage";
+import ChatPage from "./pages/ChatPage";
 import ChatListPage from "./pages/ChatListPage";
+import EditListingPage from "./pages/EditListing";
 
 const firebaseConfig = {
   apiKey: "AIzaSyATKX78GgcgavgsRD0eUozsDAVQ1zpaEEs",
@@ -25,25 +25,6 @@ const firebaseConfig = {
 };
 
 var fire = firebase.initializeApp(firebaseConfig);
-
-//for chat system
-// firebase.database().ref("messages").on("child_removed", function (snapshot) {
-//   document.getElementById("message-" + snapshot.key).innerHTML = "This message has been deleted";
-// });
-
-// function deleteMessage(self) {
-//   var messageId = self.getAttribute("data-id");
-//   firebase.database().ref("messages").child(messageId).remove();
-// }
-
-// function sendMessage() {
-//   var message = document.getElementById("message").value;
-//   firebase.database().ref("messages").push().set({
-//     "message": message,
-//     "sender": myName
-//   });
-//   return false;
-// }
 
 class App extends React.Component {
 
@@ -59,10 +40,9 @@ class App extends React.Component {
               <Route path="/mylistings" exact component={() => <MyListings/>} />
               <Route path="/createnewlisting" exact component={() => <CreateNewListing/>} />
               <Route path="/chatPage" exact component={() => <chatPage/>} />
-              <Route path="/testChatPage" exact component={() => <TestChatPage/>}/>
+              <Route path="/testChatPage" exact component={() => <ChatPage/>}/>
               <Route path="/chatlistpage" exact component={() => <ChatListPage/>}/>
-              <Route path="/editlisting" exact component={() => <EditListing/>}/>
-
+              <Route path="/editlisting" exact component={() => <EditListingPage/>}/>
             </Switch>
           </Router>
         </div>

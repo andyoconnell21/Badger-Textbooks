@@ -2,6 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+import NavigationMenu from './NavigationMenu';
+
 import React from "react";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -19,11 +21,6 @@ import Drawer from '@material-ui/core/Drawer';
 
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import MenuIcon from '@material-ui/icons/Menu';
-import AddIcon from '@material-ui/icons/Add';
-import MyListingsIcon from '@material-ui/icons/ListAlt';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import SavedIcon from '@material-ui/icons/Favorite';
-import HomeIcon from '@material-ui/icons/Home';
 
 class ChatList extends React.Component {
 
@@ -125,32 +122,7 @@ class ChatList extends React.Component {
         return (
             <div>
                 <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-                    <List>
-                        <ListItem button key="home_nav" onClick={() => {window.location.href = "/home";}}>
-                            <ListItemIcon><HomeIcon/></ListItemIcon>
-                            <ListItemText primary="Home" />
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="create_listing_nav" onClick={() => {window.location.href = "/createnewlisting";}}>
-                            <ListItemIcon><AddIcon/></ListItemIcon>
-                            <ListItemText primary="Create a New Listing" />
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
-                            <ListItemIcon><MyListingsIcon/></ListItemIcon>
-                            <ListItemText primary="My Listings" />
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="saved_listings_nav" disabled>
-                            <ListItemIcon><SavedIcon/></ListItemIcon>
-                            <ListItemText primary="Saved Listings" />
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="account_nav" disabled>
-                            <ListItemIcon><AccountIcon/></ListItemIcon>
-                            <ListItemText primary="Account" />
-                        </ListItem>
-                    </List>
+                    <NavigationMenu/>
                 </Drawer>
 
                 <AppBar position='static'>

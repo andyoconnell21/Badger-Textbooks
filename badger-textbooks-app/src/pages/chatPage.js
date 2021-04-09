@@ -1,59 +1,152 @@
 import firebase from 'firebase/app';
-import 'firebase/auth';
 import 'firebase/firestore';
-import {
-  Button,
-  TextField,
-  Grid,
-  AppBar,
-  Typography,
-  Link,
-  Container,
-  } from "@material-ui/core";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import 'firebase/auth';
+
 import React from "react";
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Card from '@material-ui/core/Card';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
 
-
-class chatPage extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            $messages = $('.messages-content'),
-            d, h, m,
-            i = 0,
-            myName = "",
-        }
-      }
-  render(){
-      return(
-    <div>
-        <div class="chat">
-        <div class="chat-title">
-        <h1>Chat Room</h1>
-        <h2>Firebase</h2>
-        <figure class="avatar">
-          <img src="https://p7.hiclipart.com/preview/349/273/275/livechat-online-chat-computer-icons-chat-room-web-chat-others.jpg" /></figure>
-        </div>
-        <div class="messages">
-        <div class="messages-content"></div>
-        </div>
-        <div class="message-box">
-        <textarea type="text" class="message-input" id="message" placeholder="Type message..."></textarea>
-        <button type="submit" class="message-submit">Send</button>
-        </div>
-    
-        </div>
-        <div class="bg"></div>
-
-        <div class="footer fixed-bottom">
-        Get an image sharing web app in Node JS and Mongo DB for just <b>$20</b>. <a style="color: greenyellow;" href="https://adnan-tech.com/image-sharing-app-in-node-js/">Get here</a>
-        </div>
-    </div>
-      );
-  }
+import SendIcon from '@material-ui/icons/Send';
+import BackIcon from '@material-ui/icons/ArrowBackIos';
   
-}export default ChatPage
+class Chat extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+        messages: [],
+        senderEmail: "",
+        currentText: ""
+    }
+  }
+
+  //LIFECYCLE FUNCTION: Does basic page setup, check user auth, makes call to display initial messages.
+  componentDidMount() {
+    document.body.style.backgroundColor = '#d2b48c';
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (!user) {
+        //User is not siged in...redirect to login page
+        window.location.href = "/";
+      } else {
+        this.setState({ senderEmail: user.email });
+        this.updateDisplayedMessages();
+      }
+    }.bind(this));
+  }
+
+  //FUNCTION: Updates state as the user makes changes to the chat box.
+  updateText = (event) => {
+    this.setState({ currentText: event.target.value });
+  }
+
+  //FUNCTION: Adds the current entered message to firebase and clears the chat box.
+  handleMessageSend = (event) => {
+    firebase.firestore().collection('test_messages').add({
+        sender: this.state.senderEmail,
+        receiver: sessionStorage.getItem('receiverEmail'),
+        text: this.state.currentText,
+        date: Date().toLocaleString()
+    }).catch(function(error) {
+        console.error('Error writing new message to database', error);
+    }).then(() => {
+        this.setState({ currentText: "" });
+        this.updateDisplayedMessages();
+    });
+  }
+
+  //FUNCTION: Gets all relevant messages (sent and recieved) and sorts them by date before placing them in state for display.
+  updateDisplayedMessages() {
+    var tempMessages = [];
+    firebase.firestore().collection("test_messages")
+      .where("sender", "==", this.state.senderEmail)
+      .where("receiver", '==', sessionStorage.getItem('receiverEmail'))
+      .get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            var gather = doc.data();
+            tempMessages.push(gather)
+        });
+        firebase.firestore().collection("test_messages")
+          .where("sender", "==", sessionStorage.getItem('receiverEmail'))
+          .where("receiver", "==", this.state.senderEmail)
+          .get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var gather = doc.data();
+                tempMessages.push(gather);
+            })
+            tempMessages.sort(function(a,b){
+                // Turn your strings into dates, and then subtract them
+                // to get a value that is either negative, positive, or zero.
+                return new Date(a.date) - new Date(b.date);
+            }); 
+            this.setState({ messages: tempMessages });
+        });
+    });
+  }
+
+  render() {
+    return (
+        <div>
+            <AppBar position='static'>
+                <Toolbar>
+                    <IconButton
+                        onClick={() => { window.location.href = sessionStorage.getItem("returnLocation"); }}
+                    >
+                        <BackIcon/>
+                    </IconButton>
+                    <Typography variant="h4">
+                        Conversation with {sessionStorage.getItem('receiverEmail')}
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+
+            <Container>
+                <Box style={{height: '100vh'}}>
+                    <Paper variant="outlined" square style={{ height: '100%' }}>
+                        {this.state.messages.map((item) => (
+                            <Card fullWidth style={{ margin: "10px", backgroundColor: "#eeeeee" }}>
+                                <Typography align="left" style={{ margin: '5px' }}>
+                                    {item.sender}: {item.text}
+                                </Typography>
+                            </Card>
+                        ))}
+                    </Paper>
+                </Box>
+            </Container>
+
+            <AppBar position='fixed' style={{ bottom: 0, top: 'auto'}}>
+                <Toolbar>
+                    <Box style={{flexGrow: 1, marginRight: '10px'}}>
+                    <Card>
+                        <TextField
+                            fullWidth
+                            placeholder="Enter your message here..."
+                            variant='outlined'
+                            value={this.state.currentText}
+                            onChange={this.updateText}
+                        />
+                    </Card>
+                    </Box>
+                    <Button
+                        style = {{height: '100%'}}
+                        variant="contained"
+                        onClick={this.handleMessageSend}
+                        endIcon={<SendIcon/>}
+                    >
+                        Send
+                    </Button>
+                </Toolbar>
+            </AppBar>    
+        </div>
+    );
+  }
+}
+
+export default Chat;

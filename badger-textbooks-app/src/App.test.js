@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 import Home from './pages/Home';
 import Login from './Login'
@@ -11,9 +11,68 @@ describe("Testing Home-Page", () => {
 
   test('home page renders text', () => {
     render (<Home/>)
-    expect(/Recent Listings/i).toBeInTheDocument();
-    expect(/Search Listings By.../i).toBeInTheDocument();
+    const headerText = screen.getByText("Badger-Textbooks")
+    expect(headerText).toBeInTheDocument();
   })
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<Home/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Navigation Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+
+  test("switch to search mode", () => {
+    const { queryByTitle } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+    const back_btn = queryByTitle("back_btn");
+
+    expect(back_btn).toBeInTheDocument();
+  })
+
+  test("switch back from search mode", () => {
+    const { queryByTitle } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+    const back_btn = queryByTitle("back_btn");
+    fireEvent.click(back_btn);
+
+    expect(search_btn).toBeInTheDocument();
+  })
+
+  test("update search filter", () => {
+    const { queryByTitle, getByTestId } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+
+    const filter_slct = getByTestId('filter_slct').querySelector('input');
+    expect(screen.getByText("Title")).toBeInTheDocument();
+    fireEvent.change(filter_slct, {
+      target: { value: "search_author" },
+    });
+    expect(screen.getByText("Author")).toBeInTheDocument();
+  })
+
+  //CURRENTLY FAILING
+  // test("update search value", () => {
+  //   const { queryByTitle, getByTestId } = render(<Home/>);
+  //   const search_btn = queryByTitle("search_btn");
+  //   fireEvent.click(search_btn);
+
+  //   const field = getByTestId('search_input').querySelector('input');
+  //   fireEvent.change(field, { target: { value: "test" } });
+
+  //   const execute_btn = queryByTitle("execute_btn");
+  //   fireEvent.click(execute_btn);
+    
+  //   expect(screen.getByText("Results(\n0\n)")).toBeInTheDocument();
+  // })
+
+
+});
 
 describe("Render Testing of Login Page", () =>{
   test("Basic Render Test of Login Page", () => {
@@ -26,7 +85,7 @@ describe("Render Testing of Login Page", () =>{
       expect(headerText).toBeInTheDocument();
       expect(signInText).toBeInTheDocument();
     })
-})
+});
 
 describe("Render Testing of Create Account Page", () =>{
   test("Basic Render Test of Create Account Page", () => {
@@ -40,6 +99,4 @@ describe("Render Testing of Create Account Page", () =>{
     expect(headerText).toBeInTheDocument();
     expect(createAccountText).toBeInTheDocument();
   })
-})
- 
 });

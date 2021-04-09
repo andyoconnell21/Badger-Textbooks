@@ -2,29 +2,23 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-import React from "react";
+import NavigationMenu from './NavigationMenu';
 
+import React from "react";
 import Toolbar from '@material-ui/core/Toolbar';
-import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
+import Box from '@material-ui/core/Box';
 
-import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
-import AddIcon from '@material-ui/icons/Add';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import SavedIcon from '@material-ui/icons/Favorite';
-
 
 const idIndex = 0;
 const dataIndex = 1;
@@ -33,7 +27,7 @@ class MyListings extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            listingsToDisplay: [],
+            listings: [],
             menuOpen: false,
             user: null
         }
@@ -47,6 +41,8 @@ class MyListings extends React.Component {
     }
 
     componentDidMount() {
+        document.body.style.backgroundColor = '#d2b48c';
+        
         var listIDs = [];
         var tempList = [];
         firebase.auth().onAuthStateChanged(function(user) {
@@ -68,7 +64,7 @@ class MyListings extends React.Component {
                             tempList.push(gather);
 
                             this.setState({
-                                listingsToDisplay: tempList
+                                listings: tempList
                             }); 
                         });
                     });
@@ -92,61 +88,77 @@ class MyListings extends React.Component {
                 </AppBar>
 
                 <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-                    <List>
-                        <ListItem button key="home_nav" onClick={() => { window.location.href = "/home"; }}>
-                            <ListItemIcon><HomeIcon /></ListItemIcon>
-                            <ListItemText primary="Home" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem button key="create_listing_nav" onClick={() => { window.location.href = "/createnewlisting"; }}>
-                            <ListItemIcon><AddIcon /></ListItemIcon>
-                            <ListItemText primary="Create a New Listing" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem button key="saved_listings_nav" disabled>
-                            <ListItemIcon><SavedIcon /></ListItemIcon>
-                            <ListItemText primary="Saved Listings" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem button key="account_nav" disabled>
-                            <ListItemIcon><AccountIcon /></ListItemIcon>
-                            <ListItemText primary="Account" />
-                        </ListItem>
-                    </List>
+                    <NavigationMenu/>
                 </Drawer>
 
-                <Container>
-                    <Card>
-                        {this.state.listingsToDisplay.map((item) => (
-                            <div>
-                                <Grid container spacing="3" style={{ margin: "10px" }}>
+                <Typography variant="h4" style={{marginTop: '20px'}}>
+                    Active Listings
+                </Typography>
+
+                <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
+                    <Grid container justify='center' spacing={3}>
+                        {this.state.listings.map((item) => (
+                            <Grid item>
+                                <Card style={{width: "300px"}}>
+                                <CardContent>
+                                    <Grid container style={{height: '60px'}}>
+                                    <Grid item>
+                                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                    </Grid>
                                     <Grid item xs>
-                                        <img src={item[dataIndex].image_url} width="50" height="60" alt="Textbook Cover" />
+                                        <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
+                                        <Typography variant='h6'>
+                                            {item[dataIndex].title}
+                                        </Typography>
+                                        </div>
                                     </Grid>
-                                    <Grid item xs >
-                                        Title: {item[dataIndex].title}
+                                    </Grid>
+                                    <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                                    <Grid container>
+                                    <Grid item xs>
+                                        <Typography color="textSecondary" style={{left: 0}}>
+                                        Price:
+                                        </Typography>
                                     </Grid>
                                     <Grid item xs>
-                                        Author: {item[dataIndex].author}
+                                        <Typography color="textSecondary">
+                                        ${item[dataIndex].price}
+                                        </Typography>
+                                    </Grid>
+                                    </Grid>
+                                    <Grid container>
+                                    <Grid item xs>
+                                        <Typography color="textSecondary">
+                                        Seller:
+                                        </Typography>
                                     </Grid>
                                     <Grid item xs>
-                                        Price: ${item[dataIndex].price}
+                                        <Typography color="textSecondary">
+                                        {item[dataIndex].owner}
+                                        </Typography>
                                     </Grid>
-                                    <Grid item xs >
-                                        <Button style={{ backgroundColor: '#c5050c' }} onClick={() => {
-                                            sessionStorage.setItem('currentListing', item[idIndex]);
-                                            console.log(sessionStorage.getItem('currentListing'));
-                                            window.location.href = "/listing";
-                                        }}>
-                                            Details
-                                        </Button>
                                     </Grid>
-                                </Grid>
-                                <Divider />
-                            </div>
+                                </CardContent>
+                                
+                                <CardActions>
+                                    <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                    sessionStorage.setItem('currentListing', item[idIndex]);
+                                    window.location.href = "/listing";
+                                    }}>
+                                    See Details 
+                                    </Button>
+                                </CardActions>
+                                </Card>
+                            </Grid>
                         ))}
-                    </Card>
-                </Container>
+                    </Grid>
+                </Box>
+
+                <Divider style={{margin: '10px'}}/>
+
+                <Typography variant="h4" style={{marginTop: '10px'}}>
+                    Disabled Listings
+                </Typography>
             </div>
         )
     }
