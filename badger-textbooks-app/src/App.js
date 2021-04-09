@@ -13,6 +13,7 @@ import CreateNewListing from "./pages/CreateNewListings";
 import ChatPage from "./pages/chatPage";
 import ChatListPage from "./pages/ChatListPage";
 import EditListingPage from "./pages/EditListing";
+import MyAccountPage from "./pages/MyAccountPage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyATKX78GgcgavgsRD0eUozsDAVQ1zpaEEs",
@@ -43,6 +44,7 @@ class App extends React.Component {
               <Route path="/testChatPage" exact component={() => <ChatPage/>}/>
               <Route path="/chatlistpage" exact component={() => <ChatListPage/>}/>
               <Route path="/editlisting" exact component={() => <EditListingPage/>}/>
+              <Route path="/myAccount" exact component={() => <MyAccountPage/>}/>
             </Switch>
           </Router>
         </div>
