@@ -93,7 +93,8 @@ class CreateAccount extends React.Component{
                     address: "",
                     phone: 0,
                     listings: [],
-                    saved_listings: []
+                    saved_listings: [],
+                    uid: user.uid,
                 }) 
             })
             .catch((error) => {
@@ -127,6 +128,7 @@ class CreateAccount extends React.Component{
                     </Typography>
                     <form onSubmit={this.createAccount}>
                         <TextField
+                            title='firstNameInput'
                             variant="outlined"
                             margin="normal"
                             required
@@ -139,6 +141,7 @@ class CreateAccount extends React.Component{
                             autoFocus
                             />
                         <TextField
+                            title='lastNameInput'
                             variant="outlined"
                             margin="normal"
                             required
@@ -151,6 +154,7 @@ class CreateAccount extends React.Component{
                             autoFocus
                             />
                         <TextField
+                            title='emailInput'
                             variant="outlined"
                             margin="normal"
                             required
@@ -165,6 +169,7 @@ class CreateAccount extends React.Component{
                             autoFocus
                             />
                         <TextField
+                            title='passwordInput'
                             variant="outlined"
                             margin="normal"
                             required
@@ -178,7 +183,7 @@ class CreateAccount extends React.Component{
                             />
                         <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Create Account</Button>
                         <Grid item xs>
-                            <Link href="#" onClick={this.loginPage} variant="body2">
+                            <Link href="#" title='backToLogin' onClick={this.loginPage} variant="body2">
                             Back to Login Page
                             </Link>
                         </Grid>
