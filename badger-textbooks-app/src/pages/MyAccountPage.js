@@ -30,12 +30,12 @@ class MyAccountPage extends React.Component {
       username: '',
       password: '',
       description: '',
-      phone: '',
+      mood: '',
       address: '',
       usernameInput: '',
       passwordInput: '',
       descriptionInput: '',
-    //   phoneInput: '',
+      moodInput: '',
     //   addressInput: '',
       editVis: '',
       acceptVis: 'none',
@@ -45,7 +45,7 @@ class MyAccountPage extends React.Component {
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-    // this.handlePhoneChange = this.handlePhoneChange.bind(this);
+    this.handleMoodChange = this.handleMoodChange.bind(this);
     // this.handleAddressChange = this.handleAddressChange.bind(this);
     //this.handleLogout = this.handleLogout.bind(this);
   }
@@ -73,12 +73,12 @@ class MyAccountPage extends React.Component {
           username: data.username,
           password: data.password,
           description: data.description,
-        //   phone: data.phone,
+          mood: data.mood,
         //   address: data.address,
           usernameInput: data.username,
           passwordInput: data.password,
           descriptionInput: data.description,
-          phoneInput: data.phone,
+          moodInput: data.mood,
           addressInput: data.address,
         });
       })
@@ -96,7 +96,7 @@ class MyAccountPage extends React.Component {
   handleUsernameChange(event) { this.setState({usernameInput: event.target.value}); }
   handlePasswordChange(event) { this.setState({passwordInput: event.target.value}); }
   handleDescriptionChange(event) { this.setState({descriptionInput: event.target.value}); }
-//   handlePhoneChange(event) { this.setState({phoneInput: event.target.value}); }
+  handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
 //   handleAddressChange(event) { this.setState({addressInput: event.target.value}); }
 
  handleEditClick() {
@@ -112,7 +112,7 @@ class MyAccountPage extends React.Component {
       usernameInput: this.state.username,
       passwordInput: this.state.password,
       descriptionInput: this.state.description,
-    //   phoneInput: this.state.phone,
+      moodInput: this.state.mood,
     //   addressInput: this.state.address,
       editVis: '',
       acceptVis: 'none',
@@ -129,7 +129,7 @@ class MyAccountPage extends React.Component {
       username: this.state.usernameInput,
       password: this.state.passwordInput,
       description: this.state.descriptionInput,
-    //   phone: this.state.phoneInput,
+      mood: this.state.moodInput,
     //   address: this.state.addressInput
     }).then(() => 
       firebase.firestore().collection('users').doc(docID).get()
@@ -139,12 +139,12 @@ class MyAccountPage extends React.Component {
           username: data.username,
           password: data.password,
           description: data.description,
-        //   phone: data.phone,
+          mood: data.mood,
         //   address: data.address,
           usernameInput: data.username,
           passwordInput: data.password,
           descriptionInput: data.description,
-        //   phoneInput: data.phone,
+          moodInput: data.mood,
         //   addressInput: data.address,
           editVis: '',
           acceptVis: 'none',
@@ -242,14 +242,34 @@ class MyAccountPage extends React.Component {
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
                   <Typography>
+                    {this.state.Description}
+                  </Typography>
+                </Grid>
+                <Grid item xs style={{display: this.state.acceptVis}}>
+                  <TextField
+                    fullWidth
+                    value={this.state.descriptionInput}
+                    onChange={this.handleDescriptionChange}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+                <Grid item>
+                  <Typography>
+                  Mood: 
+                  </Typography>
+                </Grid>
+                <Grid item style={{display: this.state.editVis}}>
+                  <Typography>
                     
                   </Typography>
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <Select
                     fullWidth
-                    onChange={this.handleDescriptionChange}
-                    value={this.state.descriptionInput}
+                    onChange={this.handleMoodChange}
+                    value={this.state.moodInput}
                     style={{textAlign: 'left'}}
                   >
                     <MenuItem value={1}>I feel good</MenuItem>
@@ -259,26 +279,6 @@ class MyAccountPage extends React.Component {
                 </Grid>
               </Grid>
 
-              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
-                    Phone: 
-                  </Typography>
-                </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
-                    {this.state.phone}
-                  </Typography>
-                </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
-                  <TextField
-                    fullWidth
-                    type='number'
-                    value={this.state.phoneInput}
-                    onChange={this.handlePhoneChange}
-                  />
-                </Grid>
-              </Grid> */}
 
               {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
