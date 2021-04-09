@@ -152,11 +152,12 @@ class Login extends React.Component{
     
             <Container component="main" maxWidth="xs" style={{marginTop: '40px', fontFamily: 'sans-serif'}}>
               <Typography component="h1" variant="h4" style={{textAlign: 'center'}}>
-                Sign in
+                Sign In
               </Typography>
 
               <form onSubmit={this.authWithAccountCreds}>
                 <TextField
+                  title = 'emailTextInput'
                   variant="outlined"
                   margin="normal"
                   required
@@ -169,6 +170,7 @@ class Login extends React.Component{
                   autoFocus
                 />
                 <TextField
+                  title = 'passwordTextInput'
                   variant="outlined"
                   margin="normal"
                   required
@@ -179,16 +181,15 @@ class Login extends React.Component{
                   id="password"
                   onChange = {this.setPassword}
                 />
-                <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Sign In</Button>
-
+                <Button title='login_btn' type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>SIGN IN</Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" onClick={this.handleOpen} variant="body2">
+                    <Link href="#" title='forgotPassword' onClick={this.handleOpen} variant="body2">
                       Forgot password?
                     </Link>
                   </Grid>
                   <Grid item>
-                    <Link href="#" onClick={this.createAccount} variant="body2">
+                    <Link href="#" title='create_account' onClick={this.createAccount} variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
@@ -220,7 +221,7 @@ class Login extends React.Component{
                   <Button onClick={this.forgotPassword} color="primary">
                     Send
                   </Button>
-                  <Button onClick={this.handleClose} color="primary">
+                  <Button title='close_btn' onClick={this.handleClose} color="primary">
                     Close
                   </Button>
                 </DialogActions>
