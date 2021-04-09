@@ -29,7 +29,7 @@ class MyListings extends React.Component {
         this.state = {
             listings: [],
             menuOpen: false,
-            user: null
+            user: ""
         }
     }
 
@@ -43,8 +43,7 @@ class MyListings extends React.Component {
     componentDidMount() {
         document.body.style.backgroundColor = '#d2b48c';
         
-        
-        var listIDs = [];
+        var listKeys = [];
         var tempList = [];
         firebase.auth().onAuthStateChanged(function(user) {
             if (!user) {
@@ -53,20 +52,17 @@ class MyListings extends React.Component {
             }
             else {  
                 this.setState({ user: user.email });
-                firebase.firestore().collection("users").where("email", "==", user.email).get().then((querySnapshot) => {
+                firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         var data = doc.data();
-                        listIDs = data.listings;
-                        console.log(data.listings); 
+                        listKeys = data.listings;
                     });
-                    listIDs.forEach((id) => {
-                        firebase.firestore().collection("listings").doc(id.id).get().then((l) => {
-                            var gather = [l.id, l.data()];
+                    listKeys.forEach((key) => {
+                        firebase.firestore().collection("listings").doc(key.id).get().then((nextQuerySnapshot) => {
+                            var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
                             tempList.push(gather);
 
-                            this.setState({
-                                listings: tempList
-                            }); 
+                            this.setState({ listings: tempList }); 
                         });
                     });
                 });
@@ -135,7 +131,7 @@ class MyListings extends React.Component {
                                     </Grid>
                                     <Grid item xs>
                                         <Typography color="textSecondary">
-                                        {item[dataIndex].owner}
+                                        {item[dataIndex].seller}
                                         </Typography>
                                     </Grid>
                                     </Grid>

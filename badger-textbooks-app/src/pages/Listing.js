@@ -255,7 +255,7 @@ class Listings extends React.Component {
                     onClick={() => {
                       sessionStorage.setItem("receiverEmail", this.state.owner);
                       sessionStorage.setItem("returnLocation", "/listing");
-                      window.location.href = "/testChatPage";
+                      window.location.href = "/chat";
                     }}>
                     Chat with Seller! 
                 </Button>

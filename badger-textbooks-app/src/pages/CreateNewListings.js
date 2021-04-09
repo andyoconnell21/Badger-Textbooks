@@ -37,7 +37,7 @@ export class CreateNewListing extends Component {
             price: 0,
             condition: 'brand-new',
             class_used: '',
-            alerOpen: false,
+            alertOpen: false,
             menuOpen: false,
             imageURL: '',
         }
@@ -65,6 +65,7 @@ export class CreateNewListing extends Component {
                 alertOpen: true
             });
         } else {
+            var uid = firebase.auth().currentUser.uid;
             var user_email = firebase.auth().currentUser.email;
             var date = Date().toLocaleString();
 
@@ -80,12 +81,13 @@ export class CreateNewListing extends Component {
                 price: this.state.price,
                 title: this.state.title,
                 search_title: this.state.title.toLowerCase(),
-                owner: user_email,
+                seller: user_email,
+                seller_uid: uid,
                 time_created: date,
                 image_url: this.state.imageURL
             }).then((docRef) => {
                 listingRef = docRef;
-                firebase.firestore().collection("users").where('email', '==', user_email).get().then((querySnapshot) => {
+                firebase.firestore().collection("users").where('uid', '==', uid).get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         userRef = doc.id;
                     });

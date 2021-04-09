@@ -49,7 +49,6 @@ class Home extends React.Component {
       searchResults: [],
       searchHidden: true,
       menuOpen: false,
-      email: ""
     }
   }
 
@@ -263,7 +262,7 @@ class Home extends React.Component {
                       </Grid>
                       <Grid item xs>
                         <Typography color="textSecondary">
-                          {item[dataIndex].owner}
+                          {item[dataIndex].seller}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -327,7 +326,7 @@ class Home extends React.Component {
                       </Grid>
                       <Grid item xs>
                         <Typography color="textSecondary">
-                          {item[dataIndex].owner}
+                          {item[dataIndex].seller}
                         </Typography>
                       </Grid>
                     </Grid>
