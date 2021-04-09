@@ -61,55 +61,73 @@ class Listings extends React.Component {
         .then((doc) => {
           var data = doc.data();
           this.setState({
-            author: data.author,
-            class: data.class,
-            owner: data.owner,
-            price: data.price,
-            date: data.time_created,
-            title: data.title,
-            condition: data.condition,
-            image: data.image_url,
-            ISBN: data.ISBN
+              author: data.author,
+              class: data.class,
+              owner: data.owner,
+              price: data.price,
+              date: data.time_created,
+              title: data.title,
+              condition: data.condition,
+              image: data.image_url,
+              ISBN: data.ISBN
           })
         })
     }
 
-    toggleMenu = (event) => {
-      var curr_state = this.state.menuOpen;
-      this.setState({
-        menuOpen: !curr_state
-      });
+    deleteStorage = (id) => {
+        firebase
+            .firestore()
+            .collection("listing")
+            .doc(id)
+            .delete()
     }
-  
-  render() {
-   return (
-      <div>
-        <AppBar position = "static" style={{background:'#c5050c'}}>
-          <Toolbar>
-            <IconButton onClick={this.toggleMenu}> 
-              <MenuIcon/>
-            </IconButton>
-            <Typography variant='h6' style={{fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto'}}>
-              Listing of {this.state.title} Textbook
-            </Typography>
-          </Toolbar>
-        </AppBar>
 
-        <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-          <List>
-              <ListItem button key="home_nav" onClick={() => {window.location.href = "/home";}}>
-                <ListItemIcon><HomeIcon/></ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="create_listing_nav" onClick={() => {window.location.href = "/createnewlisting";}}>
-                <ListItemIcon><AddIcon/></ListItemIcon>
-                <ListItemText primary="Create a New Listing" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
-                <ListItemIcon><MyListingsIcon/></ListItemIcon>
-                <ListItemText primary="My Listings" />
+    toggleMenu = (event) => {
+        var curr_state = this.state.menuOpen;
+        this.setState({
+            menuOpen: !curr_state
+        });
+    }
+
+    addDefaultSrc(ev) {
+        ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
+    }
+
+    render() {
+        return (
+            <div>
+                <AppBar position="static" style={{background: '#c5050c'}}>
+                    <Toolbar>
+                        <IconButton onClick={this.toggleMenu}>
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant='h6' style={{fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto'}}>
+                            Listing of {this.state.title} Textbook
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+
+                <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+                    <List>
+                        <ListItem button key="home_nav" onClick={() => {
+                            window.location.href = "/home";
+                        }}>
+                            <ListItemIcon><HomeIcon/></ListItemIcon>
+                            <ListItemText primary="Home"/>
+                        </ListItem>
+                        <Divider/>
+                        <ListItem button key="create_listing_nav" onClick={() => {
+                            window.location.href = "/createnewlisting";
+                        }}>
+                            <ListItemIcon><AddIcon/></ListItemIcon>
+                            <ListItemText primary="Create a New Listing"/>
+                        </ListItem>
+                        <Divider/>
+                        <ListItem button key="my_listings_nav" onClick={() => {
+                            window.location.href = "/mylistings";
+                        }}>
+                            <ListItemIcon><MyListingsIcon/></ListItemIcon>
+                            <ListItemText primary="My Listings"/>
               </ListItem>
               <Divider/>
               <ListItem button key="chat_list_nav" onClick={() => {window.location.href = "/chatlistpage";}}>
@@ -131,40 +149,46 @@ class Listings extends React.Component {
 
         <Grid container>
           <Card style={{width: "600px", margin:'auto', marginTop: '50px'}}>
-            <CardContent>
-              <Grid container>
-                <Grid item>
-                  <img src={this.state.image} width="250" height="250" alt="Textbook Cover"/>
-                </Grid>
-                <Grid item xs >
-                  <Typography variant='h6'>
-                    <b>Title:</b> {this.state.title}
-                  </Typography>
-                  <Typography variant='h6'>
-                    <b>Author:</b> {this.state.author}
-                  </Typography>
-                  <Typography variant='h6'>
-                    <b>Class:</b> {this.state.class}
-                  </Typography>
-                  <Typography variant='h6'>
-                    <b>Condition:</b> {this.state.condition}
-                  </Typography>
-                  <Typography variant='h6'>
-                    <b>Price:</b> {this.state.price}$
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
-              <Accordion style={{width: "75%", margin: 'auto'}}>
-                <AccordionSummary style={{backgroundColor: 'lightgrey'}}>
-                  <Typography style={{fontFamily: 'sans-serif', fontSize:'14px', fontWeight: 'bold', margin:'auto'}}>MORE INFORMATION</Typography>
-                </AccordionSummary>
-                <AccordionDetails style={{flexDirection: 'column'}}>
-                  <Typography>
-                    <b>Seller of Textbook:</b> {this.state.owner}
-                  </Typography>
-                  <Typography>
-                    <b>ISBN: </b> {this.state.ISBN}
+              <CardContent>
+                  <Grid container>
+                      <Grid item>
+                          {/*<img src={this.state.image} width="250" height="250" alt="Textbook Cover"/>*/}
+                          <img align='right' width="500" height="600"
+                               style={{border: "5px solid black", padding: '15px'}}
+                               onError={this.addDefaultSrc} className="img-responsive"
+                               src={this.state.image} alt="Textbook Cover"/>
+                      </Grid>
+                      <Grid item xs>
+                          <Typography style={{align: "left"}} variant='h6'>
+                              <b>Title:</b> {this.state.title}
+                          </Typography>
+                          <Typography variant='h6'>
+                              <b>Author:</b> {this.state.author}
+                          </Typography>
+                          <Typography variant='h6'>
+                              <b>Class:</b> {this.state.class}
+                          </Typography>
+                          <Typography variant='h6'>
+                              <b>Condition:</b> {this.state.condition}
+                          </Typography>
+                          <Typography variant='h6'>
+                              <b>Price:</b> {this.state.price}$
+                          </Typography>
+                      </Grid>
+                  </Grid>
+                  <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                  <Accordion style={{width: "75%", margin: 'auto'}}>
+                      <AccordionSummary style={{backgroundColor: 'lightgrey'}}>
+                          <Typography
+                              style={{fontFamily: 'sans-serif', fontSize: '14px', fontWeight: 'bold', margin: 'auto'}}>MORE
+                              INFORMATION</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails style={{flexDirection: 'column'}}>
+                          <Typography>
+                              <b>Seller of Textbook:</b> {this.state.owner}
+                          </Typography>
+                          <Typography>
+                              <b>ISBN: </b> {this.state.ISBN}
                   </Typography>
                   <Typography>
                     <b>Date of Listing:</b> {this.state.date.toString()}
@@ -181,9 +205,7 @@ class Listings extends React.Component {
                         marginBottom: '10px',
                         border: '0',
                         backgroundColor: '#c5050c',
-                        width: '25%',
-                        marginRight: '25%',
-                        marginLeft: '25%',
+                        width: '75%',
                         cursor: 'pointer',
                         color: 'white',
                         fontSize: '18px'
@@ -194,23 +216,6 @@ class Listings extends React.Component {
                         window.location.href = "/editlisting";
                     }}>
                     Edit Listing
-                </Button>
-                <Button
-                    fullWidth
-                    style={{
-                        marginTop: "10px",
-                        marginBottom: '10px',
-                        border: '0',
-                        backgroundColor: '#c5050c',
-                        width: '25%',
-                        marginRight: '25%',
-                        marginLeft: '25%',
-                        cursor: 'pointer',
-                        color: 'white',
-                        fontSize: '18px'
-                    }}
-                >
-                    Remove Listing
                 </Button>
               <Button 
                 fullWidth 
@@ -236,6 +241,8 @@ class Listings extends React.Component {
       </div>
      )
   }
+
+
 }
 
 export default Listings

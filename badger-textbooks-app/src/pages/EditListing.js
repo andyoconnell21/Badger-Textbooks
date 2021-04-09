@@ -104,6 +104,18 @@ export class EditListing extends Component {
             )
         }
     }
+    // handleRemoveSubmit = (e) => {
+    //     var user_email = firebase.auth().currentUser.email;
+    //     var date = Date().toLocaleString();
+    //
+    //     var documentId = sessionStorage.getItem('currentListing')
+    //     console.log(firebase.firestore().collection('listings').doc(documentId))
+    //     firebase.firestore().collection('listings').doc(documentId).delete().then(() => {
+    //             window.location = "/mylistings";
+    //         }
+    //     )
+    // }
+
 
     handleTitleChange = (e) => {
         this.setState({
@@ -302,6 +314,13 @@ export class EditListing extends Component {
                         fullWidth
                         onClick={this.handleSubmit.bind(this)}
                     >Confirm Edit</Button>
+                    {/*<Divider style={{margin: "10px"}}/>*/}
+                    {/*<Button*/}
+                    {/*    style={{color: '#ffffff', backgroundColor: '#c5050c'}}*/}
+                    {/*    variant="contained"*/}
+                    {/*    fullWidth*/}
+                    {/*    onClick={this.handleRemoveSubmit.bind(this)}*/}
+                    {/*>Remove Listing</Button>*/}
                 </form>
             </div>
         )

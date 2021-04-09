@@ -10,7 +10,7 @@ import Listing from "./pages/Listing"
 import React from "react";
 import MyListings from "./pages/MyListings";
 import CreateNewListing from "./pages/CreateNewListings";
-import ChatPage from "./pages/ChatPage";
+import ChatPage from "./pages/chatPage";
 import ChatListPage from "./pages/ChatListPage";
 import EditListingPage from "./pages/EditListing";
 
