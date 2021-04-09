@@ -72,12 +72,12 @@ class MyAccountPage extends React.Component {
           type: data.type,
           username: data.username,
           password: data.password,
-          description: data.payment,
+          description: data.description,
         //   phone: data.phone,
         //   address: data.address,
           usernameInput: data.username,
           passwordInput: data.password,
-          paymentInput: data.payment,
+          descriptionInput: data.description,
           phoneInput: data.phone,
           addressInput: data.address,
         });
@@ -111,7 +111,7 @@ class MyAccountPage extends React.Component {
     this.setState({
       usernameInput: this.state.username,
       passwordInput: this.state.password,
-    //   paymentInput: this.state.payment,
+      descriptionInput: this.state.description,
     //   phoneInput: this.state.phone,
     //   addressInput: this.state.address,
       editVis: '',
@@ -128,7 +128,7 @@ class MyAccountPage extends React.Component {
     firebase.firestore().collection("users").doc(docID).update({
       username: this.state.usernameInput,
       password: this.state.passwordInput,
-    //   payment: this.state.paymentInput,
+      description: this.state.descriptionInput,
     //   phone: this.state.phoneInput,
     //   address: this.state.addressInput
     }).then(() => 
@@ -138,12 +138,12 @@ class MyAccountPage extends React.Component {
         this.setState({
           username: data.username,
           password: data.password,
-        //   payment: data.payment,
+          description: data.description,
         //   phone: data.phone,
         //   address: data.address,
           usernameInput: data.username,
           passwordInput: data.password,
-        //   paymentInput: data.payment,
+          descriptionInput: data.description,
         //   phoneInput: data.phone,
         //   addressInput: data.address,
           editVis: '',
@@ -237,7 +237,7 @@ class MyAccountPage extends React.Component {
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
-                    Payment: 
+                  Description: 
                   </Typography>
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
@@ -248,17 +248,18 @@ class MyAccountPage extends React.Component {
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <Select
                     fullWidth
-                    onChange={this.handlePaymentChange}
-                    value={this.state.paymentInput}
+                    onChange={this.handleDescriptionChange}
+                    value={this.state.descriptionInput}
                     style={{textAlign: 'left'}}
                   >
-                    <MenuItem value={1}>Credit Card</MenuItem>
-                    <MenuItem value={2}>PayPal</MenuItem>
+                    <MenuItem value={1}>I feel good</MenuItem>
+                    <MenuItem value={2}>Bad Mood Today</MenuItem>
+                    <MenuItem value={3}>Just SoSo</MenuItem>
                   </Select>
                 </Grid>
               </Grid>
 
-              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
                     Phone: 
@@ -277,9 +278,9 @@ class MyAccountPage extends React.Component {
                     onChange={this.handlePhoneChange}
                   />
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
                     Address: 
@@ -297,7 +298,7 @@ class MyAccountPage extends React.Component {
                     onChange={this.handleAddressChange}
                   />
                 </Grid>
-              </Grid>
+              </Grid> */}
             </Box>
 
             <Container>
