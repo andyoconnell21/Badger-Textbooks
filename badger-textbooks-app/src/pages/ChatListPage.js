@@ -22,6 +22,9 @@ import Drawer from '@material-ui/core/Drawer';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import MenuIcon from '@material-ui/icons/Menu';
 
+const nameIndex = 0;
+const chatIndex = 1;
+
 class ChatList extends React.Component {
 
     constructor(props) {
@@ -29,7 +32,8 @@ class ChatList extends React.Component {
         this.state = {
             chats: [],
             userEmail: "",
-            menuOpen: false
+            menuOpen: false,
+            tempRecentChat: ""
         }
     }
   
@@ -68,16 +72,19 @@ class ChatList extends React.Component {
                         tempData.forEach((item) => {
                             interData.push(item.name)
                         });
-                        var filteredData = interData.filter((c, index) => {
+                        var filteredPeople = interData.filter((c, index) => {
                             return interData.indexOf(c) === index;
                         });
-                        this.setState({ chats: filteredData });
+                        filteredPeople.forEach((person) => {
+                            this.getMostRecentMessage(person);
+                        });
                     });
                 });
             }
         }.bind(this));
     }
 
+    //HELPER FUNCTION: Handles the toggling of the menu.
     toggleMenu = (event) => {
         var curr_state = this.state.menuOpen;
         this.setState({
@@ -85,38 +92,36 @@ class ChatList extends React.Component {
         });
     }
 
-    //TRYING TO GET MOST RECENT MESSAGE TO DISPLAY BELOW CHAT NAMES...DOESN'T WORK YET
-    // getMostRecentMessage(name) {
-    //     var tempMessages = [];
-    //     firebase.firestore().collection("test_messages")
-    //     .where("sender", "==", this.state.userEmail)
-    //     .where("receiver", '==', name)
-    //     .get().then((querySnapshot) => {
-    //       querySnapshot.forEach((doc) => {
-    //           var gather = doc.data();
-    //           tempMessages.push(gather)
-    //       });
-    //       firebase.firestore().collection("test_messages")
-    //         .where("sender", "==", name)
-    //         .where("receiver", "==", this.state.userEmail)
-    //         .get().then((querySnapshot) => {
-    //           querySnapshot.forEach((doc) => {
-    //               var gather = doc.data();
-    //               tempMessages.push(gather);
-    //           });
-    //           tempMessages.sort(function(a,b) {
-    //               // Turn your strings into dates, and then subtract them
-    //               // to get a value that is either negative, positive, or zero.
-    //               return new Date(a.date) - new Date(b.date);
-    //           }); 
-    //         //   tempMessages.reduce(function(a, b) {
-    //         //     return new Date(a.date) > new Date(b.date) ? a : b;
-    //         //   });
-    //         });
-    //     });
-        
-    //     return tempMessages[0].text;
-    // }
+    //HELPER FUNCTION: Gets the most recent message for each chat to display.
+    getMostRecentMessage = (name) => {
+        var chats = this.state.chats;
+        var tempMessages = [];
+        firebase.firestore().collection("test_messages")
+        .where("sender", "==", this.state.userEmail)
+        .where("receiver", '==', name)
+        .get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              var gather = doc.data();
+              tempMessages.push(gather)
+          });
+          firebase.firestore().collection("test_messages")
+            .where("sender", "==", name)
+            .where("receiver", "==", this.state.userEmail)
+            .get().then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                  var gather = doc.data();
+                  tempMessages.push(gather);
+              });
+              tempMessages.sort(function(a,b) {
+                  // Turn your strings into dates, and then subtract them
+                  // to get a value that is either negative, positive, or zero.
+                  return new Date(b.date) - new Date(a.date);
+              });
+              chats.push([name, tempMessages[0].text]);
+              this.setState({chats: chats});
+            });
+        });
+    }
 
     render() {
         return (
@@ -141,17 +146,17 @@ class ChatList extends React.Component {
                     <Box style={{height: '100vh'}}>
                         <Paper variant="outlined" square style={{ height: '100%' }}>
                             <List>
-                                {this.state.chats.map((name) => (
+                                {this.state.chats.map((data) => (
                                     <div>
                                         <ListItem 
                                             button 
                                             onClick={() => {
-                                                sessionStorage.setItem("receiverEmail", name);
+                                                sessionStorage.setItem("receiverEmail", data[nameIndex]);
                                                 sessionStorage.setItem("returnLocation", "/chatlist")
                                                 window.location.assign("/chat");
                                             }}
                                         >
-                                            <ListItemText primary={name} secondary="Placeholder for most recent message." />
+                                            <ListItemText primary={data[nameIndex]} secondary={data[chatIndex]} />
                                             <ListItemIcon><NavigateNextIcon/></ListItemIcon>
                                         </ListItem>
                                         <Divider/>
