@@ -112,6 +112,8 @@ class Listings extends React.Component {
             })
           }
         }
+        console.log(uid);
+        console.log(userListings);
         })
       })
 }
@@ -237,7 +239,6 @@ class Listings extends React.Component {
                     }}>
                     Edit Listing
                 </Button>
-              </Grid>
               </Grid>
               <Grid hidden={this.state.chatNotNeeded}>
                 <Button 
