@@ -43,6 +43,7 @@ class MyListings extends React.Component {
     componentDidMount() {
         document.body.style.backgroundColor = '#d2b48c';
         
+        
         var listIDs = [];
         var tempList = [];
         firebase.auth().onAuthStateChanged(function(user) {
