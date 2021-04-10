@@ -2,6 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+import NavigationMenu from './NavigationMenu';
+
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -141,37 +143,7 @@ class Listings extends React.Component {
         </AppBar>
 
         <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-          <List>
-              <ListItem button key="home_nav" onClick={() => {window.location.href = "/home";}}>
-                <ListItemIcon><HomeIcon/></ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="create_listing_nav" onClick={() => {window.location.href = "/createnewlisting";}}>
-                <ListItemIcon><AddIcon/></ListItemIcon>
-                <ListItemText primary="Create a New Listing" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="my_listings_nav" onClick={() => {window.location.href = "/mylistings";}}>
-                <ListItemIcon><MyListingsIcon/></ListItemIcon>
-                <ListItemText primary="My Listings" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="chat_list_nav" onClick={() => {window.location.href = "/chatlistpage";}}>
-                <ListItemIcon><ChatIcon/></ListItemIcon>
-                <ListItemText primary="My Conversations" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="saved_listings_nav" disabled>
-                <ListItemIcon><SavedIcon/></ListItemIcon>
-                <ListItemText primary="Saved Listings" />
-              </ListItem>
-              <Divider/>
-              <ListItem button key="account_nav" disabled>
-                <ListItemIcon><AccountIcon/></ListItemIcon>
-                <ListItemText primary="Account" />
-              </ListItem>
-          </List>
+          <NavigationMenu/>
         </Drawer>
 
         <Grid container>
