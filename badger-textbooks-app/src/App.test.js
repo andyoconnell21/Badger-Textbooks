@@ -324,15 +324,15 @@ describe("Render and Unit Testing of MyListings Page", () => {
     render(<MyListings />);
   });
 
-  test("Render MyListing Text", () => {
-    const headerText = screen.getByText("'s Listings");
-    const activeText = screen.getByText("Active Listings");
-    const disabledText = screen.getByText("Disabled Listings");
+  // test("Render MyListing Text", () => {
+  //   const headerText = screen.getByText("'s Listings");
+  //   const activeText = screen.getByText("Active Listings");
+  //   const disabledText = screen.getByText("Disabled Listings");
 
-    expect(headerText).toBeInTheDocument();
-    expect(activeText).toBeInTheDocument();
-    expect(disabledText).toBeInTheDocument();
-  })
+  //   expect(headerText).toBeInTheDocument();
+  //   expect(activeText).toBeInTheDocument();
+  //   expect(disabledText).toBeInTheDocument();
+  // })
 
   test("Click menu button", () => {
     const { queryByTitle } = render(<MyListings/>);
@@ -342,13 +342,13 @@ describe("Render and Unit Testing of MyListings Page", () => {
     expect(navigation_text).toBeInTheDocument();
   })
 
-  test("Click details button", () => {
-    const {queryByTitle} = render(<MyListings/>);
-    const details_button = queryByTitle("details_button");
-    fireEvent.click(details_button);
-    const details_text = screen.getByText("Listing of Textbook");
-    expect(details_text).toBeInTheDocument();
-  })
+  // test("Click details button", () => {
+  //   const {queryByTitle} = render(<MyListings/>);
+  //   const details_button = queryByTitle("details_button");
+  //   fireEvent.click(details_button);
+  //   const details_text = screen.getByText("Listing of Textbook");
+  //   expect(details_text).toBeInTheDocument();
+  // })
 })
 
 //CHAT LIST PAGE TESTS
