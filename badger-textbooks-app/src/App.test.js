@@ -325,11 +325,11 @@ describe("Render and Unit Testing of MyListings Page", () => {
   });
 
   test("Render MyListing Text", () => {
-    //const headerText = screen.getByText("'s Listings");
+    const headerText = screen.getByText("'s Listings");
     const activeText = screen.getByText("Active Listings");
     const disabledText = screen.getByText("Disabled Listings");
 
-    //expect(headerText).toBeInTheDocument();
+    expect(headerText).toBeInTheDocument();
     expect(activeText).toBeInTheDocument();
     expect(disabledText).toBeInTheDocument();
   })
@@ -433,6 +433,3 @@ describe("Render Testing of CreateNewListings Page", () =>{
 //     expect(imageText).toBeInTheDocument();
 //   })
 // });
-
-
-

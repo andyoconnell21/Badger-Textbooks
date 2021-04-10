@@ -36,7 +36,7 @@ class Listings extends React.Component {
         this.state = {
           author: '',
           class: '',
-          owner: '',
+          seller: '',
           price: '',
           date: new Date(),
           title: '',
@@ -69,7 +69,7 @@ class Listings extends React.Component {
             this.setState({
               author: data.author,
               class: data.class,
-              owner: data.owner,
+              seller: data.seller,
               price: data.price,
               date: data.time_created,
               title: data.title,
@@ -82,7 +82,7 @@ class Listings extends React.Component {
             this.setState({
               author: data.author,
               class: data.class,
-              owner: data.owner,
+              seller: data.seller,
               price: data.price,
               date: data.time_created,
               title: data.title,
@@ -206,7 +206,7 @@ class Listings extends React.Component {
                 </AccordionSummary>
                 <AccordionDetails style={{flexDirection: 'column'}}>
                   <Typography>
-                    <b>Seller of Textbook:</b> {this.state.owner}
+                    <b>Seller of Textbook:</b> {this.state.seller}
                   </Typography>
                   <Typography>
                     <b>ISBN: </b> {this.state.ISBN}
@@ -253,7 +253,7 @@ class Listings extends React.Component {
                     color: 'white', 
                     fontSize: '18px'}} 
                     onClick={() => {
-                      sessionStorage.setItem("receiverEmail", this.state.owner);
+                      sessionStorage.setItem("receiverEmail", this.state.seller);
                       sessionStorage.setItem("returnLocation", "/listing");
                       window.location.href = "/chat";
                     }}>
