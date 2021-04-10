@@ -3,6 +3,8 @@ import '../w3.css'
 import '../App.css'
 import firebase from "firebase";
 
+import NavigationMenu from './NavigationMenu.js';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -190,31 +192,7 @@ export class EditListing extends Component {
                 </AppBar>
 
                 <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-                    <List>
-                        <ListItem button key="home_nav" onClick={() => {
-                            window.location.href = "/home";
-                        }}>
-                            <ListItemIcon><HomeIcon/></ListItemIcon>
-                            <ListItemText primary="Home"/>
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="my_listings_nav" onClick={() => {
-                            window.location.href = "/mylistings";
-                        }}>
-                            <ListItemIcon><MyListingsIcon/></ListItemIcon>
-                            <ListItemText primary="My Listings"/>
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="saved_listings_nav" disabled>
-                            <ListItemIcon><SavedIcon/></ListItemIcon>
-                            <ListItemText primary="Saved Listings"/>
-                        </ListItem>
-                        <Divider/>
-                        <ListItem button key="account_nav" disabled>
-                            <ListItemIcon><AccountIcon/></ListItemIcon>
-                            <ListItemText primary="Account"/>
-                        </ListItem>
-                    </List>
+                    <NavigationMenu/>
                 </Drawer>
 
                 <Dialog

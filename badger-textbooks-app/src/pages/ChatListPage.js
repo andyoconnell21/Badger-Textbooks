@@ -47,7 +47,7 @@ class ChatList extends React.Component {
             } else {
                 this.setState({userEmail: user.email})
                 var tempData = [];
-                firebase.firestore().collection("test_messages")
+                firebase.firestore().collection("messages")
                   .where("sender", "==", user.email)
                   .get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
@@ -55,7 +55,7 @@ class ChatList extends React.Component {
                         var time = doc.data().date;
                         tempData.push({name: name, time: time});
                     });
-                    firebase.firestore().collection("test_messages")
+                    firebase.firestore().collection("messages")
                       .where("receiver", "==", user.email)
                       .get().then((querySnapshot) => {
                         querySnapshot.forEach((doc) => {
@@ -96,7 +96,7 @@ class ChatList extends React.Component {
     getMostRecentMessage = (name) => {
         var chats = this.state.chats;
         var tempMessages = [];
-        firebase.firestore().collection("test_messages")
+        firebase.firestore().collection("messages")
         .where("sender", "==", this.state.userEmail)
         .where("receiver", '==', name)
         .get().then((querySnapshot) => {
@@ -104,7 +104,7 @@ class ChatList extends React.Component {
               var gather = doc.data();
               tempMessages.push(gather)
           });
-          firebase.firestore().collection("test_messages")
+          firebase.firestore().collection("messages")
             .where("sender", "==", name)
             .where("receiver", "==", this.state.userEmail)
             .get().then((querySnapshot) => {

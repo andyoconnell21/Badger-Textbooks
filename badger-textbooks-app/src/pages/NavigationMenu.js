@@ -59,7 +59,7 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="Saved Listings" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="account_nav" disabled>
+                    <ListItem button key="account_nav" selected={this.state.pageName === "/myAccount"} onClick={() => this.handleClick("/myAccount")}>
                         <ListItemIcon><AccountIcon/></ListItemIcon>
                         <ListItemText primary="Account" />
                     </ListItem>

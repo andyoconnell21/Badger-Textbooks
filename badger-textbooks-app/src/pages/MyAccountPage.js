@@ -1,6 +1,8 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
+import NavigationMenu from './NavigationMenu';
+
 import React from "react";
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -20,6 +22,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Drawer from '@material-ui/core/Drawer';
+
+import MenuIcon from '@material-ui/icons/Menu';
 
 class MyAccountPage extends React.Component {
 
@@ -28,6 +33,9 @@ class MyAccountPage extends React.Component {
     this.state = {
       username: '',
       password: '',
+      uid: '',
+
+
       description: '',
       mood: '',
       address: '',
@@ -51,37 +59,41 @@ class MyAccountPage extends React.Component {
   }
 
   componentDidMount () {
-
     document.body.style.backgroundColor = '#494949'
 
-    firebase.auth().signInWithEmailAndPassword(localStorage.getItem('email'), localStorage.getItem('password'))
-      .then((userCredential) => {
-        //signed in!
-      })
-      .catch((error) => {
-        console.log(error.code)
-      });
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (!user) {
+        //User is not siged in...redirect to login page
+        window.location.href = "/";
+      } else {
+        this.setState({ uid: user.uid });
 
-    var status = localStorage.getItem('userStatus');
-    var docID = "customer"
+        firebase.firestore().collection('users').where("uid", "==", user.uid).get()
+        .then((doc) => {
+          doc.forEach((i) => {
+            var data = i.data();
+            this.setState({
+              name: data.name,
+              password: data.password,
+              menuOpen: false,
+              // username: data.username,
+              // password: data.password,
+              // description: data.description,
+              // mood: data.mood,
+              // address: data.address,
+              // usernameInput: data.username,
+              // passwordInput: data.password,
+              // descriptionInput: data.description,
+              // moodInput: data.mood,
+              // addressInput: data.address,
+              // imageURL: data.imageURL
+            });
+          })
+        })
+      }
+    }.bind(this));
 
-    firebase.firestore().collection('users').doc(docID).get()
-    .then((doc) => {
-        var data = doc.data();
-        this.setState({
-          username: data.username,
-          password: data.password,
-          description: data.description,
-          mood: data.mood,
-        //   address: data.address,
-          usernameInput: data.username,
-          passwordInput: data.password,
-          descriptionInput: data.description,
-          moodInput: data.mood,
-        // addressInput: data.address,
-          imageURL: data.imageURL
-        });
-      })
+    //var status = localStorage.getItem('userStatus');
   }
 
 //   handleLogout () {
@@ -99,7 +111,14 @@ class MyAccountPage extends React.Component {
   handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
 //   handleAddressChange(event) { this.setState({addressInput: event.target.value}); }
 
- handleEditClick() {
+toggleMenu = (event) => {
+  var curr_state = this.state.menuOpen;
+  this.setState({
+    menuOpen: !curr_state
+  });
+} 
+
+handleEditClick() {
     this.setState({
       editVis: 'none',
       acceptVis: 'inline',
@@ -185,9 +204,11 @@ class MyAccountPage extends React.Component {
       <div>
           <AppBar position="static" style={{ background: '#c5050c' }}>
             <Toolbar>
-              <IconButton onClick={event =>  window.location.href='/home'}>
-                <BackIcon/>
+
+              <IconButton title="menu_btn" onClick={this.toggleMenu}> 
+                <MenuIcon/>
               </IconButton>
+
               <Typography variant='h6' style={{flexGrow: 1}}>
                 My Account
               </Typography>
@@ -199,13 +220,17 @@ class MyAccountPage extends React.Component {
             </Toolbar>
           </AppBar>
 
-          <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
+          <Drawer title="nav_menu" anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+            <NavigationMenu/>
+          </Drawer>
+
+          {/* <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
             Email: {localStorage.getItem('email')}
-          </Typography>
+          </Typography> */}
           
-          <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
+          {/* <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
             Account Type: {this.state.type}
-          </Typography>
+          </Typography> */}
 
           <Card style={{margin: '10px'}}>
             <Box style={{margin: '15px'}}>
@@ -217,7 +242,7 @@ class MyAccountPage extends React.Component {
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
                   <Typography>
-                    {this.state.username}
+                    {this.state.name}
                   </Typography>
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
@@ -249,7 +274,7 @@ class MyAccountPage extends React.Component {
                 </Grid>
               </Grid>
 
-              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
                   Description: 
@@ -267,9 +292,9 @@ class MyAccountPage extends React.Component {
                     onChange={this.handleDescriptionChange}
                   />
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
                   Mood: 
@@ -292,15 +317,15 @@ class MyAccountPage extends React.Component {
                     <MenuItem value={3}>Just SoSo</MenuItem>
                   </Select>
                 </Grid>
-              </Grid>
+              </Grid> */}
 
-              <div>
+              {/* <div>
                         <label>My Profile Photo: </label>
                         <input className="w3-input w3-hover-light-gray"
                             type='file'
                             onChange={this.handleImageChange}
                         />
-                    </div>
+                    </div> */}
 
               {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>

@@ -49,7 +49,7 @@ class Chat extends React.Component {
 
   //FUNCTION: Adds the current entered message to firebase and clears the chat box.
   handleMessageSend = (event) => {
-    firebase.firestore().collection('test_messages').add({
+    firebase.firestore().collection('messages').add({
         sender: this.state.senderEmail,
         receiver: sessionStorage.getItem('receiverEmail'),
         text: this.state.currentText,
@@ -65,7 +65,7 @@ class Chat extends React.Component {
   //FUNCTION: Gets all relevant messages (sent and recieved) and sorts them by date before placing them in state for display.
   updateDisplayedMessages() {
     var tempMessages = [];
-    firebase.firestore().collection("test_messages")
+    firebase.firestore().collection("messages")
       .where("sender", "==", this.state.senderEmail)
       .where("receiver", '==', sessionStorage.getItem('receiverEmail'))
       .get().then((querySnapshot) => {
@@ -73,7 +73,7 @@ class Chat extends React.Component {
             var gather = doc.data();
             tempMessages.push(gather)
         });
-        firebase.firestore().collection("test_messages")
+        firebase.firestore().collection("messages")
           .where("sender", "==", sessionStorage.getItem('receiverEmail'))
           .where("receiver", "==", this.state.senderEmail)
           .get().then((querySnapshot) => {
@@ -84,7 +84,7 @@ class Chat extends React.Component {
             tempMessages.sort(function(a,b){
                 // Turn your strings into dates, and then subtract them
                 // to get a value that is either negative, positive, or zero.
-                return new Date(a.date) - new Date(b.date);
+                return new Date(b.date) - new Date(a.date);
             }); 
             this.setState({ messages: tempMessages });
         });
