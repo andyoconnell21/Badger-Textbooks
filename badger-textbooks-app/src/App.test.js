@@ -9,6 +9,8 @@ import MyListings from './pages/MyListings';
 import NavigationMenu from './pages/NavigationMenu';
 import ChatListPage from './pages/ChatListPage';
 import ChatPage from './pages/ChatPage';
+import EditListing from "./pages/EditListing";
+import CreateNewListings from "./pages/CreateNewListings";
 
 
 let assignMock = jest.fn();
@@ -379,3 +381,55 @@ describe("Testing ChatPage", () => {
       expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 });
+
+
+describe("Render Testing of CreateNewListings Page", () =>{
+  test("Basic Render Test of CreateNewListings Page", () => {
+    render(<CreateNewListings />);
+  })
+  test("Render CreateNewListings Text", () => {
+    render(<CreateNewListings />);
+    const headerText = screen.getByText("Create New Listing")
+    const bookTitleText = screen.getByText("Book Title*:")
+    const authorText = screen.getByText("Author*:")
+    const ISBNText = screen.getByText("ISBN:")
+    const priceText = screen.getByText("Desired Price:")
+    const classText = screen.getByText("Class Used For*:")
+    const conditionText = screen.getByText("Condition:")
+    const imageText = screen.getByText("Image of Textbook:")
+    expect(headerText).toBeInTheDocument();
+    expect(bookTitleText).toBeInTheDocument();
+    expect(authorText).toBeInTheDocument();
+    expect(ISBNText).toBeInTheDocument();
+    expect(priceText).toBeInTheDocument();
+    expect(classText).toBeInTheDocument();
+    expect(conditionText).toBeInTheDocument();
+    expect(imageText).toBeInTheDocument();
+  })
+});
+
+describe("Render Testing of EditListing Page", () =>{
+  test("Basic Render Test of EditListing Page", () => {
+    render(<CreateNewListings />);
+  })
+  test("Render CreateNewListings Text", () => {
+    render(<CreateNewListings />);
+    const headerText = screen.getByText("Create New Listing")
+    const bookTitleText = screen.getByText("Book Title*:")
+    const authorText = screen.getByText("Author*:")
+    const ISBNText = screen.getByText("ISBN:")
+    const priceText = screen.getByText("Desired Price:")
+    const classText = screen.getByText("Class Used For*:")
+    const conditionText = screen.getByText("Condition:")
+    const imageText = screen.getByText("Image of Textbook:")
+    expect(headerText).toBeInTheDocument();
+    expect(bookTitleText).toBeInTheDocument();
+    expect(authorText).toBeInTheDocument();
+    expect(ISBNText).toBeInTheDocument();
+    expect(priceText).toBeInTheDocument();
+    expect(classText).toBeInTheDocument();
+    expect(conditionText).toBeInTheDocument();
+    expect(imageText).toBeInTheDocument();
+  })
+});
+
