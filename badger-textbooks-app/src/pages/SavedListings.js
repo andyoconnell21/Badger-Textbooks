@@ -40,6 +40,7 @@ class SavedListing extends React.Component {
         this.state = {
             menuOpen: false,
             savedListings: [],
+            userUID: '',
         }
     }
 
@@ -51,6 +52,7 @@ class SavedListing extends React.Component {
             }
             else{
                 var uid = user.uid
+                this.setState({userUID: uid})
 
                 //Get docID's of users saved listings
                 var listKeys = [];
@@ -85,11 +87,35 @@ class SavedListing extends React.Component {
       }
 
     removeSavedListing = (event) => {
-
+        console.log(this.state.savedListings)
     }
 
     addDefaultSrc(ev) {
         ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
+    }
+
+    updateSavedListings = (event) => {
+        //Go into users firebase account and update savedListings array
+        //Get docID's of users saved listings
+        var listKeys = [];
+        var tempList = [];
+
+        firebase.firestore().collection("users").where("uid", "==", this.state.userUID).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var data = doc.data();
+                listKeys = data.saved_listings;
+            });
+            listKeys.forEach((key) => {
+                firebase.firestore().collection("listings").doc(key).get().then((nextQuerySnapshot) => {
+                    var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
+                    tempList.push(gather);
+
+                    this.setState({ savedListings: tempList }); 
+                });
+            });
+        });
+
+        console.log(this.state.savedListings)
     }
 
     render() {
@@ -111,8 +137,8 @@ class SavedListing extends React.Component {
                 </Drawer>
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
-                    <Typography variant='h4' style={{ margin: "10px" }}>
-                        Here are your saved listings
+                    <Typography variant='h4' style={{margin:'auto', fontFamily: 'sans-serif' }}>
+                        Here are your Saved Listings
                     </Typography>
                     <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
                         {this.state.savedListings.map((item) => (
@@ -168,7 +194,18 @@ class SavedListing extends React.Component {
                                 </Button>
                             </CardActions>
                             <CardActions>
-                                <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff', marginTop:'-10px'}} onClick={this.removeSavedListing}>
+                                <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff', marginTop:'-10px'}} onClick={() => {
+                                    var userRef = '';
+                                    firebase.firestore().collection("users").where("uid", "==", this.state.userUID).get().then((querySnapshot) => {
+                                        querySnapshot.forEach((doc) => {
+                                            userRef = doc.id
+                                        })
+                                        firebase.firestore().collection('users').doc(userRef).update({
+                                            saved_listings: firebase.firestore.FieldValue.arrayRemove(item[idIndex])
+                                        })
+                                    })
+                                    this.updateSavedListings()
+                                    }}>
                                     Remove from Saved Listings
                                 </Button>
                             </CardActions>
@@ -176,7 +213,7 @@ class SavedListing extends React.Component {
                         </Grid>
                         ))}
                     </Grid>
-                    </Box>
+                </Box>
             </div>
         )
     }
