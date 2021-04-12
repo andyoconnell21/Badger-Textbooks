@@ -12,10 +12,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -23,14 +19,8 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 
-import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
-import AddIcon from '@material-ui/icons/Add';
-import MyListingsIcon from '@material-ui/icons/ListAlt';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import SavedIcon from '@material-ui/icons/Favorite';
-import ChatIcon from '@material-ui/icons/Chat';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 class Listings extends React.Component {
     constructor(props){
@@ -114,18 +104,34 @@ class Listings extends React.Component {
             })
           }
         }
-        console.log(uid);
-        console.log(userListings);
         })
       })
-}
+  }
 
     toggleMenu = (event) => {
       var curr_state = this.state.menuOpen;
       this.setState({
         menuOpen: !curr_state
       });
-      console.log(this.state.image)
+    }
+
+    saveListing = (event) => {
+      var uid = firebase.auth().currentUser.uid;
+      var user_email = firebase.auth().currentUser.email;
+      var documentId = sessionStorage.getItem('currentListing')
+      var userRef;
+
+      firebase.firestore().collection('listings').doc(documentId).get().then((doc) => {
+        var listingRef = doc.id
+        firebase.firestore().collection('users').where('uid', '==', uid).get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            userRef = doc.id
+          })
+          firebase.firestore().collection('users').doc(userRef).update({
+            saved_listings: firebase.firestore.FieldValue.arrayUnion(listingRef)
+          })
+        })
+      })
     }
   
   render() {
@@ -153,7 +159,7 @@ class Listings extends React.Component {
                 <Grid item>
                   <img src={this.state.image} width="250" height="250" alt="Textbook Cover"/>
                 </Grid>
-                <Grid item xs >
+                <Grid item xs style={{marginTop:'40px'}}>
                   <Typography variant='h6'>
                     <b>Title:</b> {this.state.title}
                   </Typography>
@@ -191,6 +197,7 @@ class Listings extends React.Component {
                   </Typography>
                 </AccordionDetails>
               </Accordion>
+              
               <Grid hidden={this.state.userAuthed}>
                 <Button 
                     fullWidth
@@ -212,11 +219,27 @@ class Listings extends React.Component {
                     Edit Listing
                 </Button>
               </Grid>
+
+              <Button 
+                  fullWidth
+                  style={{
+                    marginTop: "10px", 
+                    marginBottom: '10px', 
+                    border: '0', 
+                    backgroundColor: '#c5050c', 
+                    width: '75%', 
+                    cursor: 'pointer', 
+                    color: 'white', 
+                    fontSize: '18px'
+                  }}
+                  onClick={this.saveListing}>
+                  Save Listing
+              </Button>
+
               <Grid hidden={this.state.chatNotNeeded}>
                 <Button 
                   fullWidth 
                   style={{
-                    marginTop: "10px", 
                     marginBottom: '10px', 
                     border: '0', 
                     backgroundColor: '#c5050c', 
