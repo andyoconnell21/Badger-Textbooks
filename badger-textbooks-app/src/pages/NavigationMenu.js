@@ -54,7 +54,7 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="My Conversations" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="saved_listings_nav" disabled>
+                    <ListItem button key="saved_listings_nav" selected={this.state.pageName === "/savedListings"} onClick={() => this.handleClick("/savedListings")}>
                         <ListItemIcon><SavedIcon/></ListItemIcon>
                         <ListItemText primary="Saved Listings" />
                     </ListItem>
