@@ -88,6 +88,10 @@ class SavedListing extends React.Component {
 
     }
 
+    addDefaultSrc(ev) {
+        ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
+    }
+
     render() {
         return(
             <div>
