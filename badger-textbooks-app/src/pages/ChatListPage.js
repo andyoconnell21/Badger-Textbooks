@@ -23,7 +23,8 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import MenuIcon from '@material-ui/icons/Menu';
 
 const nameIndex = 0;
-const chatIndex = 1;
+const nameUidIndex = 1;
+const chatIndex = 2;
 
 class ChatList extends React.Component {
 
@@ -31,7 +32,7 @@ class ChatList extends React.Component {
         super(props)
         this.state = {
             chats: [],
-            userEmail: "",
+            userUid: "",
             menuOpen: false,
             tempRecentChat: ""
         }
@@ -45,24 +46,26 @@ class ChatList extends React.Component {
                 //User is not siged in...redirect to login page
                 window.location.href = "/";
             } else {
-                this.setState({userEmail: user.email})
+                this.setState({userUid: user.uid});
                 var tempData = [];
                 firebase.firestore().collection("messages")
-                  .where("sender", "==", user.email)
+                  .where("sender_uid", "==", user.uid)
                   .get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         var name = doc.data().receiver;
+                        var name_uid = doc.data().receiver_uid;
                         var time = doc.data().date;
-                        tempData.push({name: name, time: time});
+                        tempData.push({name: name, name_uid: name_uid, time: time});
                     });
                     firebase.firestore().collection("messages")
-                      .where("receiver", "==", user.email)
+                      .where("receiver_uid", "==", user.uid)
                       .get().then((querySnapshot) => {
                         querySnapshot.forEach((doc) => {
                             var name = doc.data().sender;
+                            var name_uid = doc.data().sender_uid;
                             var time = doc.data().date;
-                            tempData.push({name: name, time: time});
-                        })
+                            tempData.push({name: name, name_uid: name_uid, time: time});
+                        });
                         tempData.sort(function(a,b){
                             // Turn your strings into dates, and then subtract them
                             // to get a value that is either negative, positive, or zero.
@@ -70,13 +73,17 @@ class ChatList extends React.Component {
                         });
                         var interData = []
                         tempData.forEach((item) => {
-                            interData.push(item.name)
+                            interData.push({name: item.name, name_uid: item.name_uid});
                         });
-                        var filteredPeople = interData.filter((c, index) => {
-                            return interData.indexOf(c) === index;
+                        var filteredPeople = [];
+                        interData.forEach(function(item){
+                            var i = filteredPeople.findIndex(x => x.name === item.name);
+                            if(i <= -1){
+                                filteredPeople.push({name: item.name, name_uid: item.name_uid});
+                            }
                         });
                         filteredPeople.forEach((person) => {
-                            this.getMostRecentMessage(person);
+                            this.getMostRecentMessage(person.name, person.name_uid);
                         });
                     });
                 });
@@ -93,20 +100,20 @@ class ChatList extends React.Component {
     }
 
     //HELPER FUNCTION: Gets the most recent message for each chat to display.
-    getMostRecentMessage = (name) => {
+    getMostRecentMessage = (name, name_uid) => {
         var chats = this.state.chats;
         var tempMessages = [];
         firebase.firestore().collection("messages")
-        .where("sender", "==", this.state.userEmail)
-        .where("receiver", '==', name)
+        .where("sender_uid", "==", this.state.userUid)
+        .where("receiver_uid", '==', name_uid)
         .get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
               var gather = doc.data();
               tempMessages.push(gather)
           });
           firebase.firestore().collection("messages")
-            .where("sender", "==", name)
-            .where("receiver", "==", this.state.userEmail)
+            .where("sender_uid", "==", name_uid)
+            .where("receiver_uid", "==", this.state.userUid)
             .get().then((querySnapshot) => {
               querySnapshot.forEach((doc) => {
                   var gather = doc.data();
@@ -117,7 +124,7 @@ class ChatList extends React.Component {
                   // to get a value that is either negative, positive, or zero.
                   return new Date(b.date) - new Date(a.date);
               });
-              chats.push([name, tempMessages[0].text]);
+              chats.push([name, name_uid, tempMessages[0].text]);
               this.setState({chats: chats});
             });
         });
@@ -151,7 +158,7 @@ class ChatList extends React.Component {
                                         <ListItem 
                                             button 
                                             onClick={() => {
-                                                sessionStorage.setItem("receiverEmail", data[nameIndex]);
+                                                sessionStorage.setItem("receiverUid", data[nameUidIndex]);
                                                 sessionStorage.setItem("returnLocation", "/chatlist")
                                                 window.location.assign("/chat");
                                             }}

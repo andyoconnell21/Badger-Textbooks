@@ -23,21 +23,36 @@ class Chat extends React.Component {
     super(props)
     this.state = {
         messages: [],
-        senderEmail: "",
+        senderName: "",
+        senderUid: "",
+        receiverName: "",
         currentText: ""
     }
   }
 
   //LIFECYCLE FUNCTION: Does basic page setup, check user auth, makes call to display initial messages.
   componentDidMount() {
+    console.log(sessionStorage.getItem('receiverUid'));
     document.body.style.backgroundColor = '#d2b48c';
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         //User is not siged in...redirect to login page
         window.location.href = "/";
       } else {
-        this.setState({ senderEmail: user.email });
+        console.log(user.uid);
+        this.setState({ senderUid: user.uid });
         this.updateDisplayedMessages();
+        
+        firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.setState({ senderName: doc.data().name });
+          });
+        });
+        firebase.firestore().collection("users").where("uid", "==", sessionStorage.getItem("receiverUid")).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              this.setState({ receiverName: doc.data().name });
+            });
+        });
       }
     }.bind(this));
   }
@@ -50,8 +65,10 @@ class Chat extends React.Component {
   //FUNCTION: Adds the current entered message to firebase and clears the chat box.
   handleMessageSend = (event) => {
     firebase.firestore().collection('messages').add({
-        sender: this.state.senderEmail,
-        receiver: sessionStorage.getItem('receiverEmail'),
+        sender: this.state.senderName,
+        sender_uid: this.state.senderUid,
+        receiver: this.state.receiverName,
+        receiver_uid: sessionStorage.getItem('receiverUid'),
         text: this.state.currentText,
         date: Date().toLocaleString()
     }).catch(function(error) {
@@ -66,16 +83,16 @@ class Chat extends React.Component {
   updateDisplayedMessages() {
     var tempMessages = [];
     firebase.firestore().collection("messages")
-      .where("sender", "==", this.state.senderEmail)
-      .where("receiver", '==', sessionStorage.getItem('receiverEmail'))
+      .where("sender_uid", "==", this.state.senderUid)
+      .where("receiver_uid", '==', sessionStorage.getItem('receiverUid'))
       .get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             var gather = doc.data();
             tempMessages.push(gather)
         });
         firebase.firestore().collection("messages")
-          .where("sender", "==", sessionStorage.getItem('receiverEmail'))
-          .where("receiver", "==", this.state.senderEmail)
+          .where("sender_uid", "==", sessionStorage.getItem('receiverUid'))
+          .where("receiver_uid", "==", this.state.senderUid)
           .get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var gather = doc.data();
@@ -84,7 +101,7 @@ class Chat extends React.Component {
             tempMessages.sort(function(a,b){
                 // Turn your strings into dates, and then subtract them
                 // to get a value that is either negative, positive, or zero.
-                return new Date(b.date) - new Date(a.date);
+                return new Date(a.date) - new Date(b.date);
             }); 
             this.setState({ messages: tempMessages });
         });
@@ -103,7 +120,7 @@ class Chat extends React.Component {
                         <BackIcon/>
                     </IconButton>
                     <Typography variant="h4" style={{ flexGrow: 1 }}>
-                        Conversation with {sessionStorage.getItem('receiverEmail')}
+                        Conversation with {this.state.receiverName}
                     </Typography>
                 </Toolbar>
             </AppBar>

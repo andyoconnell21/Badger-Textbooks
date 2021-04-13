@@ -29,6 +29,7 @@ class Listings extends React.Component {
           author: '',
           class: '',
           seller: '',
+          seller_uid: '',
           price: '',
           date: new Date(),
           title: '',
@@ -56,12 +57,13 @@ class Listings extends React.Component {
         .then((doc) => {
           var data = doc.data();
           console.log(data.image_url)
-          if(data.image_url == "" ){
+          if(data.image_url === "" ){
             console.log('true')
             this.setState({
               author: data.author,
               class: data.class,
               seller: data.seller,
+              seller_uid: data.seller_uid,
               price: data.price,
               date: data.time_created,
               title: data.title,
@@ -75,6 +77,7 @@ class Listings extends React.Component {
               author: data.author,
               class: data.class,
               seller: data.seller,
+              seller_uid: data.seller_uid,
               price: data.price,
               date: data.time_created,
               title: data.title,
@@ -97,7 +100,7 @@ class Listings extends React.Component {
             }
         });
         for(var i = 0; i < userListings.length; i++){
-          if(userListings[i] == sessionStorage.getItem('currentListing')){
+          if(userListings[i] === sessionStorage.getItem('currentListing')){
             this.setState({
               userAuthed: false,
               chatNotNeeded: true,
@@ -248,7 +251,7 @@ class Listings extends React.Component {
                     color: 'white', 
                     fontSize: '18px'}} 
                     onClick={() => {
-                      sessionStorage.setItem("receiverEmail", this.state.seller);
+                      sessionStorage.setItem("receiverUid", this.state.seller_uid);
                       sessionStorage.setItem("returnLocation", "/listing");
                       window.location.href = "/chat";
                     }}>
