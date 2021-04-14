@@ -135,6 +135,11 @@ class Home extends React.Component {
           var gather = [doc.id, doc.data()]
           tempResults.push(gather)
       });
+      tempResults.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(b[dataIndex].time_created) - new Date(a[dataIndex].time_created);
+      }); 
       this.setState({
           searchResults: tempResults,
           searchHidden: false
