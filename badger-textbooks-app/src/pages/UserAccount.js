@@ -4,6 +4,7 @@ import 'firebase/auth';
 
 import NavigationMenu from './NavigationMenu';
 import Logo from '../BadgerTextbooksLogoV1.png';
+import emailjs from 'emailjs-com';
 
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
@@ -23,11 +24,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import SaveIcon from '@material-ui/icons/Favorite';
-import EditIcon from '@material-ui/icons/Edit';
-import ExpandIcon from '@material-ui/icons/ExpandMore';
-import ChatIcon from '@material-ui/icons/Chat';
-import ReportIcon from '@material-ui/icons/Report';
 
 class UserAccount extends React.Component {
     constructor(props){
@@ -39,6 +35,10 @@ class UserAccount extends React.Component {
             hiddenRateUser: false,
             setUserRating: '',
             userAccountRating: '',
+            hiddenReportUser: false,
+            reportText: '',
+            emailSent: false,
+            ratingSaved: false,
         }
     }
 
@@ -80,6 +80,14 @@ class UserAccount extends React.Component {
         this.setState({hiddenRateUser: true})
     }
 
+    reportUser = (event) => {
+        this.setState({hiddenReportUser: true})
+    }
+
+    setReportText = (event) => {
+        this.setState({reportText: event.target.value})
+    }
+
     sendUserRating = (event) => {
         //Capture the rating and store it in firebase 
 
@@ -92,14 +100,45 @@ class UserAccount extends React.Component {
                 user_ratings: firebase.firestore.FieldValue.arrayUnion(this.state.setUserRating)
             })
         })
+        this.setState({
+            hiddenRateUser: false,
+            ratingSaved: true         
+        })
     }
 
     handleClose = (event) => {
-        this.setState({hiddenRateUser: false})
+        this.setState({
+            hiddenRateUser: false,
+            hiddenReportUser: false,
+            emailSent: false,
+            ratingSaved: false
+        })
     }
 
     setRatingValue = (event) => {
         this.setState({setUserRating: event.target.value})
+    }
+
+    sendUserReport = (event) => {
+        var templateParams = {
+            reportedUser: this.state.userAccountName,
+            message: this.state.reportText
+        }
+
+        emailjs.send(
+            'service_1gpwrm8',
+            'template_wf9i0jv',
+            templateParams,
+            'user_Q1uufiN3C4uLWwSwg37S6'
+        ).then((response) => {
+            console.log('SUCCESS', response.status, response.text)
+            this.setState({
+                emailSent: true,
+                hiddenReportUser: false,
+            })
+        }, function(error){
+            console.log("FAILED", error)
+        })
     }
 
     render(){
@@ -138,7 +177,7 @@ class UserAccount extends React.Component {
                         </Box>
                     </Grid>
                     <Button title='rateUser_btn' type="submit" onClick={this.rateUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Rate {this.state.userAccountName}</Button>
-                    <Button title='reportUser_btn' type="submit" onClick={this.rateUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Report {this.state.userAccountName}</Button>
+                    <Button title='reportUser_btn' type="submit" onClick={this.reportUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Report {this.state.userAccountName}</Button>
                 </Grid>   
 
                 <Dialog open={this.state.hiddenRateUser}>
@@ -153,6 +192,55 @@ class UserAccount extends React.Component {
                     <Button onClick={this.sendUserRating} color="primary">
                         Send
                     </Button>
+                    <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        Close
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog open={this.state.hiddenReportUser}>
+                    <DialogTitle >{"Report User"}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        Report Your Experience With This User
+                    </DialogContentText>
+                        <TextField
+                            type="text"
+                            onChange={this.setReportText}>
+                        </TextField>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={this.sendUserReport} color="primary">
+                        Send
+                    </Button>
+                    <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        Close
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog open={this.state.emailSent}>
+                    <DialogTitle >{"Email Sent"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Your report has been recorded! We will contact you for further details!
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        Close
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog open={this.state.ratingSaved}>
+                    <DialogTitle >{"Email Sent"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Your rating has been submitted! Thank you for rating our users!
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
                     <Button title='close_btn' onClick={this.handleClose} color="primary">
                         Close
                     </Button>
