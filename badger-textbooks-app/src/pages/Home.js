@@ -282,7 +282,6 @@ class Home extends React.Component {
                   <CardActions>
                     <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
                       sessionStorage.setItem('currentListing', item[idIndex]);
-                      console.log(sessionStorage.getItem('currentListing'));
                       window.location.href = "/listing";
                     }}>
                       See Details 

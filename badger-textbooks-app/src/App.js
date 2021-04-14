@@ -14,8 +14,9 @@ import Chat from "./pages/chatPage";
 import ChatListPage from "./pages/ChatListPage";
 import EditListingPage from "./pages/EditListing";
 import MyAccountPage from "./pages/MyAccountPage";
-import SavedListings from './pages/SavedListings'
-import UserAccount from './pages/UserAccount'
+import SavedListings from './pages/SavedListings';
+import UserAccount from './pages/UserAccount';
+import AdminPage from './pages/AdminPage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyATKX78GgcgavgsRD0eUozsDAVQ1zpaEEs",
@@ -48,6 +49,7 @@ class App extends React.Component {
               <Route path="/myAccount" exact component={() => <MyAccountPage/>}/>
               <Route path="/savedListings" exact component={() => <SavedListings/>}/>
               <Route path='/userAccount' exact component={() => <UserAccount/>}/>
+              <Route path="/admin" exact component={() => <AdminPage/>}/>
             </Switch>
           </Router>
         </div>
