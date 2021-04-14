@@ -3,29 +3,37 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Switch from '@material-ui/core/Switch';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import SaveIcon from '@material-ui/icons/Favorite';
+import EditIcon from '@material-ui/icons/Edit';
+import ExpandIcon from '@material-ui/icons/ExpandMore';
+import ChatIcon from '@material-ui/icons/Chat';
+import ReportIcon from '@material-ui/icons/Report';
 
 class Listings extends React.Component {
     constructor(props){
         super(props)
         this.state = {
+          active: true,
+          active_text: "",
           author: '',
           class: '',
           seller: '',
@@ -43,6 +51,8 @@ class Listings extends React.Component {
     }
 
     componentDidMount () {
+      document.body.style.backgroundColor = '#d2b48c';
+
       firebase.auth().onAuthStateChanged(function(user) {
         if (!user) {
           //User is not siged in...redirect to login page
@@ -51,15 +61,15 @@ class Listings extends React.Component {
       }); 
         
       var documentId = sessionStorage.getItem('currentListing')
-      document.body.style.backgroundColor = '#dadfe1';
 
       firebase.firestore().collection("listings").doc(documentId).get()
         .then((doc) => {
           var data = doc.data();
           console.log(data.image_url)
           if(data.image_url === "" ){
-            console.log('true')
             this.setState({
+              active: data.active,
+              active_text: data.active ? "Active" : "Disabled",
               author: data.author,
               class: data.class,
               seller: data.seller,
@@ -74,6 +84,8 @@ class Listings extends React.Component {
           }
           else{
             this.setState({
+              active: data.active,
+              active_text: data.active ? "Active" : "Disabled",
               author: data.author,
               class: data.class,
               seller: data.seller,
@@ -118,9 +130,33 @@ class Listings extends React.Component {
       });
     }
 
+    toggleActive = (event) => {
+      var curr_state = this.state.active;
+      if (curr_state) {
+        this.setState({
+          active: false,
+          active_text: "Disabled"
+        });
+      } else {
+        this.setState({
+          active: true,
+          active_text: "Active"
+        });
+      }
+
+      var docID = sessionStorage.getItem('currentListing');
+
+      firebase.firestore().collection('listings').doc(docID).update({
+        active: !curr_state
+      });
+    }
+
+    report = (event) => {
+      console.log("TODO: Report the listing.");
+    }
+
     saveListing = (event) => {
       var uid = firebase.auth().currentUser.uid;
-      var user_email = firebase.auth().currentUser.email;
       var documentId = sessionStorage.getItem('currentListing')
       var userRef;
 
@@ -145,9 +181,11 @@ class Listings extends React.Component {
             <IconButton onClick={this.toggleMenu}> 
               <MenuIcon/>
             </IconButton>
-            <Typography variant='h6' style={{fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto'}}>
-              Listing of {this.state.title} Textbook
-            </Typography>
+            <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
+              <Typography variant="h3">
+                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
+              </Typography>
+            </Box>
           </Toolbar>
         </AppBar>
 
@@ -155,116 +193,172 @@ class Listings extends React.Component {
           <NavigationMenu/>
         </Drawer>
 
-        <Grid container>
-          <Card style={{width: "600px", margin:'auto', marginTop: '50px'}}>
-            <CardContent>
-              <Grid container>
-                <Grid item>
-                  <img src={this.state.image} width="250" height="250" alt="Textbook Cover"/>
-                </Grid>
-                <Grid item xs style={{marginTop:'40px'}}>
-                  <Typography variant='h6'>
-                    <b>Title:</b> {this.state.title}
+        <Container>
+          <Paper style={{width: '100%', height: '100vh'}}>
+            <Box style={{ width: '100%', height: '60%' }}>
+              <Box style={{ width: '50%', height: '100%', float: 'left' }}>
+
+                <Box name="image_box" style={{ width: '100%', height: '50%', padding: '20px'}}>
+                  <img src={this.state.image} width="250" height="250" alt=""/>
+                </Box>
+
+                <Box name="button_box" style={{ width: '100%', height: '50%', padding: '20px'}}>
+                  <Box hidden={this.state.userAuthed} style={{margin: '10px'}}>
+                    <Grid container>
+                      <Grid item style={{width: '25%'}}></Grid>
+                      <Grid item style={{width: '25%'}}>
+                        <Switch
+                          color="primary"
+                          checked={this.state.active}
+                          onChange={() => this.toggleActive()}
+                        />
+                      </Grid>
+                      <Grid item style={{width: '50%'}}>
+                        <Typography variant='h5' style={{float: 'left'}}>
+                          <b>Status:</b> {this.state.active_text}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+
+                  <Box hidden={this.state.userAuthed}>
+                    <Button 
+                      fullWidth
+                      style={{
+                        margin: "10px", 
+                        backgroundColor: '#c5050c', 
+                        width: '75%', 
+                        cursor: 'pointer', 
+                        color: 'white', 
+                        fontSize: '18px'
+                      }}
+                      onClick={() => {
+                          var documentId = sessionStorage.getItem('currentListing')
+                          sessionStorage.setItem('currentListing',documentId);
+                          window.location.href = "/editlisting";
+                      }}
+                      startIcon={<EditIcon/>}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+
+                  <Box hidden={this.state.chatNotNeeded}>
+                    <Button 
+                      fullWidth
+                      style={{
+                        margin: "10px", 
+                        backgroundColor: '#c5050c', 
+                        width: '75%', 
+                        cursor: 'pointer', 
+                        color: 'white', 
+                        fontSize: '18px'
+                      }}
+                      onClick={this.saveListing}
+                      startIcon={<SaveIcon/>}
+                    >
+                      Save
+                    </Button>
+                  </Box>
+
+                  <Box hidden={this.state.chatNotNeeded}>
+                    <Button 
+                      fullWidth 
+                      style={{
+                        marginTop: '10px',
+                        marginBottom: '10px', 
+                        border: '0', 
+                        backgroundColor: '#c5050c', 
+                        width: '75%', 
+                        cursor: 'pointer', 
+                        color: 'white', 
+                        fontSize: '18px'}} 
+                      onClick={() => {
+                        sessionStorage.setItem("receiverUid", this.state.seller_uid);
+                        sessionStorage.setItem("returnLocation", "/listing");
+                        window.location.href = "/chat";
+                      }}
+                      startIcon={<ChatIcon/>}
+                    >
+                      Chat with Seller 
+                    </Button>
+
+                    <Box hidden={this.state.chatNotNeeded}>
+                    <Button 
+                      fullWidth
+                      style={{
+                        margin: "10px", 
+                        backgroundColor: '#c5050c', 
+                        width: '75%', 
+                        cursor: 'pointer', 
+                        color: 'white', 
+                        fontSize: '18px'
+                      }}
+                      onClick={this.reportListing}
+                      startIcon={<ReportIcon/>}
+                    >
+                      Report
+                    </Button>
+                  </Box>
+                  </Box>
+                </Box>
+              </Box>
+
+              <Box name="info_box" style={{ width: '50%', height: '100%', float: 'right', padding: '20px'}}>
+                <Box style={{width: '100%', margin: '5px'}}>
+                  <Typography variant='h5' align="left">
+                    <b>Title: </b>{this.state.title}
                   </Typography>
-                  <Typography variant='h6'>
-                    <b>Author:</b> {this.state.author}
+                </Box>
+                <Box style={{width: '100%', margin: '5px'}}>
+                  <Typography variant='h5' align="left">
+                    <b>Author: </b>{this.state.author}
                   </Typography>
-                  <Typography variant='h6'>
-                    <b>Class:</b> {this.state.class}
+                </Box>
+                <Box style={{width: '100%', margin: '5px'}}>
+                  <Typography variant='h5' align="left">
+                    <b>Class: </b>{this.state.class}
                   </Typography>
-                  <Typography variant='h6'>
-                    <b>Condition:</b> {this.state.condition}
+                </Box>
+                <Box style={{width: '100%', margin: '5px'}}>
+                  <Typography variant='h5' align="left">
+                    <b>Condition: </b>{this.state.condition}
                   </Typography>
-                  <Typography variant='h6'>
-                    <b>Price:</b> {this.state.price}$
+                </Box>
+                <Box style={{width: '100%', margin: '5px'}}>
+                  <Typography variant='h5' align="left">
+                    <b>Price: </b>${this.state.price}
                   </Typography>
-                </Grid>
-              </Grid>
-              <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box name="more_info_box" style={{ width: '100%', height: '40%' }}>
               <Accordion style={{width: "75%", margin: 'auto'}}>
-                <AccordionSummary style={{backgroundColor: 'lightgrey'}}>
+                <AccordionSummary style={{backgroundColor: 'lightgrey'}} expandIcon={<ExpandIcon />}>
                   <Typography style={{fontFamily: 'sans-serif', fontSize:'14px', fontWeight: 'bold', margin:'auto'}}>MORE INFORMATION</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{flexDirection: 'column'}}>
                   <Typography>
-                    <b>Seller of Textbook:</b> {this.state.seller}
+                    <b>Seller:</b> {this.state.seller}
                   </Typography>
                   <Typography>
                     <b>ISBN: </b> {this.state.ISBN}
                   </Typography>
                   <Typography>
-                    <b>Date of Listing:</b> {this.state.date.toString()}
+                    <b>Listing Date:</b> {this.state.date.toString()}
                   </Typography>
                   <Typography>
-                    <b>Rating of Seller:</b> 5 Star
+                    <b>Seller Rating:</b> 5 Star
                   </Typography>
                 </AccordionDetails>
               </Accordion>
-              
-              <Grid hidden={this.state.userAuthed}>
-                <Button 
-                    fullWidth
-                    style={{
-                      marginTop: "10px", 
-                      marginBottom: '10px', 
-                      border: '0', 
-                      backgroundColor: '#c5050c', 
-                      width: '75%', 
-                      cursor: 'pointer', 
-                      color: 'white', 
-                      fontSize: '18px'
-                    }}
-                    onClick={() => {
-                        var documentId = sessionStorage.getItem('currentListing')
-                        sessionStorage.setItem('currentListing',documentId);
-                        window.location.href = "/editlisting";
-                    }}>
-                    Edit Listing
-                </Button>
-              </Grid>
-
-              <Button 
-                  fullWidth
-                  style={{
-                    marginTop: "10px", 
-                    marginBottom: '10px', 
-                    border: '0', 
-                    backgroundColor: '#c5050c', 
-                    width: '75%', 
-                    cursor: 'pointer', 
-                    color: 'white', 
-                    fontSize: '18px'
-                  }}
-                  onClick={this.saveListing}>
-                  Save Listing
-              </Button>
-
-              <Grid hidden={this.state.chatNotNeeded}>
-                <Button 
-                  fullWidth 
-                  style={{
-                    marginBottom: '10px', 
-                    border: '0', 
-                    backgroundColor: '#c5050c', 
-                    width: '75%', 
-                    cursor: 'pointer', 
-                    color: 'white', 
-                    fontSize: '18px'}} 
-                    onClick={() => {
-                      sessionStorage.setItem("receiverUid", this.state.seller_uid);
-                      sessionStorage.setItem("returnLocation", "/listing");
-                      window.location.href = "/chat";
-                    }}>
-                    Chat with Seller! 
-                </Button>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+            </Box>
+          </Paper>
+        </Container>
       </div>
-     )
+    )
   }
 }
 
-export default Listings
-
+export default Listings;

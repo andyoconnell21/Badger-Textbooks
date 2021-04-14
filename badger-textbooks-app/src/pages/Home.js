@@ -63,11 +63,16 @@ class Home extends React.Component {
     document.body.style.backgroundColor = '#d2b48c';
 
     var tempListings = []
-    firebase.firestore().collection("listings").orderBy("time_created", "desc").limit(10).get().then((querySnapshot) => {
+    firebase.firestore().collection("listings").where("active", "==", true).limit(10).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             var gather = [doc.id, doc.data()]
             tempListings.push(gather)
         });
+        tempListings.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(b[dataIndex].time_created) - new Date(a[dataIndex].time_created);
+        }); 
         this.setState({
             listings: tempListings
         });
@@ -124,7 +129,8 @@ class Home extends React.Component {
 
   initSearch = (event) => {
     var tempResults = []
-    firebase.firestore().collection("listings").where(this.state.searchFilter, "==", this.state.searchValue.toLowerCase()).get().then((querySnapshot) => {
+    firebase.firestore().collection("listings").where(this.state.searchFilter, "==", this.state.searchValue.toLowerCase()).where("active", "==", true)
+    .get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
           var gather = [doc.id, doc.data()]
           tempResults.push(gather)

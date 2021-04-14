@@ -75,6 +75,7 @@ export class CreateNewListing extends Component {
             var userRef;
 
             firebase.firestore().collection('listings').add({
+                active: true,
                 ISBN: this.state.ISBN,
                 author: this.state.author,
                 search_author: this.state.author.toLowerCase(),

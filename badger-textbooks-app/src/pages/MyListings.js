@@ -27,7 +27,8 @@ class MyListings extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            listings: [],
+            activeListings: [],
+            disabledListings: [],
             menuOpen: false,
             user: ""
         }
@@ -51,18 +52,36 @@ class MyListings extends React.Component {
                 window.location.href = "/";
             }
             else {  
-                this.setState({ user: user.email });
                 firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         var data = doc.data();
                         listKeys = data.listings;
+                        this.setState({
+                            user: data.name
+                        });
                     });
                     listKeys.forEach((key) => {
                         firebase.firestore().collection("listings").doc(key.id).get().then((nextQuerySnapshot) => {
                             var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
                             tempList.push(gather);
 
-                            this.setState({ listings: tempList }); 
+                            // this.setState({ 
+                            //     listings: tempList,
+                            // }); 
+                            var tempActiveListings = [];
+                            var tempDisabledListings = [];
+                            tempList.forEach((listing) => {
+                                console.log("Fired once");
+                                if (listing[dataIndex].active) {
+                                    tempActiveListings.push(listing);
+                                } else {
+                                    tempDisabledListings.push(listing);
+                                }
+                            });
+                            this.setState({
+                                activeListings: tempActiveListings,
+                                disabledListings: tempDisabledListings
+                            });
                         });
                     });
                 });
@@ -94,7 +113,7 @@ class MyListings extends React.Component {
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
                     <Grid container justify='center' spacing={3}>
-                        {this.state.listings.map((item) => (
+                        {this.state.activeListings.map((item) => (
                             <Grid item>
                                 <Card style={{width: "300px"}}>
                                 <CardContent>
@@ -156,6 +175,65 @@ class MyListings extends React.Component {
                 <Typography variant="h4" style={{marginTop: '10px'}}>
                     Disabled Listings
                 </Typography>
+
+                <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
+                    <Grid container justify='center' spacing={3}>
+                        {this.state.disabledListings.map((item) => (
+                            <Grid item>
+                                <Card style={{width: "300px"}}>
+                                <CardContent>
+                                    <Grid container style={{height: '60px'}}>
+                                    <Grid item>
+                                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                    </Grid>
+                                    <Grid item xs>
+                                        <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
+                                        <Typography variant='h6'>
+                                            {item[dataIndex].title}
+                                        </Typography>
+                                        </div>
+                                    </Grid>
+                                    </Grid>
+                                    <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                                    <Grid container>
+                                    <Grid item xs>
+                                        <Typography color="textSecondary" style={{left: 0}}>
+                                        Price:
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs>
+                                        <Typography color="textSecondary">
+                                        ${item[dataIndex].price}
+                                        </Typography>
+                                    </Grid>
+                                    </Grid>
+                                    <Grid container>
+                                    <Grid item xs>
+                                        <Typography color="textSecondary">
+                                        Seller:
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs>
+                                        <Typography color="textSecondary">
+                                        {item[dataIndex].seller}
+                                        </Typography>
+                                    </Grid>
+                                    </Grid>
+                                </CardContent>
+                                
+                                <CardActions>
+                                    <Button title="details_button" fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                    sessionStorage.setItem('currentListing', item[idIndex]);
+                                    window.location.href = "/listing";
+                                    }}>
+                                    See Details 
+                                    </Button>
+                                </CardActions>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
             </div>
         )
     }
