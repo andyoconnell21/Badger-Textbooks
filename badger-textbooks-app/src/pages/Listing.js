@@ -20,6 +20,7 @@ import Switch from '@material-ui/core/Switch';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
+import Link from '@material-ui/core/Link';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import SaveIcon from '@material-ui/icons/Favorite';
@@ -340,7 +341,12 @@ class Listings extends React.Component {
                 </AccordionSummary>
                 <AccordionDetails style={{flexDirection: 'column'}}>
                   <Typography>
-                    <b>Seller:</b> {this.state.seller}
+                    <b>Seller:</b> 
+                    <Link to="/userAccount" title='sellerAccount' style={{cursor: 'pointer'}} onClick={() => {
+                          window.location.href = "/userAccount"
+                          sessionStorage.setItem('userAccountEmail', this.state.seller)
+                      }} 
+                      variant="body2"> {this.state.seller}</Link>
                   </Typography>
                   <Typography>
                     <b>ISBN: </b> {this.state.ISBN}
