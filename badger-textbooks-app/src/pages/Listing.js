@@ -48,6 +48,7 @@ class Listings extends React.Component {
           menuOpen: false,
           userAuthed: true,
           chatNotNeeded: false,
+          seller_name: '',
         }
     }
 
@@ -66,7 +67,7 @@ class Listings extends React.Component {
       firebase.firestore().collection("listings").doc(documentId).get()
         .then((doc) => {
           var data = doc.data();
-          console.log(data.image_url)
+          console.log(data)
           if(data.image_url === "" ){
             this.setState({
               active: data.active,
@@ -80,7 +81,8 @@ class Listings extends React.Component {
               title: data.title,
               condition: data.condition,
               image: 'https://firebasestorage.googleapis.com/v0/b/badgertextbooks-2919f.appspot.com/o/no%20image%20available.png?alt=media&token=605d744a-ce07-470e-b9c6-406cd603319b',
-              ISBN: data.ISBN
+              ISBN: data.ISBN,
+              seller_name: data.seller_name
             })
           }
           else{
@@ -96,7 +98,8 @@ class Listings extends React.Component {
               title: data.title,
               condition: data.condition,
               image: data.image_url,
-              ISBN: data.ISBN
+              ISBN: data.ISBN,
+              seller_name: data.seller_name
             })
         }
       })
@@ -346,7 +349,7 @@ class Listings extends React.Component {
                           window.location.href = "/userAccount"
                           sessionStorage.setItem('userAccountEmail', this.state.seller)
                       }} 
-                      variant="body2"> {this.state.seller}</Link>
+                      variant="body2"> {this.state.seller_name}</Link>
                   </Typography>
                   <Typography>
                     <b>ISBN: </b> {this.state.ISBN}
