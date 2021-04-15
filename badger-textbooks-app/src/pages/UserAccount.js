@@ -22,8 +22,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
 
 import MenuIcon from '@material-ui/icons/Menu';
+
+const idIndex = 0;
+const dataIndex = 1;
 
 class UserAccount extends React.Component {
     constructor(props){
@@ -39,11 +46,21 @@ class UserAccount extends React.Component {
             reportText: '',
             emailSent: false,
             ratingSaved: false,
+            userListingsArray: [],
         }
     }
 
     componentDidMount(){
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+              //User is not siged in...redirect to login page
+              window.location.href = "/";
+            } else{
+                
+            }
+          });
         this.setState({userAccountEmail: sessionStorage.getItem('userAccountEmail')})
+        var userUID = firebase.auth().currentUser.uid
 
         //Get relevant information of that user
         firebase.firestore().collection('users').where("email", "==", sessionStorage.getItem('userAccountEmail')).get().then((querySnapshot) => {
@@ -57,9 +74,36 @@ class UserAccount extends React.Component {
                     tempUserRating = tempUserRating + tempValue
                 }
                 tempUserRating = tempUserRating / doc.data().user_ratings.length
+                tempUserRating = tempUserRating.toFixed(1)
                 this.setState({userAccountRating: tempUserRating})
             })
         })
+
+        //Get some of the users current listings
+      
+      firebase.firestore().collection("users").where("uid", "==", userUID).get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            var userListingsRef = doc.data().listings
+            var tempUserListingArray = []
+            var userListingArray = [];
+            for(let i = 0; i < userListingsRef.length; i++){
+                tempUserListingArray.push(userListingsRef[i].id)
+            }
+            firebase.firestore().collection('listings').get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    for(let i = 0; i < tempUserListingArray.length; i++){
+                        if(tempUserListingArray[i] == doc.id && userListingArray.length != 3){
+                            var gather = [doc.id, doc.data()]
+                            userListingArray.push(gather)
+                        }
+                    }
+                    this.setState({userListingsArray: userListingArray})
+                })
+            })
+        })
+      })
+
+      
 
         document.body.style.backgroundColor = '#dadfe1';
 
@@ -180,7 +224,71 @@ class UserAccount extends React.Component {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Button title='rateUser_btn' type="submit" onClick={this.rateUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Rate {this.state.userAccountName}</Button>
+                    <Grid item>
+                        <Typography variant="h6" style={{fontFamily:'sans-serif'}}>
+                            Here are some of {this.state.userAccountName}'s current listings
+                        </Typography>
+                    </Grid>
+
+                    <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
+                        {this.state.userListingsArray.map((item) => (
+                        <Grid item>
+                            <Card style={{width: "300px"}}>
+                            <CardContent>
+                                <Grid container style={{height: '60px'}}>
+                                <Grid item>
+                                    <img onError={this.addDefaultSrc} className="img-responsive"
+                                        src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                </Grid>
+                                <Grid item xs>
+                                    <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
+                                    <Typography variant='h6'>
+                                        {item[dataIndex].title}
+                                    </Typography>
+                                    </div>
+                                </Grid>
+                                </Grid>
+                                <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                                <Grid container>
+                                <Grid item xs>
+                                    <Typography color="textSecondary" style={{left: 0}}>
+                                    Price:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs>
+                                    <Typography color="textSecondary">
+                                    ${item[dataIndex].price}
+                                    </Typography>
+                                </Grid>
+                                </Grid>
+                                <Grid container>
+                                <Grid item xs>
+                                    <Typography color="textSecondary">
+                                    Seller:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs>
+                                    <Typography color="textSecondary">
+                                    {item[dataIndex].seller}
+                                    </Typography>
+                                </Grid>
+                                </Grid>
+                            </CardContent>
+                            
+                            <CardActions>
+                                <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                sessionStorage.setItem('currentListing', item[idIndex]);
+                                window.location.href = "/listing";
+                                }}>
+                                See Details 
+                                </Button>
+                            </CardActions>
+                            </Card>
+                        </Grid>
+                        ))}
+                    </Grid>
+
+                    <Button title='rateUser_btn' type="submit" onClick={this.rateUser} style={{marginTop: "30px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Rate {this.state.userAccountName}</Button>
                     <Button title='reportUser_btn' type="submit" onClick={this.reportUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Report {this.state.userAccountName}</Button>
                 </Grid>   
 
