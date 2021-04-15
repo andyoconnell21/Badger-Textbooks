@@ -51,60 +51,55 @@ class UserAccount extends React.Component {
     }
 
     componentDidMount(){
-        firebase.auth().onAuthStateChanged(function(user) {
+        firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
               //User is not siged in...redirect to login page
               window.location.href = "/";
             } else{
-                
+
+                //Get relevant information of that user
+                firebase.firestore().collection('users').where("email", "==", sessionStorage.getItem('userAccountEmail')).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        this.setState({
+                            userAccountName: doc.data().name
+                        })
+                        var tempUserRating = 0;
+                        for(var i = 0; i < doc.data().user_ratings.length; i++){
+                            var tempValue = parseInt(doc.data().user_ratings[i])
+                            tempUserRating = tempUserRating + tempValue
+                        }
+                        tempUserRating = tempUserRating / doc.data().user_ratings.length
+                        tempUserRating = tempUserRating.toFixed(1)
+                        this.setState({userAccountRating: tempUserRating})
+                    })
+                })
+
+                //Get some of the users current listings
+            
+            firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    var userListingsRef = doc.data().listings
+                    var tempUserListingArray = []
+                    var userListingArray = [];
+                    for(let i = 0; i < userListingsRef.length; i++){
+                        tempUserListingArray.push(userListingsRef[i].id)
+                    }
+                    firebase.firestore().collection('listings').get().then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            for(let i = 0; i < tempUserListingArray.length; i++){
+                                if(tempUserListingArray[i] == doc.id && userListingArray.length != 3){
+                                    var gather = [doc.id, doc.data()]
+                                    userListingArray.push(gather)
+                                }
+                            }
+                            this.setState({userListingsArray: userListingArray})
+                        })
+                    })
+                })
+            })
             }
           });
         this.setState({userAccountEmail: sessionStorage.getItem('userAccountEmail')})
-        var userUID = firebase.auth().currentUser.uid
-
-        //Get relevant information of that user
-        firebase.firestore().collection('users').where("email", "==", sessionStorage.getItem('userAccountEmail')).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                this.setState({
-                    userAccountName: doc.data().name
-                })
-                var tempUserRating = 0;
-                for(var i = 0; i < doc.data().user_ratings.length; i++){
-                    var tempValue = parseInt(doc.data().user_ratings[i])
-                    tempUserRating = tempUserRating + tempValue
-                }
-                tempUserRating = tempUserRating / doc.data().user_ratings.length
-                tempUserRating = tempUserRating.toFixed(1)
-                this.setState({userAccountRating: tempUserRating})
-            })
-        })
-
-        //Get some of the users current listings
-      
-      firebase.firestore().collection("users").where("uid", "==", userUID).get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            var userListingsRef = doc.data().listings
-            var tempUserListingArray = []
-            var userListingArray = [];
-            for(let i = 0; i < userListingsRef.length; i++){
-                tempUserListingArray.push(userListingsRef[i].id)
-            }
-            firebase.firestore().collection('listings').get().then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    for(let i = 0; i < tempUserListingArray.length; i++){
-                        if(tempUserListingArray[i] == doc.id && userListingArray.length != 3){
-                            var gather = [doc.id, doc.data()]
-                            userListingArray.push(gather)
-                        }
-                    }
-                    this.setState({userListingsArray: userListingArray})
-                })
-            })
-        })
-      })
-
-      
-
         document.body.style.backgroundColor = '#dadfe1';
 
     }
