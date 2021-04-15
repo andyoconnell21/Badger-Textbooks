@@ -96,13 +96,14 @@ class UserAccount extends React.Component {
             querySnapshot.forEach((doc) => {
                 userRef = doc.id
             })
+            var tempVal = parseInt(this.state.setUserRating)
             firebase.firestore().collection('users').doc(userRef).update({
-                user_ratings: firebase.firestore.FieldValue.arrayUnion(this.state.setUserRating)
+                user_ratings: firebase.firestore.FieldValue.arrayUnion(tempVal)
             })
         })
         this.setState({
+            ratingSaved: true,
             hiddenRateUser: false,
-            ratingSaved: true         
         })
     }
 
@@ -174,6 +175,9 @@ class UserAccount extends React.Component {
                     <Grid item>
                         <Box component="fieldset" mb={3} borderColor="transparent">
                             <Rating name="read-only" value={this.state.userAccountRating} readOnly />
+                            <Typography>
+                                ({this.state.userAccountRating}/5)
+                            </Typography>
                         </Box>
                     </Grid>
                     <Button title='rateUser_btn' type="submit" onClick={this.rateUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Rate {this.state.userAccountName}</Button>
