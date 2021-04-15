@@ -56,71 +56,71 @@ class Listings extends React.Component {
     componentDidMount () {
       document.body.style.backgroundColor = '#d2b48c';
 
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged((user)=> {
         if (!user) {
           //User is not siged in...redirect to login page
           window.location.href = "/";
         }
+        else{
+          var documentId = sessionStorage.getItem('currentListing')
+    
+    
+          firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var data = doc.data();
+                var tempUserRating = 0;
+                for(var i = 0; i < doc.data().user_ratings.length; i++){
+                    var tempValue = parseInt(doc.data().user_ratings[i])
+                    tempUserRating = tempUserRating + tempValue
+                }
+                tempUserRating = tempUserRating / doc.data().user_ratings.length
+                tempUserRating = tempUserRating.toFixed(1)
+    
+                firebase.firestore().collection("listings").doc(documentId).get()
+                .then((doc) => {
+                  var data = doc.data();
+                  if(data.image_url === "" ){
+                    this.setState({
+                      active: data.active,
+                      active_text: data.active ? "Active" : "Disabled",
+                      author: data.author,
+                      class: data.class,
+                      seller: data.seller,
+                      seller_uid: data.seller_uid,
+                      price: data.price,
+                      date: data.time_created,
+                      title: data.title,
+                      condition: data.condition,
+                      image: 'https://firebasestorage.googleapis.com/v0/b/badgertextbooks-2919f.appspot.com/o/no%20image%20available.png?alt=media&token=605d744a-ce07-470e-b9c6-406cd603319b',
+                      ISBN: data.ISBN,
+                      seller_name: data.seller_name,
+                      seller_rating: tempUserRating
+                    })
+                  }
+                  else{
+                    this.setState({
+                      active: data.active,
+                      active_text: data.active ? "Active" : "Disabled",
+                      author: data.author,
+                      class: data.class,
+                      seller: data.seller,
+                      seller_uid: data.seller_uid,
+                      price: data.price,
+                      date: data.time_created,
+                      title: data.title,
+                      condition: data.condition,
+                      image: data.image_url,
+                      ISBN: data.ISBN,
+                      seller_name: data.seller_name,
+                      seller_rating: tempUserRating
+                    })
+                }
+              })
+            });
+          });
+        }
       }); 
-        
-      var documentId = sessionStorage.getItem('currentListing')
-      var uid = firebase.auth().currentUser.uid;
 
-
-      firebase.firestore().collection("users").where("uid", "==", uid).get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            var data = doc.data();
-            var tempUserRating = 0;
-            for(var i = 0; i < doc.data().user_ratings.length; i++){
-                var tempValue = parseInt(doc.data().user_ratings[i])
-                tempUserRating = tempUserRating + tempValue
-            }
-            tempUserRating = tempUserRating / doc.data().user_ratings.length
-            tempUserRating = tempUserRating.toFixed(1)
-
-            firebase.firestore().collection("listings").doc(documentId).get()
-            .then((doc) => {
-              var data = doc.data();
-              if(data.image_url === "" ){
-                this.setState({
-                  active: data.active,
-                  active_text: data.active ? "Active" : "Disabled",
-                  author: data.author,
-                  class: data.class,
-                  seller: data.seller,
-                  seller_uid: data.seller_uid,
-                  price: data.price,
-                  date: data.time_created,
-                  title: data.title,
-                  condition: data.condition,
-                  image: 'https://firebasestorage.googleapis.com/v0/b/badgertextbooks-2919f.appspot.com/o/no%20image%20available.png?alt=media&token=605d744a-ce07-470e-b9c6-406cd603319b',
-                  ISBN: data.ISBN,
-                  seller_name: data.seller_name,
-                  seller_rating: tempUserRating
-                })
-              }
-              else{
-                this.setState({
-                  active: data.active,
-                  active_text: data.active ? "Active" : "Disabled",
-                  author: data.author,
-                  class: data.class,
-                  seller: data.seller,
-                  seller_uid: data.seller_uid,
-                  price: data.price,
-                  date: data.time_created,
-                  title: data.title,
-                  condition: data.condition,
-                  image: data.image_url,
-                  ISBN: data.ISBN,
-                  seller_name: data.seller_name,
-                  seller_rating: tempUserRating
-                })
-            }
-          })
-
-        });
-      });
 
 
       //check to see if its the listing of the logged in user
@@ -145,6 +145,7 @@ class Listings extends React.Component {
         })
       })
   }
+
 
     toggleMenu = (event) => {
       var curr_state = this.state.menuOpen;
