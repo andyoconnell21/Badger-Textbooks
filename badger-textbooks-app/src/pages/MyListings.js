@@ -71,7 +71,7 @@ class MyListings extends React.Component {
                             var tempActiveListings = [];
                             var tempDisabledListings = [];
                             tempList.forEach((listing) => {
-                                console.log("Fired once");
+                                console.log(listing);
                                 if (listing[dataIndex].active) {
                                     tempActiveListings.push(listing);
                                 } else {
@@ -88,6 +88,10 @@ class MyListings extends React.Component {
             }
         }.bind(this));
     }
+
+    addDefaultSrc(ev) {
+        ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
+      }
 
     render() {
         return (
@@ -119,7 +123,8 @@ class MyListings extends React.Component {
                                 <CardContent>
                                     <Grid container style={{height: '60px'}}>
                                     <Grid item>
-                                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                        <img onError={this.addDefaultSrc} className="img-responsive" 
+                                        src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
                                     </Grid>
                                     <Grid item xs>
                                         <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
@@ -184,7 +189,8 @@ class MyListings extends React.Component {
                                 <CardContent>
                                     <Grid container style={{height: '60px'}}>
                                     <Grid item>
-                                        <img src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                        <img onError={this.addDefaultSrc} className="img-responsive" 
+                                        src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
                                     </Grid>
                                     <Grid item xs>
                                         <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
