@@ -42,6 +42,7 @@ export class CreateNewListing extends Component {
             alertOpen: false,
             menuOpen: false,
             imageURL: '',
+            sellerName: '',
         }
     }
 
@@ -74,32 +75,40 @@ export class CreateNewListing extends Component {
             var listingRef;
             var userRef;
 
-            firebase.firestore().collection('listings').add({
-                active: true,
-                ISBN: this.state.ISBN,
-                author: this.state.author,
-                search_author: this.state.author.toLowerCase(),
-                class: this.state.class_used.toLowerCase(),
-                condition: this.state.condition,
-                price: this.state.price,
-                title: this.state.title,
-                search_title: this.state.title.toLowerCase(),
-                seller: user_email,
-                seller_uid: uid,
-                time_created: date,
-                image_url: this.state.imageURL
-            }).then((docRef) => {
-                listingRef = docRef;
-                firebase.firestore().collection("users").where('uid', '==', uid).get().then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        userRef = doc.id;
-                    });
-                    firebase.firestore().collection("users").doc(userRef).update({
-                        listings: firebase.firestore.FieldValue.arrayUnion(listingRef)
-                    }).then(() => {
-                        window.location = "/mylistings";
+            firebase.firestore().collection("users").where("uid", "==", uid).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    var data = doc.data();
+                    var username = data.name
+                    firebase.firestore().collection('listings').add({
+                        active: true,
+                        ISBN: this.state.ISBN,
+                        author: this.state.author,
+                        search_author: this.state.author.toLowerCase(),
+                        class: this.state.class_used.toLowerCase(),
+                        condition: this.state.condition,
+                        price: this.state.price,
+                        title: this.state.title,
+                        search_title: this.state.title.toLowerCase(),
+                        seller: user_email,
+                        seller_uid: uid,
+                        time_created: date,
+                        image_url: this.state.imageURL,
+                        seller_name: username
+                    }).then((docRef) => {
+                        listingRef = docRef;
+                        firebase.firestore().collection("users").where('uid', '==', uid).get().then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                userRef = doc.id;
+                            });
+                            firebase.firestore().collection("users").doc(userRef).update({
+                                listings: firebase.firestore.FieldValue.arrayUnion(listingRef)
+                            }).then(() => {
+                                window.location = "/mylistings";
+                            });
+                        });
                     });
                 });
+
             });
         }
     }
