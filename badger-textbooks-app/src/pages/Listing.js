@@ -21,6 +21,11 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import SaveIcon from '@material-ui/icons/Favorite';
@@ -28,6 +33,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ChatIcon from '@material-ui/icons/Chat';
 import ReportIcon from '@material-ui/icons/Report';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 class Listings extends React.Component {
     constructor(props){
@@ -48,6 +54,8 @@ class Listings extends React.Component {
           menuOpen: false,
           userAuthed: true,
           chatNotNeeded: false,
+          isGeneralUser: true,
+          deleteWarningOpen: false,
           seller_name: '',
           seller_rating: 0,
         }
@@ -61,9 +69,19 @@ class Listings extends React.Component {
           //User is not siged in...redirect to login page
           window.location.href = "/";
         }
-        else{
-          var documentId = sessionStorage.getItem('currentListing')
-    
+        else {
+
+          firebase.firestore().collection('users').where('uid', '==', user.uid).get().then((querySnapshot) => {
+            var isAdmin = false;
+            querySnapshot.forEach((doc) => {
+                isAdmin = doc.data().isAdmin;
+            });
+            if (isAdmin) {
+                this.setState({ isGeneralUser: false });
+            }
+          });
+
+          var documentId = sessionStorage.getItem('currentListing');
     
           firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -196,6 +214,24 @@ class Listings extends React.Component {
         })
       })
     }
+
+    initDelete = (event) => {
+      this.setState({deleteWarningOpen: true});
+    }
+
+    handleCancelDelete = (event) => {
+      this.setState({deleteWarningOpen: false});
+    }
+
+    handleConfirmDelete = (event) => {
+      this.setState({deleteWarningOpen: false});
+
+      var documentId = sessionStorage.getItem('currentListing');
+      
+      firebase.firestore().collection('listings').doc(documentId).delete().then(() => {
+        window.location.href = "/home";
+      });
+    }
   
   render() {
    return (
@@ -216,6 +252,26 @@ class Listings extends React.Component {
         <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
           <NavigationMenu/>
         </Drawer>
+
+        <Dialog
+          open={this.state.deleteWarningOpen}
+          onClose={this.handleCancelDelete}
+        >
+          <DialogTitle>{"Are you sure you want to delete this listing?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Deleting this listing means it will be gone forever (thats a really long time). Are you sure you want to proceed?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCancelDelete} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleConfirmDelete} color="primary" autoFocus>
+              Proceed
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Container>
           <Paper style={{width: '100%', height: '100vh'}}>
@@ -306,8 +362,9 @@ class Listings extends React.Component {
                     >
                       Chat with Seller 
                     </Button>
+                  </Box>
 
-                    <Box hidden={this.state.chatNotNeeded}>
+                  <Box hidden={this.state.chatNotNeeded}>
                     <Button 
                       fullWidth
                       style={{
@@ -324,6 +381,23 @@ class Listings extends React.Component {
                       Report
                     </Button>
                   </Box>
+
+                  <Box hidden={this.state.isGeneralUser}>
+                    <Button 
+                      fullWidth
+                      style={{
+                        margin: "10px", 
+                        backgroundColor: '#c5050c', 
+                        width: '75%', 
+                        cursor: 'pointer', 
+                        color: 'white', 
+                        fontSize: '18px'
+                      }}
+                      onClick={this.initDelete}
+                      startIcon={<DeleteForeverIcon/>}
+                    >
+                      Delete
+                    </Button>
                   </Box>
                 </Box>
               </Box>

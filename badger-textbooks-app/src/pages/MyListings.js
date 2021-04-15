@@ -53,25 +53,24 @@ class MyListings extends React.Component {
             }
             else {  
                 firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+                    var id = "";
                     querySnapshot.forEach((doc) => {
+                        id = doc.id;
                         var data = doc.data();
                         listKeys = data.listings;
                         this.setState({
                             user: data.name
                         });
                     });
+                    var updatedListKeys = listKeys;
                     listKeys.forEach((key) => {
                         firebase.firestore().collection("listings").doc(key.id).get().then((nextQuerySnapshot) => {
                             var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
-                            tempList.push(gather);
-
-                            // this.setState({ 
-                            //     listings: tempList,
-                            // }); 
+                            tempList.push(gather); 
                             var tempActiveListings = [];
                             var tempDisabledListings = [];
+
                             tempList.forEach((listing) => {
-                                console.log(listing);
                                 if (listing[dataIndex].active) {
                                     tempActiveListings.push(listing);
                                 } else {
@@ -82,7 +81,16 @@ class MyListings extends React.Component {
                                 activeListings: tempActiveListings,
                                 disabledListings: tempDisabledListings
                             });
+                        }).catch((error) => {
+                            console.error("Listing DNE. Removing from list of keys.", error);
+                            updatedListKeys = listKeys.filter((check_key) => {
+                                return check_key !== key;
+                            });
+                            firebase.firestore().collection('users').doc(id).update({
+                                listings: updatedListKeys
+                            });
                         });
+                        
                     });
                 });
             }
