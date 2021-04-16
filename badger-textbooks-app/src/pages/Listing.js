@@ -28,7 +28,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import SaveIcon from '@material-ui/icons/Favorite';
+import SavedIcon from '@material-ui/icons/Favorite';
+import UnsavedIcon from '@material-ui/icons/FavoriteBorder';
 import EditIcon from '@material-ui/icons/Edit';
 import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ChatIcon from '@material-ui/icons/Chat';
@@ -51,13 +52,14 @@ class Listings extends React.Component {
           condition: '',
           image: '',
           ISBN: '',
+          seller_name: '',
+          seller_rating: 0,
           menuOpen: false,
           userAuthed: true,
           chatNotNeeded: false,
           isGeneralUser: true,
           deleteWarningOpen: false,
-          seller_name: '',
-          seller_rating: 0,
+          currentlySaved: false
         }
     }
 
@@ -86,6 +88,11 @@ class Listings extends React.Component {
           firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var data = doc.data();
+
+                if (data.saved_listings.includes(documentId)) {
+                  this.setState({currentlySaved: true})
+                }
+
                 var tempUserRating = 0;
                 for(var i = 0; i < doc.data().user_ratings.length; i++){
                     var tempValue = parseInt(doc.data().user_ratings[i])
@@ -201,6 +208,8 @@ class Listings extends React.Component {
       var uid = firebase.auth().currentUser.uid;
       var documentId = sessionStorage.getItem('currentListing')
       var userRef;
+
+      this.setState({ currentlySaved: true });
 
       firebase.firestore().collection('listings').doc(documentId).get().then((doc) => {
         var listingRef = doc.id
@@ -326,6 +335,7 @@ class Listings extends React.Component {
                   <Box hidden={this.state.chatNotNeeded}>
                     <Button 
                       fullWidth
+                      disabled={this.state.currentlySaved}
                       style={{
                         margin: "10px", 
                         backgroundColor: '#c5050c', 
@@ -335,9 +345,9 @@ class Listings extends React.Component {
                         fontSize: '18px'
                       }}
                       onClick={this.saveListing}
-                      startIcon={<SaveIcon/>}
+                      startIcon={this.state.currentlySaved ? <SavedIcon/> : <UnsavedIcon/>}
                     >
-                      Save
+                      {this.state.currentlySaved ? "Saved" : "Save"}
                     </Button>
                   </Box>
 

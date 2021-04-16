@@ -45,6 +45,7 @@ class SavedListing extends React.Component {
     }
 
     componentDidMount(){
+        document.body.style.backgroundColor = '#d2b48c';
         firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
                 //User is not siged in...redirect to login page
@@ -74,9 +75,6 @@ class SavedListing extends React.Component {
                 });
             }
         });
-
-        document.body.style.backgroundColor = '#dadfe1';
-    
     }
 
     toggleMenu = (event) => {
@@ -100,6 +98,8 @@ class SavedListing extends React.Component {
         var listKeys = [];
         var tempList = [];
 
+        this.setState({ savedListings: [] })
+
         firebase.firestore().collection("users").where("uid", "==", this.state.userUID).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var data = doc.data();
@@ -110,12 +110,10 @@ class SavedListing extends React.Component {
                     var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
                     tempList.push(gather);
 
-                    this.setState({ savedListings: tempList }); 
+                    this.setState({ savedListings: tempList });
                 });
             });
         });
-
-        console.log(this.state.savedListings)
     }
 
     render() {
@@ -202,9 +200,10 @@ class SavedListing extends React.Component {
                                         })
                                         firebase.firestore().collection('users').doc(userRef).update({
                                             saved_listings: firebase.firestore.FieldValue.arrayRemove(item[idIndex])
+                                        }).then(() => {
+                                            this.updateSavedListings();
                                         })
                                     })
-                                    this.updateSavedListings()
                                     }}>
                                     Remove from Saved Listings
                                 </Button>
