@@ -95,6 +95,8 @@ class CreateAccount extends React.Component{
                     listings: [],
                     saved_listings: [],
                     uid: user.uid,
+                    isAdmin: false,
+                    user_ratings: []
                 }) 
             })
             .catch((error) => {
