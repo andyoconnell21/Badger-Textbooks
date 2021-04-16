@@ -31,29 +31,35 @@ class MyAccountPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      name: '',
       password: '',
+      phone: '',
+      email: '',
       uid: '',
 
 
       description: '',
       mood: '',
       address: '',
-      usernameInput: '',
+      nameInput: '',
       passwordInput: '',
+      emailInput: '',
+      phoneInput: '',
       descriptionInput: '',
       moodInput: '',
       imageURL: '',
     //   addressInput: '',
       editVis: '',
       acceptVis: 'none',
-      cancelVis: 'none'
+      cancelVis: 'none',
+      docID: ''
     };
 
-    this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
     this.handleMoodChange = this.handleMoodChange.bind(this);
+    this.handlePhoneChange = this.handlePhoneChange.bind(this);
     // this.handleAddressChange = this.handleAddressChange.bind(this);
     //this.handleLogout = this.handleLogout.bind(this);
   }
@@ -76,6 +82,9 @@ class MyAccountPage extends React.Component {
               name: data.name,
               password: data.password,
               menuOpen: false,
+              email: data.email,
+              phone: data.phone,
+              docID: i.id
               // username: data.username,
               // password: data.password,
               // description: data.description,
@@ -93,7 +102,7 @@ class MyAccountPage extends React.Component {
       }
     }.bind(this));
 
-    //var status = localStorage.getItem('userStatus');
+    
   }
 
 //   handleLogout () {
@@ -105,11 +114,12 @@ class MyAccountPage extends React.Component {
 //     window.location.href = '/'
 //   }
 
-  handleUsernameChange(event) { this.setState({usernameInput: event.target.value}); }
-  handlePasswordChange(event) { this.setState({passwordInput: event.target.value}); }
-  handleDescriptionChange(event) { this.setState({descriptionInput: event.target.value}); }
-  handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
-//   handleAddressChange(event) { this.setState({addressInput: event.target.value}); }
+handleNameChange(event) { this.setState({nameInput: event.target.value}); }
+handlePasswordChange(event) { this.setState({passwordInput: event.target.value}); }
+handleDescriptionChange(event) { this.setState({descriptionInput: event.target.value}); }
+handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
+handlePhoneChange(event) { this.setState({phoneInput: event.target.value});}
+
 
 toggleMenu = (event) => {
   var curr_state = this.state.menuOpen;
@@ -128,8 +138,9 @@ handleEditClick() {
 
   handleCancelClick() {
     this.setState({
-      usernameInput: this.state.username,
+      nameInput: this.state.name,
       passwordInput: this.state.password,
+      phoneInput: this.state.phone,
       descriptionInput: this.state.description,
       moodInput: this.state.mood,
       imageURL: this.state.imageURL,
@@ -137,34 +148,38 @@ handleEditClick() {
       editVis: '',
       acceptVis: 'none',
       cancelVis: 'none'
-    })
+    });
   }
 
   handleAcceptClick() {
 
     var status = localStorage.getItem('userStatus');
-    var docID = "customer"
 
-    firebase.firestore().collection("users").doc(docID).update({
-      username: this.state.usernameInput,
-      password: this.state.passwordInput,
-      description: this.state.descriptionInput,
-      mood: this.state.moodInput,
+    firebase.firestore().collection('users').doc(this.state.docID).update({
+      name: this.state.nameInput != '' ? this.state.nameInput : this.state.name,
+      password: this.state.passwordInput != '' ? this.state.passwordInput : this.state.password,
+      email: this.state.email,
+      phone: this.state.phoneInput != '' ? this.state.phoneInput : this.state.phone,
+      // description: this.state.descriptionInput,
+      // mood: this.state.moodInput,
       imageURL: this.state.imageURL,
     }).then(() => 
-      firebase.firestore().collection('users').doc(docID).get()
+      firebase.firestore().collection('users').doc(this.state.docID).get()
       .then((doc) => {
         var data = doc.data();
         this.setState({
-          username: data.username,
+          name: data.name,
           password: data.password,
-          description: data.description,
-          mood: data.mood,
-          imageURL: data.imageURL,
-          usernameInput: data.username,
-          passwordInput: data.password,
-          descriptionInput: data.description,
-          moodInput: data.mood,
+          email: data.email,
+          phone: data.phone,
+          //description: data.description,
+          //mood: data.mood,
+          //imageURL: data.imageURL,
+          nameInput: '',
+          passwordInput: '',
+          phoneInput: '',
+          //descriptionInput: '',
+          //moodInput: data.mood,
 
           editVis: '',
           acceptVis: 'none',
@@ -234,10 +249,13 @@ handleEditClick() {
 
           <Card style={{margin: '10px'}}>
             <Box style={{margin: '15px'}}>
+              <Typography variant='subtitle1' alignment='center' style={{color: '#ffffff', marginTop: '10px'}}>
+                
+              </Typography>
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
-                    Username: 
+                    Name: 
                   </Typography>
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
@@ -248,8 +266,8 @@ handleEditClick() {
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
                     fullWidth
-                    value={this.state.usernameInput}
-                    onChange={this.handleUsernameChange}
+                    value={this.state.nameInput}
+                    onChange={this.handleNameChange}
                   />
                 </Grid>
               </Grid>
@@ -270,6 +288,44 @@ handleEditClick() {
                     fullWidth
                     value={this.state.passwordInput}
                     onChange={this.handlePasswordChange}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+                <Grid item>
+                  <Typography>
+                    Email:
+                  </Typography>
+                </Grid>
+                <Grid item style={{display: this.state.editVis}}>
+                  <Typography>
+                    {this.state.email}
+                  </Typography>
+                </Grid>
+                <Grid item xs style={{display: this.state.acceptVis}}>
+                  <Typography align="left">
+                    Email must remain the same
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+                <Grid item>
+                  <Typography>
+                    Phone: 
+                  </Typography>
+                </Grid>
+                <Grid item style={{display: this.state.editVis}}>
+                  <Typography>
+                    {this.state.phone}
+                  </Typography>
+                </Grid>
+                <Grid item xs style={{display: this.state.acceptVis}}>
+                  <TextField
+                    fullWidth
+                    value={this.state.phoneInput}
+                    onChange={this.handlePhoneChange}
                   />
                 </Grid>
               </Grid>
