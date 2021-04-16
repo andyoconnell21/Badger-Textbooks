@@ -48,7 +48,6 @@ class MyAccountPage extends React.Component {
       descriptionInput: '',
       moodInput: '',
       imageURL: '',
-    //   addressInput: '',
       editVis: '',
       acceptVis: 'none',
       cancelVis: 'none',
@@ -265,6 +264,8 @@ handleEditClick() {
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
+                    title="nameChange"
+                    inputProps={{"data-testid": "nameChange"}}
                     fullWidth
                     value={this.state.nameInput}
                     onChange={this.handleNameChange}
@@ -285,6 +286,8 @@ handleEditClick() {
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
+                    title="passwordChange"
+                    inputProps={{"data-testid": "passwordChange"}}
                     fullWidth
                     value={this.state.passwordInput}
                     onChange={this.handlePasswordChange}
@@ -323,6 +326,8 @@ handleEditClick() {
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
+                    title="phoneChange"
+                    inputProps={{"data-testid": "phoneChange"}}
                     fullWidth
                     value={this.state.phoneInput}
                     onChange={this.handlePhoneChange}
@@ -408,14 +413,15 @@ handleEditClick() {
               <Divider/>
             </Container>
 
-            <Button
+            <IconButton
               style={{display: this.state.editVis, margin: '20px'}}
               variant='contained'
-              startIcon={<EditIcon/>}
+              starticon={<EditIcon/>}
+              title="update_btn"
               onClick={() => this.handleEditClick()}
             >
               Update My Info
-            </Button>
+            </IconButton>
             <Button
               style={{display: this.state.cancelVis, margin: '20px'}}
               variant='contained'

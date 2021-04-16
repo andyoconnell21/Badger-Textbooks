@@ -11,6 +11,7 @@ import ChatListPage from './pages/ChatListPage';
 import ChatPage from './pages/ChatPage';
 import EditListing from "./pages/EditListing";
 import CreateNewListings from "./pages/CreateNewListings";
+import MyAccountPage from './pages/MyAccountPage';
 
 
 let assignMock = jest.fn();
@@ -433,3 +434,52 @@ describe("Render Testing of CreateNewListings Page", () =>{
 //     expect(imageText).toBeInTheDocument();
 //   })
 // });
+
+describe("Testing of MyAccountPage", () => {
+  test("basic render test", () => {
+    render(<MyAccountPage/>)
+  })
+
+  test("my account page renders text", () => {
+    const { getByText, getByTitle } = render(<MyAccountPage/>)
+    const headerText = getByText("My Account")
+    const nameText = getByText("Name:")
+    const passwordText = getByText("Password:")
+    const emailText = getByText("Email:")
+    const phoneText = getByText("Phone:")
+
+    expect(headerText).toBeInTheDocument();
+    expect(nameText).toBeInTheDocument();
+    expect(passwordText).toBeInTheDocument();
+    expect(emailText).toBeInTheDocument();
+    expect(phoneText).toBeInTheDocument();
+  })
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<MyAccountPage/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Navigation Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+
+  test("click update info button", () => {
+    const { queryByTitle, getByTitle, getByTestId } = render(<MyAccountPage/>);
+    const updateInfo_btn = queryByTitle("update_btn");
+    fireEvent.click(updateInfo_btn);
+
+    const nameInput = getByTestId("nameChange");
+    const passwordInput = getByTestId("passwordChange");
+    const phoneInput = getByTestId("phoneChange");
+
+    fireEvent.change(nameInput, {target: {value: 'Test Name'}});
+    fireEvent.change(passwordInput, {target: {value: 'Test Password'}});
+    fireEvent.change(phoneInput, {target: {value: 'Test Phone'}});
+
+    expect(nameInput.value).toBe('Test Name');
+    expect(passwordInput.value).toBe('Test Password');
+    expect(phoneInput.value).toBe('Test Phone');
+  })
+
+})
