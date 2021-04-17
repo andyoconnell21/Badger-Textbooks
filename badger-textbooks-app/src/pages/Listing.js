@@ -374,7 +374,7 @@ class Listings extends React.Component {
                     </Button>
                   </Box>
 
-                  <Box hidden={this.state.chatNotNeeded}>
+                  <Box hidden={true}>
                     <Button 
                       fullWidth
                       style={{
