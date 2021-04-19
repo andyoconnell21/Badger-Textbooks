@@ -45,6 +45,7 @@ export class ReportListing extends Component {
             .then((doc) => {
                 var data = doc.data();
                 this.setState({
+                    listing_id: documentId,
                     title: data.title,
                 })
             })
@@ -59,21 +60,16 @@ export class ReportListing extends Component {
 
     handleSubmit = (e) => {
         var uid = firebase.auth().currentUser.uid;
-        var user_email = firebase.auth().currentUser.email;
         var date = Date().toLocaleString();
-
-        var listingRef;
-        var userRef;
 
         firebase.firestore().collection("users").where("uid", "==", uid).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var data = doc.data();
-                var username = data.name
                 firebase.firestore().collection('reports').add({
                     listing_id: this.state.listing_id,
                     other_reasons: this.state.other_reasons,
-                    reporter_name: firebase.auth().currentUser,
-                    reporter_uid: firebase.auth().currentUser.uid,
+                    reporter_name: data.name,
+                    reporter_uid: data.uid,
                     time_reported: date,
                     primary_reasons: this.state.primary_reasons,
                 }).then((docRef) => {

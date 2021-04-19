@@ -125,7 +125,7 @@ class Admin extends React.Component {
                                         ))}
                                     </Grid>
                                     <Grid item xs>
-                                        <Typography><b>Other Notes: </b>{report[dataIndex].other_reason}</Typography>
+                                        <Typography><b>Other Notes: </b>{report[dataIndex].other_reasons}</Typography>
                                     </Grid>
                                     <Grid item xs={1}>
                                         <IconButton
