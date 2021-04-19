@@ -17,7 +17,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import HomeIcon from '@material-ui/icons/Home';
 import AdminIcon from '@material-ui/icons/SupervisorAccount';
 
-class NavigationMenu extends React.Component { 
+class NavigationMenu extends React.Component {
 
     constructor(props) {
         super(props)
@@ -84,10 +84,10 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="Account" />
                     </ListItem>
                     <Divider style={{display: this.state.adminDisplay}}/>
-                    <ListItem button key="admin_nav" 
-                        style={{display: this.state.adminDisplay}} 
-                        selected={this.state.pageName === "/admin"} 
-                        onClick={() => this.handleClick("/admin")}
+                    <ListItem button key="admin_nav"
+                              style={{display: this.state.adminDisplay}}
+                              selected={this.state.pageName === "/admin"}
+                              onClick={() => this.handleClick("/admin")}
                     >
                         <ListItemIcon><AdminIcon/></ListItemIcon>
                         <ListItemText primary="Manage Reports" />

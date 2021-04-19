@@ -2,14 +2,14 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import {
-  Button,
-  TextField,
-  Grid,
-  AppBar,
-  Typography,
-  Link,
-  Container,
-  } from "@material-ui/core";
+    Button,
+    TextField,
+    Grid,
+    AppBar,
+    Typography,
+    Link,
+    Container,
+} from "@material-ui/core";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -69,43 +69,43 @@ class CreateAccount extends React.Component{
         }
         else{
             //Create the user account with email and password
-            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password) 
-            .then((userCredential) => {
-                var user = userCredential.user
-                //Create alert for this
-                this.setState({hidden: true})
-                this.setState({createAccountError: false})
-                
-                //Send verification email to user
-                var user = firebase.auth().currentUser;
-                user.sendEmailVerification().then(function() {
-                    //Email sent.
-                }).catch(function(error) {
-                    //An error happened.
-                });
+            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+                .then((userCredential) => {
+                    var user = userCredential.user
+                    //Create alert for this
+                    this.setState({hidden: true})
+                    this.setState({createAccountError: false})
 
-                //Create a new user account and set the given data
-                var fullName = this.state.firstName.concat(" ", this.state.lastName)
-                firebase.firestore().collection('users').add({
-                    email: this.state.email,
-                    password: this.state.password,
-                    name: fullName,
-                    address: "",
-                    phone: 0,
-                    listings: [],
-                    saved_listings: [],
-                    uid: user.uid,
-                    isAdmin: false,
-                    user_ratings: []
-                }) 
-            })
-            .catch((error) => {
-                //Implement alert using an email that already exists
-                //Take error code and if an error occurs, update accordingly
-                this.setErrorHandler(true)
-            });  
+                    //Send verification email to user
+                    var user = firebase.auth().currentUser;
+                    user.sendEmailVerification().then(function() {
+                        //Email sent.
+                    }).catch(function(error) {
+                        //An error happened.
+                    });
+
+                    //Create a new user account and set the given data
+                    var fullName = this.state.firstName.concat(" ", this.state.lastName)
+                    firebase.firestore().collection('users').add({
+                        email: this.state.email,
+                        password: this.state.password,
+                        name: fullName,
+                        address: "",
+                        phone: 0,
+                        listings: [],
+                        saved_listings: [],
+                        uid: user.uid,
+                        isAdmin: false,
+                        user_ratings: []
+                    })
+                })
+                .catch((error) => {
+                    //Implement alert using an email that already exists
+                    //Take error code and if an error occurs, update accordingly
+                    this.setErrorHandler(true)
+                });
         }
-    }   
+    }
 
     loginPage = (event) => {
         window.location.href = '/'
@@ -141,7 +141,7 @@ class CreateAccount extends React.Component{
                             type="text"
                             onChange = {this.setFirstName}
                             autoFocus
-                            />
+                        />
                         <TextField
                             title='lastNameInput'
                             variant="outlined"
@@ -154,7 +154,7 @@ class CreateAccount extends React.Component{
                             type="text"
                             onChange = {this.setLastName}
                             autoFocus
-                            />
+                        />
                         <TextField
                             title='emailInput'
                             variant="outlined"
@@ -169,7 +169,7 @@ class CreateAccount extends React.Component{
                             // error = {this.state.createAccountError}
                             // helperText = "Email is already in use"
                             autoFocus
-                            />
+                        />
                         <TextField
                             title='passwordInput'
                             variant="outlined"
@@ -182,11 +182,11 @@ class CreateAccount extends React.Component{
                             type="password"
                             onChange = {this.setPassword}
                             autoFocus
-                            />
+                        />
                         <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Create Account</Button>
                         <Grid item xs>
                             <Link href="#" title='backToLogin' onClick={this.loginPage} variant="body2">
-                            Back to Login Page
+                                Back to Login Page
                             </Link>
                         </Grid>
                     </form>
@@ -198,12 +198,12 @@ class CreateAccount extends React.Component{
                             </DialogContentText>
                             <DialogContentText>
                                 Return to the login page to login to your account
-                            </DialogContentText>                        
+                            </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                        <Button onClick={this.backToLogin} color="primary">
-                            Back to Login
-                        </Button>
+                            <Button onClick={this.backToLogin} color="primary">
+                                Back to Login
+                            </Button>
                         </DialogActions>
                     </Dialog>
                     <Dialog open={this.state.invalidEmail}>
@@ -211,18 +211,18 @@ class CreateAccount extends React.Component{
                         <DialogContent>
                             <DialogContentText>
                                 Not a valid email. Your email must be a @wisc.edu email account
-                            </DialogContentText>                     
+                            </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                        <Button onClick={this.closeInvalidEmail} color="primary">
-                            Close
-                        </Button>
+                            <Button onClick={this.closeInvalidEmail} color="primary">
+                                Close
+                            </Button>
                         </DialogActions>
                     </Dialog>
-                </Container>          
+                </Container>
             </div>
         )
     }
 }
 
-export default CreateAccount  
+export default CreateAccount

@@ -374,7 +374,7 @@ class Listings extends React.Component {
                     </Button>
                   </Box>
 
-                  <Box hidden={true}>
+                  <Box>
                     <Button 
                       fullWidth
                       style={{
@@ -385,7 +385,13 @@ class Listings extends React.Component {
                         color: 'white', 
                         fontSize: '18px'
                       }}
-                      onClick={this.reportListing}
+                      onClick={() => {
+                        sessionStorage.setItem("listing_title", this.state.title);
+                        sessionStorage.setItem("listing_user_id", this.state.seller_uid);
+                        var documentId = sessionStorage.getItem('currentListing')
+                        sessionStorage.setItem('currentListing',documentId);
+                        window.location.href = "/reportlisting";
+                      }}
                       startIcon={<ReportIcon/>}
                     >
                       Report

@@ -17,6 +17,7 @@ import MyAccountPage from "./pages/MyAccountPage";
 import SavedListings from './pages/SavedListings';
 import UserAccount from './pages/UserAccount';
 import AdminPage from './pages/AdminPage';
+import ReportListing from "./pages/ReportListing";
 
 const firebaseConfig = {
   apiKey: "AIzaSyATKX78GgcgavgsRD0eUozsDAVQ1zpaEEs",
@@ -50,6 +51,7 @@ class App extends React.Component {
               <Route path="/savedListings" exact component={() => <SavedListings/>}/>
               <Route path='/userAccount' exact component={() => <UserAccount/>}/>
               <Route path="/admin" exact component={() => <AdminPage/>}/>
+              <Route path="/reportlisting" exact component={() => <ReportListing/>}/>
             </Switch>
           </Router>
         </div>

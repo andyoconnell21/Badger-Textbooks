@@ -74,34 +74,34 @@ class MyAccountPage extends React.Component {
         this.setState({ uid: user.uid });
 
         firebase.firestore().collection('users').where("uid", "==", user.uid).get()
-        .then((doc) => {
-          doc.forEach((i) => {
-            var data = i.data();
-            this.setState({
-              name: data.name,
-              password: data.password,
-              menuOpen: false,
-              email: data.email,
-              phone: data.phone,
-              docID: i.id
-              // username: data.username,
-              // password: data.password,
-              // description: data.description,
-              // mood: data.mood,
-              // address: data.address,
-              // usernameInput: data.username,
-              // passwordInput: data.password,
-              // descriptionInput: data.description,
-              // moodInput: data.mood,
-              // addressInput: data.address,
-              // imageURL: data.imageURL
-            });
-          })
-        })
+            .then((doc) => {
+              doc.forEach((i) => {
+                var data = i.data();
+                this.setState({
+                  name: data.name,
+                  password: data.password,
+                  menuOpen: false,
+                  email: data.email,
+                  phone: data.phone,
+                  docID: i.id
+                  // username: data.username,
+                  // password: data.password,
+                  // description: data.description,
+                  // mood: data.mood,
+                  // address: data.address,
+                  // usernameInput: data.username,
+                  // passwordInput: data.password,
+                  // descriptionInput: data.description,
+                  // moodInput: data.mood,
+                  // addressInput: data.address,
+                  // imageURL: data.imageURL
+                });
+              })
+            })
       }
     }.bind(this));
 
-    
+
   }
 
 //   handleLogout () {
@@ -113,21 +113,21 @@ class MyAccountPage extends React.Component {
 //     window.location.href = '/'
 //   }
 
-handleNameChange(event) { this.setState({nameInput: event.target.value}); }
-handlePasswordChange(event) { this.setState({passwordInput: event.target.value}); }
-handleDescriptionChange(event) { this.setState({descriptionInput: event.target.value}); }
-handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
-handlePhoneChange(event) { this.setState({phoneInput: event.target.value});}
+  handleNameChange(event) { this.setState({nameInput: event.target.value}); }
+  handlePasswordChange(event) { this.setState({passwordInput: event.target.value}); }
+  handleDescriptionChange(event) { this.setState({descriptionInput: event.target.value}); }
+  handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
+  handlePhoneChange(event) { this.setState({phoneInput: event.target.value});}
 
 
-toggleMenu = (event) => {
-  var curr_state = this.state.menuOpen;
-  this.setState({
-    menuOpen: !curr_state
-  });
-} 
+  toggleMenu = (event) => {
+    var curr_state = this.state.menuOpen;
+    this.setState({
+      menuOpen: !curr_state
+    });
+  }
 
-handleEditClick() {
+  handleEditClick() {
     this.setState({
       editVis: 'none',
       acceptVis: 'inline',
@@ -143,7 +143,7 @@ handleEditClick() {
       descriptionInput: this.state.description,
       moodInput: this.state.mood,
       imageURL: this.state.imageURL,
-    //   addressInput: this.state.address,
+      //   addressInput: this.state.address,
       editVis: '',
       acceptVis: 'none',
       cancelVis: 'none'
@@ -162,29 +162,29 @@ handleEditClick() {
       // description: this.state.descriptionInput,
       // mood: this.state.moodInput,
       imageURL: this.state.imageURL,
-    }).then(() => 
-      firebase.firestore().collection('users').doc(this.state.docID).get()
-      .then((doc) => {
-        var data = doc.data();
-        this.setState({
-          name: data.name,
-          password: data.password,
-          email: data.email,
-          phone: data.phone,
-          //description: data.description,
-          //mood: data.mood,
-          //imageURL: data.imageURL,
-          nameInput: '',
-          passwordInput: '',
-          phoneInput: '',
-          //descriptionInput: '',
-          //moodInput: data.mood,
+    }).then(() =>
+        firebase.firestore().collection('users').doc(this.state.docID).get()
+            .then((doc) => {
+              var data = doc.data();
+              this.setState({
+                name: data.name,
+                password: data.password,
+                email: data.email,
+                phone: data.phone,
+                //description: data.description,
+                //mood: data.mood,
+                //imageURL: data.imageURL,
+                nameInput: '',
+                passwordInput: '',
+                phoneInput: '',
+                //descriptionInput: '',
+                //moodInput: data.mood,
 
-          editVis: '',
-          acceptVis: 'none',
-          cancelVis: 'none'
-        })
-      })
+                editVis: '',
+                acceptVis: 'none',
+                cancelVis: 'none'
+              })
+            })
     );
 
     var user = firebase.auth().currentUser;
@@ -194,7 +194,7 @@ handleEditClick() {
     user.updatePassword(this.state.passwordInput).then(() => {
       //success
     }, (error) => {
-        console.log(error.code)
+      console.log(error.code)
     });
   }
 
@@ -205,21 +205,21 @@ handleEditClick() {
     var storageRef = storage.ref()
     const fileRef = storageRef.child(file.name)
     fileRef.put(file).then(() => {
-        //Saved image file path
-        storageRef.child(file.name).getDownloadURL().then((url) => {
-            this.setState({imageURL: url})
-        })
+      //Saved image file path
+      storageRef.child(file.name).getDownloadURL().then((url) => {
+        this.setState({imageURL: url})
+      })
     })
-    }
-   
+  }
+
   //change for line 269: {this.displayPayment()}
   render () {
     return (
-      <div>
+        <div>
           <AppBar position="static" style={{ background: '#c5050c' }}>
             <Toolbar>
 
-              <IconButton title="menu_btn" onClick={this.toggleMenu}> 
+              <IconButton title="menu_btn" onClick={this.toggleMenu}>
                 <MenuIcon/>
               </IconButton>
 
@@ -227,7 +227,7 @@ handleEditClick() {
                 My Account
               </Typography>
               <IconButton
-                onClick={this.handleLogout}
+                  onClick={this.handleLogout}
               >
                 <LogoutIcon/>
               </IconButton>
@@ -241,7 +241,7 @@ handleEditClick() {
           {/* <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
             Email: {localStorage.getItem('email')}
           </Typography> */}
-          
+
           {/* <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
             Account Type: {this.state.type}
           </Typography> */}
@@ -249,12 +249,12 @@ handleEditClick() {
           <Card style={{margin: '10px'}}>
             <Box style={{margin: '15px'}}>
               <Typography variant='subtitle1' alignment='center' style={{color: '#ffffff', marginTop: '10px'}}>
-                
+
               </Typography>
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
-                    Name: 
+                    Name:
                   </Typography>
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
@@ -264,11 +264,11 @@ handleEditClick() {
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
-                    title="nameChange"
-                    inputProps={{"data-testid": "nameChange"}}
-                    fullWidth
-                    value={this.state.nameInput}
-                    onChange={this.handleNameChange}
+                      title="nameChange"
+                      inputProps={{"data-testid": "nameChange"}}
+                      fullWidth
+                      value={this.state.nameInput}
+                      onChange={this.handleNameChange}
                   />
                 </Grid>
               </Grid>
@@ -276,7 +276,7 @@ handleEditClick() {
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
-                    Password: 
+                    Password:
                   </Typography>
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
@@ -286,11 +286,11 @@ handleEditClick() {
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
-                    title="passwordChange"
-                    inputProps={{"data-testid": "passwordChange"}}
-                    fullWidth
-                    value={this.state.passwordInput}
-                    onChange={this.handlePasswordChange}
+                      title="passwordChange"
+                      inputProps={{"data-testid": "passwordChange"}}
+                      fullWidth
+                      value={this.state.passwordInput}
+                      onChange={this.handlePasswordChange}
                   />
                 </Grid>
               </Grid>
@@ -316,7 +316,7 @@ handleEditClick() {
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item>
                   <Typography>
-                    Phone: 
+                    Phone:
                   </Typography>
                 </Grid>
                 <Grid item style={{display: this.state.editVis}}>
@@ -326,11 +326,11 @@ handleEditClick() {
                 </Grid>
                 <Grid item xs style={{display: this.state.acceptVis}}>
                   <TextField
-                    title="phoneChange"
-                    inputProps={{"data-testid": "phoneChange"}}
-                    fullWidth
-                    value={this.state.phoneInput}
-                    onChange={this.handlePhoneChange}
+                      title="phoneChange"
+                      inputProps={{"data-testid": "phoneChange"}}
+                      fullWidth
+                      value={this.state.phoneInput}
+                      onChange={this.handlePhoneChange}
                   />
                 </Grid>
               </Grid>
@@ -414,18 +414,18 @@ handleEditClick() {
             </Container>
 
             <IconButton
-              style={{display: this.state.editVis, margin: '20px'}}
-              variant='contained'
-              starticon={<EditIcon/>}
-              title="update_btn"
-              onClick={() => this.handleEditClick()}
+                style={{display: this.state.editVis, margin: '20px'}}
+                variant='contained'
+                starticon={<EditIcon/>}
+                title="update_btn"
+                onClick={() => this.handleEditClick()}
             >
               Update My Info
             </IconButton>
             <Button
-              style={{display: this.state.cancelVis, margin: '20px'}}
-              variant='contained'
-              onClick={() => this.handleCancelClick()}
+                style={{display: this.state.cancelVis, margin: '20px'}}
+                variant='contained'
+                onClick={() => this.handleCancelClick()}
             >
               <CancelIcon/>
               <Typography>
@@ -433,9 +433,9 @@ handleEditClick() {
               </Typography>
             </Button>
             <Button
-              style={{display: this.state.acceptVis, margin: '20px'}}
-              variant='contained'
-              onClick={() => this.handleAcceptClick()}
+                style={{display: this.state.acceptVis, margin: '20px'}}
+                variant='contained'
+                onClick={() => this.handleAcceptClick()}
             >
               <AcceptIcon/>
               <Typography>
@@ -443,7 +443,7 @@ handleEditClick() {
               </Typography>
             </Button>
           </Card>
-      </div>
+        </div>
     );
   }
 }

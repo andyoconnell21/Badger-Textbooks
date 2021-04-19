@@ -53,8 +53,8 @@ class UserAccount extends React.Component {
     componentDidMount(){
         firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
-              //User is not siged in...redirect to login page
-              window.location.href = "/";
+                //User is not siged in...redirect to login page
+                window.location.href = "/";
             } else{
 
                 //Get relevant information of that user
@@ -75,30 +75,30 @@ class UserAccount extends React.Component {
                 })
 
                 //Get some of the users current listings
-            
-            firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    var userListingsRef = doc.data().listings
-                    var tempUserListingArray = []
-                    var userListingArray = [];
-                    for(let i = 0; i < userListingsRef.length; i++){
-                        tempUserListingArray.push(userListingsRef[i].id)
-                    }
-                    firebase.firestore().collection('listings').get().then((querySnapshot) => {
-                        querySnapshot.forEach((doc) => {
-                            for(let i = 0; i < tempUserListingArray.length; i++){
-                                if(tempUserListingArray[i] == doc.id && userListingArray.length != 3){
-                                    var gather = [doc.id, doc.data()]
-                                    userListingArray.push(gather)
+
+                firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        var userListingsRef = doc.data().listings
+                        var tempUserListingArray = []
+                        var userListingArray = [];
+                        for(let i = 0; i < userListingsRef.length; i++){
+                            tempUserListingArray.push(userListingsRef[i].id)
+                        }
+                        firebase.firestore().collection('listings').get().then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                for(let i = 0; i < tempUserListingArray.length; i++){
+                                    if(tempUserListingArray[i] == doc.id && userListingArray.length != 3){
+                                        var gather = [doc.id, doc.data()]
+                                        userListingArray.push(gather)
+                                    }
                                 }
-                            }
-                            this.setState({userListingsArray: userListingArray})
+                                this.setState({userListingsArray: userListingArray})
+                            })
                         })
                     })
                 })
-            })
             }
-          });
+        });
         this.setState({userAccountEmail: sessionStorage.getItem('userAccountEmail')})
         document.body.style.backgroundColor = '#dadfe1';
 
@@ -107,7 +107,7 @@ class UserAccount extends React.Component {
     toggleMenu = (event) => {
         var curr_state = this.state.menuOpen;
         this.setState({
-          menuOpen: !curr_state
+            menuOpen: !curr_state
         });
     }
 
@@ -128,7 +128,7 @@ class UserAccount extends React.Component {
     }
 
     sendUserRating = (event) => {
-        //Capture the rating and store it in firebase 
+        //Capture the rating and store it in firebase
 
         var userRef;
         firebase.firestore().collection('users').where("email", "==", sessionStorage.getItem('userAccountEmail')).get().then((querySnapshot) => {
@@ -186,13 +186,13 @@ class UserAccount extends React.Component {
             <div>
                 <AppBar position = "static" style={{background:'#c5050c'}}>
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}> 
-                        <MenuIcon/>
+                        <IconButton onClick={this.toggleMenu}>
+                            <MenuIcon/>
                         </IconButton>
                         <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
-                        <Typography variant="h3">
-                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
-                        </Typography>
+                            <Typography variant="h3">
+                                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
+                            </Typography>
                         </Box>
                     </Toolbar>
                 </AppBar>
@@ -204,7 +204,7 @@ class UserAccount extends React.Component {
                 <Grid>
                     <Grid item style={{margin:'auto', padding:'20px'}}>
                         <img onError={this.addDefaultSrc} className="img-responsive"
-                            src={this.state.userAccountImage} width="150" height="150" alt="" style={{backgroundColor: "#dadfe1"}}/>
+                             src={this.state.userAccountImage} width="150" height="150" alt="" style={{backgroundColor: "#dadfe1"}}/>
                     </Grid>
                     <Grid item>
                         <Typography style={{fontSize: '50px'}}>
@@ -227,102 +227,102 @@ class UserAccount extends React.Component {
 
                     <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
                         {this.state.userListingsArray.map((item) => (
-                        <Grid item>
-                            <Card style={{width: "300px"}}>
-                            <CardContent>
-                                <Grid container style={{height: '60px'}}>
-                                <Grid item>
-                                    <img onError={this.addDefaultSrc} className="img-responsive"
-                                        src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
-                                </Grid>
-                                <Grid item xs>
-                                    <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
-                                    <Typography variant='h6'>
-                                        {item[dataIndex].title}
-                                    </Typography>
-                                    </div>
-                                </Grid>
-                                </Grid>
-                                <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
-                                <Grid container>
-                                <Grid item xs>
-                                    <Typography color="textSecondary" style={{left: 0}}>
-                                    Price:
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs>
-                                    <Typography color="textSecondary">
-                                    ${item[dataIndex].price}
-                                    </Typography>
-                                </Grid>
-                                </Grid>
-                                <Grid container>
-                                <Grid item xs>
-                                    <Typography color="textSecondary">
-                                    Seller:
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs>
-                                    <Typography color="textSecondary">
-                                    {item[dataIndex].seller}
-                                    </Typography>
-                                </Grid>
-                                </Grid>
-                            </CardContent>
-                            
-                            <CardActions>
-                                <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
-                                sessionStorage.setItem('currentListing', item[idIndex]);
-                                window.location.href = "/listing";
-                                }}>
-                                See Details 
-                                </Button>
-                            </CardActions>
-                            </Card>
-                        </Grid>
+                            <Grid item>
+                                <Card style={{width: "300px"}}>
+                                    <CardContent>
+                                        <Grid container style={{height: '60px'}}>
+                                            <Grid item>
+                                                <img onError={this.addDefaultSrc} className="img-responsive"
+                                                     src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}>
+                                                    <Typography variant='h6'>
+                                                        {item[dataIndex].title}
+                                                    </Typography>
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                                        <Grid container>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary" style={{left: 0}}>
+                                                    Price:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary">
+                                                    ${item[dataIndex].price}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary">
+                                                    Seller:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary">
+                                                    {item[dataIndex].seller}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+
+                                    <CardActions>
+                                        <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                            sessionStorage.setItem('currentListing', item[idIndex]);
+                                            window.location.href = "/listing";
+                                        }}>
+                                            See Details
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
                         ))}
                     </Grid>
 
                     <Button title='rateUser_btn' type="submit" onClick={this.rateUser} style={{marginTop: "30px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Rate {this.state.userAccountName}</Button>
                     <Button title='reportUser_btn' type="submit" onClick={this.reportUser} style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '40%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Report {this.state.userAccountName}</Button>
-                </Grid>   
+                </Grid>
 
                 <Dialog open={this.state.hiddenRateUser}>
                     <DialogTitle >{"Rate User"}</DialogTitle>
                     <DialogContent>
-                    <DialogContentText>
-                        Rate Your Experience With This User
-                    </DialogContentText>
+                        <DialogContentText>
+                            Rate Your Experience With This User
+                        </DialogContentText>
                         <Rating name='simple-controlled' onChange={this.setRatingValue} value={this.state.setUserRating}></Rating>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={this.sendUserRating} color="primary">
-                        Send
-                    </Button>
-                    <Button title='close_btn' onClick={this.handleClose} color="primary">
-                        Close
-                    </Button>
+                        <Button onClick={this.sendUserRating} color="primary">
+                            Send
+                        </Button>
+                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                            Close
+                        </Button>
                     </DialogActions>
                 </Dialog>
 
                 <Dialog open={this.state.hiddenReportUser}>
                     <DialogTitle >{"Report User"}</DialogTitle>
                     <DialogContent>
-                    <DialogContentText>
-                        Report Your Experience With This User
-                    </DialogContentText>
+                        <DialogContentText>
+                            Report Your Experience With This User
+                        </DialogContentText>
                         <TextField
                             type="text"
                             onChange={this.setReportText}>
                         </TextField>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={this.sendUserReport} color="primary">
-                        Send
-                    </Button>
-                    <Button title='close_btn' onClick={this.handleClose} color="primary">
-                        Close
-                    </Button>
+                        <Button onClick={this.sendUserReport} color="primary">
+                            Send
+                        </Button>
+                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                            Close
+                        </Button>
                     </DialogActions>
                 </Dialog>
 
@@ -334,9 +334,9 @@ class UserAccount extends React.Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button title='close_btn' onClick={this.handleClose} color="primary">
-                        Close
-                    </Button>
+                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                            Close
+                        </Button>
                     </DialogActions>
                 </Dialog>
 
@@ -348,9 +348,9 @@ class UserAccount extends React.Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button title='close_btn' onClick={this.handleClose} color="primary">
-                        Close
-                    </Button>
+                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                            Close
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </div>

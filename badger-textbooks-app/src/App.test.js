@@ -37,15 +37,15 @@ describe("Render and Unit Testing of Login Page", () =>{
   })
 
   test("Render LoginPage Text and TextInputs", () => {
-      render(<Login />);
-      const headerText = screen.getByText("Welcome to Badger Textbooks")
-      const subheaderText = screen.getByText("Sign In")
+    render(<Login />);
+    const headerText = screen.getByText("Welcome to Badger Textbooks")
+    const subheaderText = screen.getByText("Sign In")
 
-      expect(headerText).toBeInTheDocument();
-      expect(subheaderText).toBeInTheDocument();
-      expect(screen.getByTitle('emailTextInput')).toBeInTheDocument()
-      expect(screen.getByTitle('passwordTextInput')).toBeInTheDocument()
-    })
+    expect(headerText).toBeInTheDocument();
+    expect(subheaderText).toBeInTheDocument();
+    expect(screen.getByTitle('emailTextInput')).toBeInTheDocument()
+    expect(screen.getByTitle('passwordTextInput')).toBeInTheDocument()
+  })
 
   test("Forgot Password Button", () => {
     const { queryByTitle, getByTestId } = render(<Login/>);
@@ -146,35 +146,35 @@ describe("Render and Unit Testing of Create Account Page", () =>{
 //NAVIGATION MENU TESTS
 describe("Testing Navigation Menu", () => {
   test('basic render test', () => {
-      render(<NavigationMenu/>)
+    render(<NavigationMenu/>)
   })
 
   test('click home button', () => {
-      const { queryByTitle } = render(<NavigationMenu/>);
-      const home_nav_btn = queryByTitle("home_nav_btn");
-      fireEvent.click(home_nav_btn);
-      expect(window.location.assign).toHaveBeenCalledTimes(1);
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const home_nav_btn = queryByTitle("home_nav_btn");
+    fireEvent.click(home_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 
   test('click create button', () => {
-      const { queryByTitle } = render(<NavigationMenu/>);
-      const crea_nav_btn = queryByTitle("crea_nav_btn");
-      fireEvent.click(crea_nav_btn);
-      expect(window.location.assign).toHaveBeenCalledTimes(1);
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const crea_nav_btn = queryByTitle("crea_nav_btn");
+    fireEvent.click(crea_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 
   test('click listing button', () => {
-      const { queryByTitle } = render(<NavigationMenu/>);
-      const list_nav_btn = queryByTitle("list_nav_btn");
-      fireEvent.click(list_nav_btn);
-      expect(window.location.assign).toHaveBeenCalledTimes(1);
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const list_nav_btn = queryByTitle("list_nav_btn");
+    fireEvent.click(list_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 
   test('click chat button', () => {
-      const { queryByTitle } = render(<NavigationMenu/>);
-      const chat_nav_btn = queryByTitle("chat_nav_btn");
-      fireEvent.click(chat_nav_btn); 
-      expect(window.location.assign).toHaveBeenCalledTimes(1);
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const chat_nav_btn = queryByTitle("chat_nav_btn");
+    fireEvent.click(chat_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 });
 
@@ -242,23 +242,23 @@ describe("Testing Home-Page", () => {
 
     const execute_btn = queryByTitle("execute_btn");
     fireEvent.click(execute_btn);
-    
+
     expect(field.value).toBe('test')
   })
 
   test("update then clear search value", () => {
-      const { queryByTitle, getByTestId } = render(<Home/>);
-      const search_btn = queryByTitle("search_btn");
-      fireEvent.click(search_btn);
-  
-      const field = getByTestId('search_input').querySelector('input');
-      fireEvent.change(field, { target: { value: "test" } });
-  
-      const clear_btn = queryByTitle("clear_btn");
-      fireEvent.click(clear_btn);
-      
-      expect(field.value).toBe('')
-    })
+    const { queryByTitle, getByTestId } = render(<Home/>);
+    const search_btn = queryByTitle("search_btn");
+    fireEvent.click(search_btn);
+
+    const field = getByTestId('search_input').querySelector('input');
+    fireEvent.change(field, { target: { value: "test" } });
+
+    const clear_btn = queryByTitle("clear_btn");
+    fireEvent.click(clear_btn);
+
+    expect(field.value).toBe('')
+  })
 });
 
 
@@ -355,31 +355,31 @@ describe("Render and Unit Testing of MyListings Page", () => {
 //CHAT LIST PAGE TESTS
 describe("Testing ChatListPage", () => {
   test('basic render test', () => {
-      render(<ChatListPage/>)
+    render(<ChatListPage/>)
   })
 
   test("click menu button", () => {
-      const { queryByTitle } = render(<ChatListPage/>);
-      const menu_btn = queryByTitle("menu_btn");
-      fireEvent.click(menu_btn);
-      const navigation_text = screen.getByText("Navigation Menu");
-  
-      expect(navigation_text).toBeInTheDocument();
+    const { queryByTitle } = render(<ChatListPage/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Navigation Menu");
+
+    expect(navigation_text).toBeInTheDocument();
   })
 });
 
 //CHAT PAGE TESTS
 describe("Testing ChatPage", () => {
   test('basic render test', () => {
-      render(<ChatPage/>)
+    render(<ChatPage/>)
   })
 
   test("click back button", () => {
-      const { queryByTitle } = render(<ChatPage/>);
-      const back_btn = queryByTitle("back_btn");
-      fireEvent.click(back_btn);
+    const { queryByTitle } = render(<ChatPage/>);
+    const back_btn = queryByTitle("back_btn");
+    fireEvent.click(back_btn);
 
-      expect(window.location.assign).toHaveBeenCalledTimes(1);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 });
 

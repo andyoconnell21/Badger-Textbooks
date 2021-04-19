@@ -69,7 +69,7 @@ class SavedListing extends React.Component {
                             var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
                             tempList.push(gather);
 
-                            this.setState({ savedListings: tempList }); 
+                            this.setState({ savedListings: tempList });
                         });
                     });
                 });
@@ -80,9 +80,9 @@ class SavedListing extends React.Component {
     toggleMenu = (event) => {
         var curr_state = this.state.menuOpen;
         this.setState({
-          menuOpen: !curr_state
+            menuOpen: !curr_state
         });
-      }
+    }
 
     removeSavedListing = (event) => {
         console.log(this.state.savedListings)
@@ -121,7 +121,7 @@ class SavedListing extends React.Component {
             <div>
                 <AppBar position = "static" style={{background:'#c5050c'}}>
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}> 
+                        <IconButton onClick={this.toggleMenu}>
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant='h6' style={{fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto'}}>
@@ -140,76 +140,76 @@ class SavedListing extends React.Component {
                     </Typography>
                     <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
                         {this.state.savedListings.map((item) => (
-                        <Grid item>
-                            <Card style={{width: "300px"}}>
-                            <CardContent>
-                                <Grid container style={{height: '60px'}}>
-                                <Grid item>
-                                    <img onError={this.addDefaultSrc} className="img-responsive"
-                                        src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
-                                </Grid>
-                                <Grid item xs>
-                                    <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
-                                    <Typography variant='h6'>
-                                        {item[dataIndex].title}
-                                    </Typography>
-                                    </div>
-                                </Grid>
-                                </Grid>
-                                <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
-                                <Grid container>
-                                <Grid item xs>
-                                    <Typography color="textSecondary" style={{left: 0}}>
-                                    Price:
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs>
-                                    <Typography color="textSecondary">
-                                    ${item[dataIndex].price}
-                                    </Typography>
-                                </Grid>
-                                </Grid>
-                                <Grid container>
-                                <Grid item xs>
-                                    <Typography color="textSecondary">
-                                    Seller:
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs>
-                                    <Typography color="textSecondary">
-                                    {item[dataIndex].seller}
-                                    </Typography>
-                                </Grid>
-                                </Grid>
-                            </CardContent>
-                            
-                            <CardActions>
-                                <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
-                                sessionStorage.setItem('currentListing', item[idIndex]);
-                                window.location.href = "/listing";
-                                }}>
-                                See Details 
-                                </Button>
-                            </CardActions>
-                            <CardActions>
-                                <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff', marginTop:'-10px'}} onClick={() => {
-                                    var userRef = '';
-                                    firebase.firestore().collection("users").where("uid", "==", this.state.userUID).get().then((querySnapshot) => {
-                                        querySnapshot.forEach((doc) => {
-                                            userRef = doc.id
-                                        })
-                                        firebase.firestore().collection('users').doc(userRef).update({
-                                            saved_listings: firebase.firestore.FieldValue.arrayRemove(item[idIndex])
-                                        }).then(() => {
-                                            this.updateSavedListings();
-                                        })
-                                    })
-                                    }}>
-                                    Remove from Saved Listings
-                                </Button>
-                            </CardActions>
-                            </Card>
-                        </Grid>
+                            <Grid item>
+                                <Card style={{width: "300px"}}>
+                                    <CardContent>
+                                        <Grid container style={{height: '60px'}}>
+                                            <Grid item>
+                                                <img onError={this.addDefaultSrc} className="img-responsive"
+                                                     src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}>
+                                                    <Typography variant='h6'>
+                                                        {item[dataIndex].title}
+                                                    </Typography>
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                                        <Grid container>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary" style={{left: 0}}>
+                                                    Price:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary">
+                                                    ${item[dataIndex].price}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary">
+                                                    Seller:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <Typography color="textSecondary">
+                                                    {item[dataIndex].seller}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+
+                                    <CardActions>
+                                        <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                            sessionStorage.setItem('currentListing', item[idIndex]);
+                                            window.location.href = "/listing";
+                                        }}>
+                                            See Details
+                                        </Button>
+                                    </CardActions>
+                                    <CardActions>
+                                        <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff', marginTop:'-10px'}} onClick={() => {
+                                            var userRef = '';
+                                            firebase.firestore().collection("users").where("uid", "==", this.state.userUID).get().then((querySnapshot) => {
+                                                querySnapshot.forEach((doc) => {
+                                                    userRef = doc.id
+                                                })
+                                                firebase.firestore().collection('users').doc(userRef).update({
+                                                    saved_listings: firebase.firestore.FieldValue.arrayRemove(item[idIndex])
+                                                }).then(() => {
+                                                    this.updateSavedListings();
+                                                })
+                                            })
+                                        }}>
+                                            Remove from Saved Listings
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
                         ))}
                     </Grid>
                 </Box>
