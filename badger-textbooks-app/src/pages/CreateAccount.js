@@ -74,7 +74,7 @@ class CreateAccount extends React.Component{
             //Create the user account with email and password
             firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then((userCredential) => {
-                    var user = userCredential.user
+                    //var user = userCredential.user
                     //Create alert for this
                     this.setState({hidden: true})
                     this.setState({createAccountError: false})
@@ -122,7 +122,7 @@ class CreateAccount extends React.Component{
         return(
             <div>
                 <AppBar position = "static" style={{background:'#c5050c'}}>
-                    <Typography variant='h6' style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '25px', margin: '25px', textAlign: 'center'}}>
+                    <Typography style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', textAlign: 'center'}}>
                         <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Welcome to Badger Textbooks
                     </Typography>
                 </AppBar>

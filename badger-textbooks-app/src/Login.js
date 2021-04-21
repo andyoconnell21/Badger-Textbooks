@@ -151,7 +151,7 @@ class Login extends React.Component{
         return (
           <div>
             <AppBar position = "static" style={{background:'#c5050c'}}>
-              <Typography variant='h6' style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '25px', margin: '25px', textAlign: 'center'}}>
+              <Typography style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', textAlign: 'center'}}>
                 <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Welcome to Badger Textbooks
               </Typography>
             </AppBar>

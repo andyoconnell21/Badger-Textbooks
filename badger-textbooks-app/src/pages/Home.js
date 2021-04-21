@@ -6,34 +6,36 @@ import NavigationMenu from './NavigationMenu';
 import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import Divider from '@material-ui/core/Divider';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-
-import Box from '@material-ui/core/Box';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+import {
+  Grid,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  IconButton,
+  AppBar,
+  Toolbar,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Divider,
+  Drawer
+} from '@material-ui/core';
 
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import MenuIcon from '@material-ui/icons/Menu';
-
 import BackIcon from '@material-ui/icons/ArrowBackIos';
-
 
 const idIndex = 0;
 const dataIndex = 1;
+const white = '#ffffff';
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
   
 class Home extends React.Component {
 
@@ -60,7 +62,7 @@ class Home extends React.Component {
       }
     });
 
-    document.body.style.backgroundColor = '#d2b48c';
+    document.body.style.backgroundColor = backgroundBeige;
 
     var tempListings = []
     firebase.firestore().collection("listings").where("active", "==", true).limit(10).get().then((querySnapshot) => {
@@ -154,7 +156,7 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <AppBar style ={{ background: '#c5050c' }} position="static">
+        <AppBar style ={{ background: badgerRed }} position="static">
           <Toolbar>
 
             <Box hidden={this.state.searchActive}>
@@ -164,8 +166,8 @@ class Home extends React.Component {
             </Box>
 
             <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
-              <Typography variant="h3">
-                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
+              <Typography style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', textAlign: 'center'}}>
+                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
               </Typography>
             </Box>
 
@@ -181,13 +183,13 @@ class Home extends React.Component {
               </IconButton>
             </Box>
 
-            <Box hidden={!this.state.searchActive} style={{marginRight: "10px", width: "10%"}}>
+            <Box hidden={!this.state.searchActive} style={{marginRight: "10px", margin: '15px', width: "10%"}}>
               <FormControl style={{width: '100%'}}>
-                <InputLabel id="filter-select-label" style={{marginLeft: "2px", color: '#ffffff'}}>Search by...</InputLabel>
+                <InputLabel id="filter-select-label" style={{marginLeft: "2px", color: white}}>Search by...</InputLabel>
                 <Select
                   labelId="filter-select-label"
                   data-testid="filter_slct"
-                  style={{width: "100%", color: '#ffffff'}}
+                  style={{width: "100%", color: white}}
                   variant="outlined"
                   value={this.state.searchFilter}
                   onChange={this.updateSearchFilter}
@@ -203,7 +205,7 @@ class Home extends React.Component {
               <Card>
                 <TextField
                   data-testid="search_input"
-                  placeholder="Search..."
+                  placeholder="Search listings..."
                   variant='outlined'
                   fullWidth
                   value={this.state.searchValue}
@@ -212,7 +214,7 @@ class Home extends React.Component {
               </Card>
             </Box>
 
-            <Box hidden={!this.state.searchActive}>
+            <Box hidden={!this.state.searchActive} style={{ marginLeft: '10px', marginRight: '10px' }}>
               <IconButton title="clear_btn" onClick={this.clearSearchValue}> 
                 <ClearIcon/>
               </IconButton>
@@ -273,14 +275,14 @@ class Home extends React.Component {
                       </Grid>
                       <Grid item xs>
                         <Typography color="textSecondary">
-                          {item[dataIndex].seller}
+                          {item[dataIndex].seller_name}
                         </Typography>
                       </Grid>
                     </Grid>
                   </CardContent>
                 
                   <CardActions>
-                    <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                    <Button fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
                       sessionStorage.setItem('currentListing', item[idIndex]);
                       window.location.href = "/listing";
                     }}>
@@ -336,14 +338,14 @@ class Home extends React.Component {
                       </Grid>
                       <Grid item xs>
                         <Typography color="textSecondary">
-                          {item[dataIndex].seller}
+                          {item[dataIndex].seller_name}
                         </Typography>
                       </Grid>
                     </Grid>
                   </CardContent>
                 
                   <CardActions>
-                    <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                    <Button fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
                       sessionStorage.setItem('currentListing', item[idIndex]);
                       window.location.href = "/listing";
                     }}>
