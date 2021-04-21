@@ -3,21 +3,24 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
+import {
+    Box,
+    AppBar,
+    Toolbar,
+    Typography,
+    Paper,
+    Divider,
+    Drawer,
+    Container,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText
+} from '@material-ui/core';
 
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -25,6 +28,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 const nameIndex = 0;
 const nameUidIndex = 1;
 const chatIndex = 2;
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
 
 class ChatList extends React.Component {
 
@@ -40,7 +45,7 @@ class ChatList extends React.Component {
   
     //LIFECYCLE FUNCTION: Does basic page setup, check user auth, makes call to display initial messages.
     componentDidMount() {
-        document.body.style.backgroundColor = '#d2b48c';
+        document.body.style.backgroundColor = backgroundBeige;
         firebase.auth().onAuthStateChanged(function(user) {
             if (!user) {
                 //User is not siged in...redirect to login page
@@ -137,21 +142,21 @@ class ChatList extends React.Component {
                     <NavigationMenu/>
                 </Drawer>
 
-                <AppBar position='static' style ={{ background: '#c5050c' }}>
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <Box hidden={this.state.searchActive}>
-                            <IconButton title="menu_btn" onClick={this.toggleMenu}> 
-                                <MenuIcon/>
-                            </IconButton>
-                        </Box>
-                        <Typography variant="h4" style={{ flexGrow: 1 }}>
-                            My Conversations
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                         </Typography>
                     </Toolbar>
                 </AppBar>
+
                 <Container>
                     <Box style={{height: '100vh'}}>
                         <Paper variant="outlined" square style={{ height: '100%' }}>
+                            <Typography variant='h5' style={{margin: '10px', float: 'left'}}>Your Conversations</Typography>
                             <List>
                                 {this.state.chats.map((data) => (
                                     <div>
