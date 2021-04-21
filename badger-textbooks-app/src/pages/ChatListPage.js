@@ -156,7 +156,7 @@ class ChatList extends React.Component {
                 <Container>
                     <Box style={{height: '100vh'}}>
                         <Paper variant="outlined" square style={{ height: '100%' }}>
-                            <Typography variant='h5' style={{margin: '10px', float: 'left'}}>Your Conversations</Typography>
+                            <Typography variant='h5' style={{margin: '10px', float: 'left'}}>My Conversations</Typography>
                             <List>
                                 {this.state.chats.map((data) => (
                                     <div>

@@ -3,19 +3,26 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 import React from "react";
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
+import {
+  Box,
+  Grid,
+  Paper,
+  Card,
+  AppBar,
+  Toolbar,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  IconButton
+} from '@material-ui/core';
 
 import SendIcon from '@material-ui/icons/Send';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
+
+const lightGrey = '#eeeeee';
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
   
 class Chat extends React.Component {
 
@@ -33,7 +40,7 @@ class Chat extends React.Component {
   //LIFECYCLE FUNCTION: Does basic page setup, check user auth, makes call to display initial messages.
   componentDidMount() {
     console.log(sessionStorage.getItem('receiverUid'));
-    document.body.style.backgroundColor = '#d2b48c';
+    document.body.style.backgroundColor = backgroundBeige;
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         //User is not siged in...redirect to login page
@@ -111,25 +118,26 @@ class Chat extends React.Component {
   render() {
     return (
         <div>
-            <AppBar position='static' style ={{ background: '#c5050c' }}>
-                <Toolbar>
-                    <IconButton
-                        title="back_btn"
-                        onClick={() => { window.location.assign(sessionStorage.getItem("returnLocation")); }}
-                    >
-                        <BackIcon/>
-                    </IconButton>
-                    <Typography variant="h4" style={{ flexGrow: 1 }}>
-                        Conversation with {this.state.receiverName}
-                    </Typography>
-                </Toolbar>
+            <AppBar style={{ background: badgerRed }} position="static">
+              <Toolbar>
+                <IconButton 
+                  title="back_btn" 
+                  style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}
+                  onClick={() => { window.location.assign(sessionStorage.getItem("returnLocation")); }}
+                >
+                  <BackIcon />
+                </IconButton>
+                <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                  Conversation with {this.state.receiverName}
+                </Typography>
+              </Toolbar>
             </AppBar>
 
             <Container>
                 <Box style={{height: '100vh'}}>
                     <Paper variant="outlined" square style={{ height: '100%' }}>
                         {this.state.messages.map((item) => (
-                            <Card fullWidth style={{ margin: "10px", backgroundColor: "#eeeeee" }}>
+                            <Card fullWidth style={{ margin: "10px", backgroundColor: lightGrey }}>
                                 <Typography align="left" style={{ margin: '5px' }}>
                                     {item.sender}: {item.text}
                                 </Typography>
@@ -139,27 +147,35 @@ class Chat extends React.Component {
                 </Box>
             </Container>
 
-            <AppBar position='fixed' style={{ background: '#c5050c', bottom: 0, top: 'auto'}}>
+            <AppBar position='fixed' style={{ background: badgerRed, bottom: 0, top: 'auto'}}>
                 <Toolbar>
-                    <Box style={{flexGrow: 1, marginRight: '10px'}}>
-                    <Card>
-                        <TextField
-                            fullWidth
-                            placeholder="Enter your message here..."
-                            variant='outlined'
-                            value={this.state.currentText}
-                            onChange={this.updateText}
-                        />
-                    </Card>
-                    </Box>
-                    <Button
-                        style = {{height: '100%'}}
-                        variant="contained"
-                        onClick={this.handleMessageSend}
-                        endIcon={<SendIcon/>}
-                    >
-                        Send
-                    </Button>
+                    <Container>
+                      <Grid container>
+                        <Grid item xs={11}>
+                          <Box style={{flexGrow: 1, marginTop: '15px', marginBottom: '15px'}}>
+                            <Card>
+                                <TextField
+                                    fullWidth
+                                    placeholder="Enter your message here..."
+                                    variant='outlined'
+                                    value={this.state.currentText}
+                                    onChange={this.updateText}
+                                />
+                            </Card>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={1} style={{paddingTop: '15px', paddingBottom: '15px'}}>
+                          <Button
+                            style={{height: '100%'}}
+                            variant="contained"
+                            onClick={this.handleMessageSend}
+                            endIcon={<SendIcon/>}
+                          >
+                            Send
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Container>
                 </Toolbar>
             </AppBar>    
         </div>

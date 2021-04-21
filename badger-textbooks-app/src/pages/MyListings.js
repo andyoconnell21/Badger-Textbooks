@@ -126,7 +126,7 @@ class MyListings extends React.Component {
                 </Drawer>
 
                 <Typography variant="h4" style={{marginTop: '20px'}}>
-                    Your Active Listings
+                    My Active Listings
                 </Typography>
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
@@ -192,7 +192,7 @@ class MyListings extends React.Component {
                 <Divider style={{margin: '10px'}}/>
 
                 <Typography variant="h4" style={{marginTop: '20px'}}>
-                    Your Disabled Listings
+                    My Disabled Listings
                 </Typography>
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
