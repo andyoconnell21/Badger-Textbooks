@@ -2,6 +2,10 @@ import './App.css';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+
+import Logo from './BadgerTextbooksLogoV1.png';
+
+import React from "react";
 import {
   Button,
   TextField,
@@ -10,14 +14,12 @@ import {
   Typography,
   Link,
   Container,
-  } from "@material-ui/core";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import React from "react";
-
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText
+} from "@material-ui/core";
 
 class Login extends React.Component{
     constructor(props){
@@ -57,7 +59,7 @@ class Login extends React.Component{
         event.preventDefault();
 
         var splitEmail = this.state.email.split("@")
-        if(splitEmail[1] != 'wisc.edu'){
+        if(splitEmail[1] !== 'wisc.edu'){
             this.setState({incorrectEmail: true})
         }
         else{
@@ -66,14 +68,14 @@ class Login extends React.Component{
             //Check to make sure user email is authenticated
             var user = firebase.auth().currentUser
             if(user != null){
-              if(user.emailVerified == true){
+              if(user.emailVerified === true){
                 this.setState({verified: false})
               }
               else{
                 this.setState({verified:true})
               }
             }
-            if(this.state.verified == false){
+            if(this.state.verified === false){
               window.location.href = '/home'
             }
             //set info in localstorage
@@ -83,10 +85,10 @@ class Login extends React.Component{
           })
           .catch((error) => {
             //Wrong Account Information
-            if(error.code == "auth/user-not-found"){
+            if(error.code === "auth/user-not-found"){
               this.setState({invalidEmail: true})
             }
-            if(error.code == "auth/wrong-password"){
+            if(error.code === "auth/wrong-password"){
               this.setState({invalidPassword: true})
             }
           });
@@ -150,7 +152,7 @@ class Login extends React.Component{
           <div>
             <AppBar position = "static" style={{background:'#c5050c'}}>
               <Typography variant='h6' style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '25px', margin: '25px', textAlign: 'center'}}>
-                Welcome to Badger Textbooks
+                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Welcome to Badger Textbooks
               </Typography>
             </AppBar>
     
@@ -252,7 +254,7 @@ class Login extends React.Component{
                 <DialogTitle >{"Email Not Found"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    There is no account associated with this email
+                    There is no account associated with this email.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -269,7 +271,7 @@ class Login extends React.Component{
                 <DialogTitle >{"Invalid Password"}</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    The password you have entered is incorrect. Please try again
+                    The password you have entered is incorrect. Please try again.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
