@@ -6,33 +6,28 @@ import NavigationMenu from './NavigationMenu';
 import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import Divider from '@material-ui/core/Divider';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
+import {
+    Grid,
+    Box,
+    Card,
+    CardActions,
+    CardContent,
+    Divider,
+    AppBar,
+    Toolbar,
+    Button,
+    IconButton,
+    Drawer,
+    Typography
+} from '@material-ui/core';
 
-import Box from '@material-ui/core/Box';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-
-import SearchIcon from '@material-ui/icons/Search';
-import ClearIcon from '@material-ui/icons/Clear';
 import MenuIcon from '@material-ui/icons/Menu';
-
-import BackIcon from '@material-ui/icons/ArrowBackIos';
 
 const dataIndex = 1;
 const idIndex = 0;
+const white = '#ffffff';
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
 
 class SavedListing extends React.Component {
     constructor(props){
@@ -45,7 +40,7 @@ class SavedListing extends React.Component {
     }
 
     componentDidMount(){
-        document.body.style.backgroundColor = '#d2b48c';
+        document.body.style.backgroundColor = backgroundBeige;
         firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
                 //User is not siged in...redirect to login page
@@ -119,13 +114,13 @@ class SavedListing extends React.Component {
     render() {
         return(
             <div>
-                <AppBar position = "static" style={{background:'#c5050c'}}>
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}>
-                            <MenuIcon/>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
                         </IconButton>
-                        <Typography variant='h6' style={{fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto'}}>
-                            Your Saved Listings
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -136,7 +131,7 @@ class SavedListing extends React.Component {
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
                     <Typography variant='h4' style={{margin:'auto', fontFamily: 'sans-serif' }}>
-                        Here are your Saved Listings
+                        Your Saved Listings
                     </Typography>
                     <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
                         {this.state.savedListings.map((item) => (
@@ -177,14 +172,14 @@ class SavedListing extends React.Component {
                                             </Grid>
                                             <Grid item xs>
                                                 <Typography color="textSecondary">
-                                                    {item[dataIndex].seller}
+                                                    {item[dataIndex].seller_name}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
                                     </CardContent>
 
                                     <CardActions>
-                                        <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                        <Button fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
                                             sessionStorage.setItem('currentListing', item[idIndex]);
                                             window.location.href = "/listing";
                                         }}>
@@ -192,7 +187,7 @@ class SavedListing extends React.Component {
                                         </Button>
                                     </CardActions>
                                     <CardActions>
-                                        <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff', marginTop:'-10px'}} onClick={() => {
+                                        <Button fullWidth style = {{backgroundColor: badgerRed, color: white, marginTop:'-10px'}} onClick={() => {
                                             var userRef = '';
                                             firebase.firestore().collection("users").where("uid", "==", this.state.userUID).get().then((querySnapshot) => {
                                                 querySnapshot.forEach((doc) => {
