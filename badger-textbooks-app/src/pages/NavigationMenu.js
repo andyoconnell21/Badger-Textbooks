@@ -3,11 +3,13 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 import React from "react";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import {
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Divider
+} from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
 import MyListingsIcon from '@material-ui/icons/ListAlt';
@@ -51,7 +53,7 @@ class NavigationMenu extends React.Component {
             <div>
                 <List>
                     <ListItem key="header">
-                        <ListItemText primary="Navigation Menu"/>
+                        <ListItemText primary="Menu" />
                     </ListItem>
                     <Divider/>
                     <ListItem button key="home_nav" title="home_nav_btn" selected={this.state.pageName === "/home"} onClick={() => this.handleClick("/home")}>
@@ -69,21 +71,16 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="My Listings" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="chat_list_nav" title="chat_nav_btn" selected={this.state.pageName === "/chatlist"} onClick={() => this.handleClick("/chatlist")}>
-                        <ListItemIcon><ChatIcon/></ListItemIcon>
-                        <ListItemText primary="My Conversations" />
-                    </ListItem>
-                    <Divider/>
                     <ListItem button key="saved_listings_nav" selected={this.state.pageName === "/savedListings"} onClick={() => this.handleClick("/savedListings")}>
                         <ListItemIcon><SavedIcon/></ListItemIcon>
                         <ListItemText primary="Saved Listings" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="account_nav" selected={this.state.pageName === "/myAccount"} onClick={() => this.handleClick("/myAccount")}>
-                        <ListItemIcon><AccountIcon/></ListItemIcon>
-                        <ListItemText primary="Account" />
+                    <ListItem button key="chat_list_nav" title="chat_nav_btn" selected={this.state.pageName === "/chatlist"} onClick={() => this.handleClick("/chatlist")}>
+                        <ListItemIcon><ChatIcon/></ListItemIcon>
+                        <ListItemText primary="My Conversations" />
                     </ListItem>
-                    <Divider style={{display: this.state.adminDisplay}}/>
+                    <Divider/>
                     <ListItem button key="admin_nav"
                               style={{display: this.state.adminDisplay}}
                               selected={this.state.pageName === "/admin"}
@@ -92,6 +89,12 @@ class NavigationMenu extends React.Component {
                         <ListItemIcon><AdminIcon/></ListItemIcon>
                         <ListItemText primary="Manage Reports" />
                     </ListItem>
+                    <Divider style={{display: this.state.adminDisplay}}/>
+                    <ListItem button key="account_nav" selected={this.state.pageName === "/myAccount"} onClick={() => this.handleClick("/myAccount")}>
+                        <ListItemIcon><AccountIcon/></ListItemIcon>
+                        <ListItemText primary="Account" />
+                    </ListItem>
+                    <Divider/>
                 </List>
             </div>
         )
