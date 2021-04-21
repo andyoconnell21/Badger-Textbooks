@@ -3,25 +3,31 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box';
+import {
+    Box,
+    Grid,
+    Divider,
+    AppBar,
+    Toolbar,
+    Typography,
+    Card,
+    CardActions,
+    CardContent,
+    Button,
+    IconButton,
+    Drawer
+} from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
 const idIndex = 0;
 const dataIndex = 1;
+const white = '#ffffff';
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
 
 class MyListings extends React.Component {
     constructor(props) {
@@ -42,7 +48,7 @@ class MyListings extends React.Component {
     }
 
     componentDidMount() {
-        document.body.style.backgroundColor = '#d2b48c';
+        document.body.style.backgroundColor = backgroundBeige;
         
         var listKeys = [];
         var tempList = [];
@@ -104,13 +110,13 @@ class MyListings extends React.Component {
     render() {
         return (
             <div>
-                <AppBar style={{ background: '#c5050c' }} position="static">
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton title="menu_btn" onClick={this.toggleMenu}>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant='h6' style={{ fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto' }}>
-                            {this.state.user}'s Listings
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -120,7 +126,7 @@ class MyListings extends React.Component {
                 </Drawer>
 
                 <Typography variant="h4" style={{marginTop: '20px'}}>
-                    Active Listings
+                    Your Active Listings
                 </Typography>
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
@@ -163,14 +169,14 @@ class MyListings extends React.Component {
                                     </Grid>
                                     <Grid item xs>
                                         <Typography color="textSecondary">
-                                        {item[dataIndex].seller}
+                                        {item[dataIndex].seller_name}
                                         </Typography>
                                     </Grid>
                                     </Grid>
                                 </CardContent>
                                 
                                 <CardActions>
-                                    <Button title="details_button" fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                    <Button title="details_button" fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
                                     sessionStorage.setItem('currentListing', item[idIndex]);
                                     window.location.href = "/listing";
                                     }}>
@@ -185,8 +191,8 @@ class MyListings extends React.Component {
 
                 <Divider style={{margin: '10px'}}/>
 
-                <Typography variant="h4" style={{marginTop: '10px'}}>
-                    Disabled Listings
+                <Typography variant="h4" style={{marginTop: '20px'}}>
+                    Your Disabled Listings
                 </Typography>
 
                 <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
@@ -229,14 +235,14 @@ class MyListings extends React.Component {
                                     </Grid>
                                     <Grid item xs>
                                         <Typography color="textSecondary">
-                                        {item[dataIndex].seller}
+                                        {item[dataIndex].seller_name}
                                         </Typography>
                                     </Grid>
                                     </Grid>
                                 </CardContent>
                                 
                                 <CardActions>
-                                    <Button title="details_button" fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                    <Button title="details_button" fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
                                     sessionStorage.setItem('currentListing', item[idIndex]);
                                     window.location.href = "/listing";
                                     }}>
