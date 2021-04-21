@@ -1,6 +1,10 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+
+import Logo from '../BadgerTextbooksLogoV1.png';
+
+import React from "react";
 import {
     Button,
     TextField,
@@ -9,13 +13,12 @@ import {
     Typography,
     Link,
     Container,
+    Dialog,
+    DialogTitle,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
 } from "@material-ui/core";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import React from "react";
 
 class CreateAccount extends React.Component{
     constructor(props){
@@ -64,7 +67,7 @@ class CreateAccount extends React.Component{
         event.preventDefault();
 
         var splitEmail = this.state.email.split("@")
-        if(splitEmail[1] != 'wisc.edu'){
+        if(splitEmail[1] !== 'wisc.edu'){
             this.setState({invalidEmail: true})
         }
         else{
@@ -120,13 +123,13 @@ class CreateAccount extends React.Component{
             <div>
                 <AppBar position = "static" style={{background:'#c5050c'}}>
                     <Typography variant='h6' style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '25px', margin: '25px', textAlign: 'center'}}>
-                        Welcome to Badger Textbooks
+                        <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Welcome to Badger Textbooks
                     </Typography>
                 </AppBar>
 
                 <Container component="main" maxWidth="xs" style={{marginTop: '40px', fontFamily: 'sans-serif'}}>
                     <Typography component="h1" variant="h4" style={{textAlign: 'center'}}>
-                        Create An Account
+                        Create an Account
                     </Typography>
                     <form onSubmit={this.createAccount}>
                         <TextField
@@ -153,7 +156,6 @@ class CreateAccount extends React.Component{
                             name="last name"
                             type="text"
                             onChange = {this.setLastName}
-                            autoFocus
                         />
                         <TextField
                             title='emailInput'
@@ -168,7 +170,6 @@ class CreateAccount extends React.Component{
                             onChange = {this.setEmail}
                             // error = {this.state.createAccountError}
                             // helperText = "Email is already in use"
-                            autoFocus
                         />
                         <TextField
                             title='passwordInput'
@@ -181,7 +182,6 @@ class CreateAccount extends React.Component{
                             name="password"
                             type="password"
                             onChange = {this.setPassword}
-                            autoFocus
                         />
                         <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Create Account</Button>
                         <Grid item xs>
@@ -194,10 +194,10 @@ class CreateAccount extends React.Component{
                         <DialogTitle >{"Account Created"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                A verification email has been sent to you
+                                A verification email has been sent to you.
                             </DialogContentText>
                             <DialogContentText>
-                                Return to the login page to login to your account
+                                Return to the login page to login to your account.
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -210,7 +210,7 @@ class CreateAccount extends React.Component{
                         <DialogTitle >{"Invalid Email"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Not a valid email. Your email must be a @wisc.edu email account
+                                Not a valid email. Your email must be a @wisc.edu email account.
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -225,4 +225,4 @@ class CreateAccount extends React.Component{
     }
 }
 
-export default CreateAccount
+export default CreateAccount;
