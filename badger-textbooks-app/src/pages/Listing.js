@@ -250,18 +250,6 @@ class Listings extends React.Component {
   render() {
    return (
       <div>
-        {/* <AppBar position = "static" style={{background:'#c5050c'}}>
-          <Toolbar>
-            <IconButton onClick={this.toggleMenu}> 
-              <MenuIcon/>
-            </IconButton>
-            <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
-              <Typography variant="h3">
-                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
-              </Typography>
-            </Box>
-          </Toolbar>
-        </AppBar> */}
         <AppBar style={{ background: badgerRed }} position="static">
           <Toolbar>
             <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
