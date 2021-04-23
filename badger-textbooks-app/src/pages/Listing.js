@@ -6,26 +6,28 @@ import NavigationMenu from './NavigationMenu';
 import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-import Grid from '@material-ui/core/Grid';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Switch from '@material-ui/core/Switch';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  Box,
+  Paper,
+  Container,
+  Link,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Drawer,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Switch,
+  AppBar,
+  Toolbar,
+  Button,
+  IconButton,
+  Typography
+} from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import SavedIcon from '@material-ui/icons/Favorite';
@@ -35,6 +37,9 @@ import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ChatIcon from '@material-ui/icons/Chat';
 import ReportIcon from '@material-ui/icons/Report';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
 
 class Listings extends React.Component {
     constructor(props){
@@ -64,7 +69,7 @@ class Listings extends React.Component {
     }
 
     componentDidMount () {
-      document.body.style.backgroundColor = '#d2b48c';
+      document.body.style.backgroundColor = backgroundBeige;
 
       firebase.auth().onAuthStateChanged((user)=> {
         if (!user) {
@@ -245,7 +250,7 @@ class Listings extends React.Component {
   render() {
    return (
       <div>
-        <AppBar position = "static" style={{background:'#c5050c'}}>
+        {/* <AppBar position = "static" style={{background:'#c5050c'}}>
           <Toolbar>
             <IconButton onClick={this.toggleMenu}> 
               <MenuIcon/>
@@ -255,6 +260,16 @@ class Listings extends React.Component {
                 <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
               </Typography>
             </Box>
+          </Toolbar>
+        </AppBar> */}
+        <AppBar style={{ background: badgerRed }} position="static">
+          <Toolbar>
+            <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+              <MenuIcon />
+            </IconButton>
+            <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+              <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+            </Typography>
           </Toolbar>
         </AppBar>
 
