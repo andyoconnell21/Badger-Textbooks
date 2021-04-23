@@ -4,29 +4,34 @@ import '../App.css'
 import firebase from "firebase";
 
 import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Divider,
+    Paper,
+    Container,
+    Button,
+    TextField,
+    IconButton,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Dialog,
+    DialogTitle,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    Drawer
+} from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import HomeIcon from '@material-ui/icons/Home';
-import MyListingsIcon from '@material-ui/icons/ListAlt';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import SavedIcon from '@material-ui/icons/Favorite';
+
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
 
 //book title, author, ISBN, price wanted, condition of book, class_used
 export class CreateNewListing extends Component {
@@ -37,7 +42,7 @@ export class CreateNewListing extends Component {
             author: '',
             ISBN: 0,
             price: 0,
-            condition: 'brand-new',
+            condition: 'Brand-New',
             class_used: '',
             alertOpen: false,
             menuOpen: false,
@@ -52,7 +57,8 @@ export class CreateNewListing extends Component {
             //User is not siged in...redirect to login page
             window.location.href = "/";
           }
-        }); 
+        });
+        document.body.style.backgroundColor = backgroundBeige;
     }
 
     toggleMenu = (event) => {
@@ -81,7 +87,7 @@ export class CreateNewListing extends Component {
                     var username = data.name
                     firebase.firestore().collection('listings').add({
                         active: true,
-                        ISBN: this.state.ISBN,
+                        ISBN: this.state.ISBN.toString(),
                         author: this.state.author,
                         search_author: this.state.author.toLowerCase(),
                         class: this.state.class_used.toLowerCase(),
@@ -164,24 +170,107 @@ export class CreateNewListing extends Component {
     }
 
     render() {
-        const {title, author, ISBN, price, condition, class_used, image} = this.state
         return (
             <div>
-                <AppBar style ={{ background:'#c5050c' }} position="static">
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}> 
-                            <MenuIcon/>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
                         </IconButton>
-                        <Typography 
-                            variant='h6' 
-                            style={{flexGrow: 1, fontFamily: 'sans-serif', fontSize: '25px', margin: '25px', textAlign: 'center'}}
-                        >Create New Listing</Typography>
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+                        </Typography>
                     </Toolbar>
                 </AppBar>
 
                 <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
                     <NavigationMenu/>
                 </Drawer>
+
+                <Container>
+                    <Paper variant="outlined" square style={{height: "100vh", padding: "20px"}}>
+                        <Typography variant="h5" style={{marginTop: '20px', marginBottom: '10px'}}>Create a New Listing</Typography>
+                        <Divider/>
+                        <TextField
+                            title='titleInput'
+                            label="Textbook Title*"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "20px" }}
+                            value={this.state.title}
+                            onChange={this.handleTitleChange}
+                            autoFocus
+                        />
+                        <TextField
+                            title='authorInput'
+                            label="Author*"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.author}
+                            onChange={this.handleAuthorChange}
+                        />
+                        <TextField
+                            title='classInput'
+                            label="Class Used For*"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.class_used}
+                            onChange={this.handleClassChange}
+                        />
+                        <TextField
+                            title='priceInput'
+                            label="Price"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.price}
+                            onChange={this.handlePriceChange}
+                            type="number"
+                        />
+                        <TextField
+                            title='isbnInput'
+                            label="ISBN"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.ISBN}
+                            onChange={this.handleISBNChange}
+                            type="number"
+                        />
+                        <FormControl style={{ width: "100%", marginTop: "10px" }}>
+                            <InputLabel id="filter-select-label" style={{marginLeft: "2px"}}>Condition</InputLabel>
+                            <Select
+                                labelId="filter-select-label"
+                                data-testid="filter_slct_creat"
+                                variant="filled"
+                                value={this.state.condition}
+                                onChange={this.handleConditionChange}
+                            >
+                                <MenuItem value={"Brand-New"}>Brand New</MenuItem>
+                                <MenuItem value={"Like-New"}>Like New</MenuItem>
+                                <MenuItem value={"Good"}>Good</MenuItem>
+                                <MenuItem value={"Fair"}>Fair</MenuItem>
+                                <MenuItem value={"Poor"}>Poor, but still usable</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <div style={{marginTop: "10px", marginBottom: "20px", backgroundColor: "#ededed"}}>
+                            <label style={{float: "left", marginLeft: "10px"}}>Textbook Image: </label>
+                            <input className="w3-input w3-hover-light-gray"
+                                type='file'
+                                onChange={this.handleImageChange}
+                            />
+                        </div>
+                        <Divider/>
+                        <Button 
+                            style={{color: '#ffffff', backgroundColor: '#c5050c', marginTop: "20px", width: "50%"}}
+                            variant="contained" 
+                            fullWidth 
+                            onClick={this.handleSubmit}
+                        >Create</Button>
+                    </Paper>
+                </Container>
 
                 <Dialog
                     open={this.state.alertOpen}
@@ -204,85 +293,6 @@ export class CreateNewListing extends Component {
                     </Button>
                     </DialogActions>
                 </Dialog>
-
-                <form className="form-box" style={{width: "80%", backgroundColor: '#d2b48c'}}>
-                    <div>
-                        <label>Book Title*: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            title='titleInput'
-                            type='text'
-                            size="sm"
-                            value={title}
-                            onChange={this.handleTitleChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Author*: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            title='authorInput'
-                            size="sm"
-                            type='text'
-                            value={author}
-                            onChange={this.handleAuthorChange}
-                        />
-                    </div>
-                    <div>
-                        <label>ISBN: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            title='isbnInput'
-                            type='text'
-                            value={ISBN}
-                            pattern="[0-9]+"
-                            onChange={this.handleISBNChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Desired Price: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            title='priceInput'
-                            type='number'
-                            value={price}
-                            onChange={this.handlePriceChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Class Used For*: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            title='classInput'
-                            type='text'
-                            value={class_used}
-                            onChange={this.handleClassChange}
-                        />
-                    </div>
-                    <div>
-                        <label>Condition: </label>
-                        <select className="w3-input w3-hover-light-gray"
-                                title='conditionInput'
-                                value={condition}
-                                onChange={this.handleConditionChange}>
-                            <option value='Brand-new'>Brand new</option>
-                            <option value='Like-New'>Like New</option>
-                            <option value='Good'>Good</option>
-                            <option value='Fair'>Fair</option>
-                            <option value='Poor'>Poor, but still usable</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Image of Textbook: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            type='file'
-                            onChange={this.handleImageChange}
-                        />
-                    </div>
-
-                    <Divider style={{margin: "10px"}}/>
-                    <Button 
-                        style={{color: '#ffffff', backgroundColor: '#c5050c'}}
-                        variant="contained" 
-                        fullWidth 
-                        onClick={this.handleSubmit}
-                    >Create</Button>
-                </form>
             </div>
         )
     }
