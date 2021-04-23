@@ -187,6 +187,28 @@ export class CreateNewListing extends Component {
                     <NavigationMenu/>
                 </Drawer>
 
+                <Dialog
+                    open={this.state.alertOpen}
+                    onClose={() => {this.setState({alertOpen: false})}}
+                >
+                    <DialogTitle>{"Oops! Looks like we are missing some information."}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        Make sure that all fields marked by a * have been filled out.
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button 
+                        style={{color: '#c5050c'}}
+                        onClick={() => {this.setState({alertOpen: false})}} 
+                        color="primary" 
+                        autoFocus
+                    >
+                        OK
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
                 <Container>
                     <Paper variant="outlined" square style={{height: "100vh", padding: "20px"}}>
                         <Typography variant="h5" style={{marginTop: '20px', marginBottom: '10px'}}>Create a New Listing</Typography>
@@ -271,28 +293,6 @@ export class CreateNewListing extends Component {
                         >Create</Button>
                     </Paper>
                 </Container>
-
-                <Dialog
-                    open={this.state.alertOpen}
-                    onClose={() => {this.setState({alertOpen: false})}}
-                >
-                    <DialogTitle>{"Oops! Looks like we are missing some information."}</DialogTitle>
-                    <DialogContent>
-                    <DialogContentText>
-                        Make sure that all fields marked by a * have been filled out.
-                    </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                    <Button 
-                        style={{color: '#c5050c'}}
-                        onClick={() => {this.setState({alertOpen: false})}} 
-                        color="primary" 
-                        autoFocus
-                    >
-                        OK
-                    </Button>
-                    </DialogActions>
-                </Dialog>
             </div>
         )
     }

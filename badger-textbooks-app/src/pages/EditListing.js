@@ -4,21 +4,34 @@ import '../App.css'
 import firebase from "firebase";
 
 import NavigationMenu from './NavigationMenu.js';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+    AppBar,
+    Toolbar,
+    Container,
+    Paper,
+    Typography,
+    Drawer,
+    Divider,
+    TextField,
+    Button,
+    IconButton,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
+} from '@material-ui/core';
 
 import MenuIcon from '@material-ui/icons/Menu';
+
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
 
 //book title, author, ISBN, price wanted, condition of book, class_used
 export class EditListing extends Component {
@@ -45,7 +58,7 @@ export class EditListing extends Component {
             }
         });
         var documentId = sessionStorage.getItem('currentListing')
-        document.body.style.backgroundColor = '#dadfe1';
+        document.body.style.backgroundColor = backgroundBeige;
 
         firebase.firestore().collection("listings").doc(documentId).get()
             .then((doc) => {
@@ -76,7 +89,6 @@ export class EditListing extends Component {
             });
         } else {
             var user_email = firebase.auth().currentUser.email;
-            var date = Date().toLocaleString();
 
             var documentId = sessionStorage.getItem('currentListing')
             console.log(firebase.firestore().collection('listings').doc(documentId))
@@ -90,7 +102,6 @@ export class EditListing extends Component {
                 title: this.state.title,
                 search_title: this.state.title.toLowerCase(),
                 owner: user_email,
-                time_created: date,
                 image_url: this.state.imageURL
             }).then(() => {
                     window.location = "/listing";
@@ -162,24 +173,16 @@ export class EditListing extends Component {
     }
 
     render() {
-        const {title, author, ISBN, price, condition, class_used, image} = this.state
         return (
             <div>
-                <AppBar style={{background: '#c5050c'}} position="static">
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}>
-                            <MenuIcon/>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
                         </IconButton>
-                        <Typography
-                            variant='h6'
-                            style={{
-                                flexGrow: 1,
-                                fontFamily: 'sans-serif',
-                                fontSize: '25px',
-                                margin: '25px',
-                                textAlign: 'center'
-                            }}
-                        >Edit Listing</Typography>
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+                        </Typography>
                     </Toolbar>
                 </AppBar>
 
@@ -213,85 +216,90 @@ export class EditListing extends Component {
                     </DialogActions>
                 </Dialog>
 
-                <form className="form-box" style={{width: "80%", backgroundColor: '#F8F8F8'}}>
-                    <div>
-                        <label>Book Title*: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                               type='text'
-                               size="sm"
-                               value={title}
-                               onChange={this.handleTitleChange.bind(this)}
+                <Container>
+                    <Paper variant="outlined" square style={{height: "100vh", padding: "20px"}}>
+                        <Typography variant="h5" style={{marginTop: '20px', marginBottom: '10px'}}>Edit Your Listing</Typography>
+                        <Divider/>
+                        <TextField
+                            title='titleInput'
+                            label="Textbook Title*"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "20px" }}
+                            value={this.state.title}
+                            onChange={this.handleTitleChange}
+                            autoFocus
                         />
-                    </div>
-                    <div>
-                        <label>Author*: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                               size="sm"
-                               type='text'
-                               value={author}
-                               onChange={this.handleAuthorChange.bind(this)}
+                        <TextField
+                            title='authorInput'
+                            label="Author*"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.author}
+                            onChange={this.handleAuthorChange}
                         />
-                    </div>
-                    <div>
-                        <label>ISBN: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                               type='text'
-                               value={ISBN}
-                               pattern="[0-9]+"
-                               onChange={this.handleISBNChange.bind(this)}
+                        <TextField
+                            title='classInput'
+                            label="Class Used For*"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.class_used}
+                            onChange={this.handleClassChange}
                         />
-                    </div>
-                    <div>
-                        <label>Desired Price: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                               type='number'
-                               value={price}
-                               onChange={this.handlePriceChange.bind(this)}
+                        <TextField
+                            title='priceInput'
+                            label="Price"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.price}
+                            onChange={this.handlePriceChange}
+                            type="number"
                         />
-                    </div>
-                    <div>
-                        <label>Class Used For*: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                               type='text'
-                               value={class_used}
-                               onChange={this.handleClassChange.bind(this)}
+                        <TextField
+                            title='isbnInput'
+                            label="ISBN"
+                            variant="filled"
+                            fullWidth
+                            style={{ marginTop: "10px" }}
+                            value={this.state.ISBN}
+                            onChange={this.handleISBNChange}
+                            type="number"
                         />
-                    </div>
-                    <div>
-                        <label>Condition: </label>
-                        <select className="w3-input w3-hover-light-gray"
-                                value={condition}
-                                onChange={this.handleConditionChange}>
-                            <option value='Brand-new'>Brand new</option>
-                            <option value='Like-New'>Like New</option>
-                            <option value='Good'>Good</option>
-                            <option value='Fair'>Fair</option>
-                            <option value='Poor'>Poor, but still usable</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Image of Textbook: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                               type='file'
-                               onChange={this.handleImageChange.bind(this)}
-                        />
-                    </div>
-
-                    <Divider style={{margin: "10px"}}/>
-                    <Button
-                        style={{color: '#ffffff', backgroundColor: '#c5050c'}}
-                        variant="contained"
-                        fullWidth
-                        onClick={this.handleSubmit.bind(this)}
-                    >Confirm Edit</Button>
-                    {/*<Divider style={{margin: "10px"}}/>*/}
-                    {/*<Button*/}
-                    {/*    style={{color: '#ffffff', backgroundColor: '#c5050c'}}*/}
-                    {/*    variant="contained"*/}
-                    {/*    fullWidth*/}
-                    {/*    onClick={this.handleRemoveSubmit.bind(this)}*/}
-                    {/*>Remove Listing</Button>*/}
-                </form>
+                        <FormControl style={{ width: "100%", marginTop: "10px" }}>
+                            <InputLabel id="filter-select-label" style={{marginLeft: "2px"}}>Condition</InputLabel>
+                            <Select
+                                labelId="filter-select-label"
+                                data-testid="filter_slct_creat"
+                                variant="filled"
+                                value={this.state.condition}
+                                onChange={this.handleConditionChange}
+                            >
+                                <MenuItem value={"Brand-New"}>Brand New</MenuItem>
+                                <MenuItem value={"Like-New"}>Like New</MenuItem>
+                                <MenuItem value={"Good"}>Good</MenuItem>
+                                <MenuItem value={"Fair"}>Fair</MenuItem>
+                                <MenuItem value={"Poor"}>Poor, but still usable</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <div style={{marginTop: "10px", marginBottom: "20px", backgroundColor: "#ededed"}}>
+                            <label style={{float: "left", marginLeft: "10px"}}>Textbook Image: </label>
+                            <input className="w3-input w3-hover-light-gray"
+                                type='file'
+                                onChange={this.handleImageChange}
+                            />
+                        </div>
+                        <Divider/>
+                        <Button 
+                            style={{color: '#ffffff', backgroundColor: '#c5050c', marginTop: "20px", width: "50%"}}
+                            variant="contained" 
+                            fullWidth 
+                            onClick={this.handleSubmit}
+                        >Confirm Edit</Button>
+                    </Paper>
+                </Container>
             </div>
         )
     }
