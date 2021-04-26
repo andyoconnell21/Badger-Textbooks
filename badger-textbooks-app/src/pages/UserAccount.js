@@ -29,6 +29,9 @@ import Divider from '@material-ui/core/Divider';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
+const backgroundGrey = '#dadfe1';
+const badgerRed = '#c5050c';
+
 const idIndex = 0;
 const dataIndex = 1;
 
@@ -56,13 +59,14 @@ class UserAccount extends React.Component {
                 //User is not siged in...redirect to login page
                 window.location.href = "/";
             } else{
-
+                var this_user_uid = '';
                 //Get relevant information of that user
                 firebase.firestore().collection('users').where("email", "==", sessionStorage.getItem('userAccountEmail')).get().then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         this.setState({
                             userAccountName: doc.data().name
                         })
+                        this_user_uid = doc.data().uid;
                         var tempUserRating = 0;
                         for(var i = 0; i < doc.data().user_ratings.length; i++){
                             var tempValue = parseInt(doc.data().user_ratings[i])
@@ -71,28 +75,27 @@ class UserAccount extends React.Component {
                         tempUserRating = tempUserRating / doc.data().user_ratings.length
                         tempUserRating = tempUserRating.toFixed(1)
                         this.setState({userAccountRating: tempUserRating})
-                    })
-                })
 
-                //Get some of the users current listings
-
-                firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        var userListingsRef = doc.data().listings
-                        var tempUserListingArray = []
-                        var userListingArray = [];
-                        for(let i = 0; i < userListingsRef.length; i++){
-                            tempUserListingArray.push(userListingsRef[i].id)
-                        }
-                        firebase.firestore().collection('listings').get().then((querySnapshot) => {
+                        //Get some of the users current listings
+                        firebase.firestore().collection("users").where("uid", "==", this_user_uid).get().then((querySnapshot) => {
                             querySnapshot.forEach((doc) => {
-                                for(let i = 0; i < tempUserListingArray.length; i++){
-                                    if(tempUserListingArray[i] == doc.id && userListingArray.length != 3){
-                                        var gather = [doc.id, doc.data()]
-                                        userListingArray.push(gather)
-                                    }
+                                var userListingsRef = doc.data().listings
+                                var tempUserListingArray = []
+                                var userListingArray = [];
+                                for(let i = 0; i < userListingsRef.length; i++){
+                                    tempUserListingArray.push(userListingsRef[i].id)
                                 }
-                                this.setState({userListingsArray: userListingArray})
+                                firebase.firestore().collection('listings').where('active', '==', true).get().then((querySnapshot) => {
+                                    querySnapshot.forEach((doc) => {
+                                        for(let i = 0; i < tempUserListingArray.length; i++){
+                                            if(tempUserListingArray[i] === doc.id && userListingArray.length !== 3){
+                                                var gather = [doc.id, doc.data()]
+                                                userListingArray.push(gather)
+                                            }
+                                        }
+                                        this.setState({userListingsArray: userListingArray})
+                                    })
+                                })
                             })
                         })
                     })
@@ -100,7 +103,7 @@ class UserAccount extends React.Component {
             }
         });
         this.setState({userAccountEmail: sessionStorage.getItem('userAccountEmail')})
-        document.body.style.backgroundColor = '#dadfe1';
+        document.body.style.backgroundColor = backgroundGrey;
 
     }
 
@@ -184,16 +187,14 @@ class UserAccount extends React.Component {
     render(){
         return(
             <div>
-                <AppBar position = "static" style={{background:'#c5050c'}}>
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton onClick={this.toggleMenu}>
-                            <MenuIcon/>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
                         </IconButton>
-                        <Box style={{flexGrow: 1}} hidden={this.state.searchActive}>
-                            <Typography variant="h3">
-                                <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
-                            </Typography>
-                        </Box>
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+                        </Typography>
                     </Toolbar>
                 </AppBar>
 
