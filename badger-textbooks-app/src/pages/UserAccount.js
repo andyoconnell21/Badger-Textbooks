@@ -114,8 +114,12 @@ class UserAccount extends React.Component {
         });
     }
 
-    addDefaultSrc(ev) {
+    addDefaultPfp(ev) {
         ev.target.src = "https://firebasestorage.googleapis.com/v0/b/badgertextbooks-2919f.appspot.com/o/userAccountImage.png?alt=media&token=91c14802-542d-4723-8c55-405b7552c8fa"
+    }
+
+    addDefaultSrc(ev) {
+        ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
     }
 
     rateUser = (event) => {
@@ -204,7 +208,7 @@ class UserAccount extends React.Component {
 
                 <Grid>
                     <Grid item style={{margin:'auto', padding:'20px'}}>
-                        <img onError={this.addDefaultSrc} className="img-responsive"
+                        <img onError={this.addDefaultPfp} className="img-responsive"
                              src={this.state.userAccountImage} width="150" height="150" alt="" style={{backgroundColor: "#dadfe1"}}/>
                     </Grid>
                     <Grid item>
