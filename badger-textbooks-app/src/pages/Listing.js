@@ -107,7 +107,7 @@ class Listings extends React.Component {
             tempUserRating = tempUserRating.toFixed(1)
 
             if (isNaN(tempUserRating)) {
-              tempUserRating = "Not Applicable"
+              tempUserRating = "Not Applicable for"
               console.log(tempUserRating)
             }
 
