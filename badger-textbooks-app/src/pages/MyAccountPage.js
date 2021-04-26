@@ -7,6 +7,7 @@ import Logo from '../BadgerTextbooksLogoV1.png';
 import React from "react";
 import {
   Container,
+  Box,
   Button,
   IconButton,
   Typography,
@@ -22,6 +23,7 @@ import {
   DialogContentText,
   DialogTitle
 } from '@material-ui/core';
+import Rating from '@material-ui/lab/Rating';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import EditIcon from '@material-ui/icons/Edit';
@@ -42,6 +44,7 @@ class MyAccountPage extends React.Component {
       email: '',
       password: '',
       profilePic: '',
+      rating: 0,
 
       nameInput: '',
       passwordInput: '',
@@ -69,20 +72,27 @@ class MyAccountPage extends React.Component {
         this.setState({ uid: user.uid });
 
         firebase.firestore().collection('users').where("uid", "==", user.uid).get()
-            .then((doc) => {
-              doc.forEach((i) => {
-                var data = i.data();
-                this.setState({
-                  docID: i.id,
-                  email: data.email,
-                  name: data.name,
-                  password: data.password,
-                  profilePic: data.imageURL,
-                  
-                  nameInput: data.name,
-                });
-              })
-            })
+        .then((doc) => {
+          doc.forEach((i) => {
+            var data = i.data();
+            var total_rating = 0;
+            data.user_ratings.forEach((r) => {
+              total_rating += r;
+            });
+            var ave_rating = total_rating / data.user_ratings.length;
+            ave_rating = ave_rating.toFixed(1);
+            this.setState({
+              docID: i.id,
+              email: data.email,
+              name: data.name,
+              password: data.password,
+              profilePic: data.imageURL,
+              rating: ave_rating,
+              
+              nameInput: data.name,
+            });
+          })
+        })
       }
     }.bind(this));
   }
@@ -213,6 +223,13 @@ class MyAccountPage extends React.Component {
 
               <img onError={this.addDefaultSrc} className="img-responsive"
                 src={this.state.profilePic} width="150" height="150" alt="" style={{backgroundColor: "#ffffff"}}/>
+
+              <Box style={{marginTop: "20px", marginBottom: '20px'}}>
+                <Rating name="read-only" value={this.state.rating} readOnly />
+                <Typography>
+                    ({this.state.rating}/5)
+                </Typography>
+              </Box>
               
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item xs>
@@ -293,7 +310,6 @@ class MyAccountPage extends React.Component {
                   />
                 </Grid>
               </Grid>
-
             
             <Button
                 style={{display: this.state.editButtonVis}}
