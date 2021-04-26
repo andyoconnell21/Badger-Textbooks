@@ -20,6 +20,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NextIcon from '@material-ui/icons/NavigateNext';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+const backgroundBeige = '#d2b48c';
+const badgerRed = '#c5050c';
+
 const idIndex = 0;
 const dataIndex = 1;
 
@@ -49,7 +52,7 @@ class Admin extends React.Component {
                 }
             });
         });
-        document.body.style.backgroundColor = '#d2b48c';
+        document.body.style.backgroundColor = backgroundBeige;
         this.updateReports();
     }
 
@@ -92,13 +95,13 @@ class Admin extends React.Component {
     render() {
         return (
             <div>
-                <AppBar style ={{ background: '#c5050c' }} position="static">
+                <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton title="menu_btn" onClick={this.toggleMenu}> 
-                            <MenuIcon/>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
                         </IconButton>
-                        <Typography variant="h3" style={{flexGrow: 1}}>
-                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger-Textbooks
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -108,7 +111,7 @@ class Admin extends React.Component {
                 </Drawer>
 
                 <Container>
-                    <Paper>
+                    <Paper variant="outlined" square style={{height: "100vh", padding: "20px"}}>
                         {this.state.reports.map((report) => (
                             <div>
                                 <Grid container>
