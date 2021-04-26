@@ -280,7 +280,7 @@ class Listings extends React.Component {
             <DialogTitle>{"Are you sure you want to delete this listing?"}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Deleting this listing means it will be gone forever (thats a really long time). Are you sure
+                Deleting this listing means it will be gone forever (a really long time). Are you sure
                 you want to proceed?
               </DialogContentText>
             </DialogContent>
@@ -445,6 +445,11 @@ class Listings extends React.Component {
                   </Box>
                   <Box style={{width: '100%', margin: '5px'}}>
                     <Typography variant='h5' align="left">
+                      <b>ISBN: </b>{this.state.ISBN}
+                    </Typography>
+                  </Box>
+                  <Box style={{width: '100%', margin: '5px'}}>
+                    <Typography variant='h5' align="left">
                       <b>Class: </b>{this.state.class}
                     </Typography>
                   </Box>
@@ -482,13 +487,10 @@ class Listings extends React.Component {
                             variant="body2"> {this.state.seller_name}</Link>
                     </Typography>
                     <Typography>
-                      <b>ISBN: </b> {this.state.ISBN}
+                      <b>Seller Rating:</b> {this.state.seller_rating} stars
                     </Typography>
                     <Typography>
                       <b>Listing Date:</b> {this.state.date.toString()}
-                    </Typography>
-                    <Typography>
-                      <b>Seller Rating:</b> {this.state.seller_rating} stars
                     </Typography>
                   </AccordionDetails>
                 </Accordion>

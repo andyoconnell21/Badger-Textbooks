@@ -77,7 +77,7 @@ export class ReportListing extends Component {
                     time_reported: date,
                     primary_reasons: this.state.primary_reasons,
                 }).then((docRef) => {
-                    window.location = "/mylistings";
+                    window.location = "/home";
                 });
             });
 
