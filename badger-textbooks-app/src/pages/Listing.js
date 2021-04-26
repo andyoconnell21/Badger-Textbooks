@@ -103,7 +103,14 @@ class Listings extends React.Component {
               tempUserRating = tempUserRating + tempValue
             }
             tempUserRating = tempUserRating / doc.data().user_ratings.length
+            console.log("herhe",tempUserRating)
             tempUserRating = tempUserRating.toFixed(1)
+
+            if (isNaN(tempUserRating)) {
+              tempUserRating = "Not Applicable"
+              console.log(tempUserRating)
+            }
+
 
             firebase.firestore().collection("listings").doc(documentId).get()
                 .then((doc) => {
@@ -200,10 +207,6 @@ class Listings extends React.Component {
     firebase.firestore().collection('listings').doc(docID).update({
       active: !curr_state
     });
-  }
-
-  report = (event) => {
-    console.log("TODO: Report the listing.");
   }
 
   saveListing = (event) => {
