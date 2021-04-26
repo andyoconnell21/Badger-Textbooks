@@ -7,25 +7,25 @@ import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  AppBar,
   Box,
-  Paper,
+  Button,
   Container,
-  Link,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid,
   Drawer,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Switch,
-  AppBar,
-  Toolbar,
-  Button,
+  Grid,
   IconButton,
+  Link,
+  Paper,
+  Switch,
+  Toolbar,
   Typography
 } from '@material-ui/core';
 
@@ -42,7 +42,7 @@ const backgroundBeige = '#d2b48c';
 const badgerRed = '#c5050c';
 
 class Listings extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       active: true,
@@ -68,15 +68,14 @@ class Listings extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     document.body.style.backgroundColor = backgroundBeige;
 
-    firebase.auth().onAuthStateChanged((user)=> {
+    firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         //User is not siged in...redirect to login page
         window.location.href = "/";
-      }
-      else {
+      } else {
 
         firebase.firestore().collection('users').where('uid', '==', user.uid).get().then((querySnapshot) => {
           var isAdmin = false;
@@ -84,7 +83,7 @@ class Listings extends React.Component {
             isAdmin = doc.data().isAdmin;
           });
           if (isAdmin) {
-            this.setState({ isGeneralUser: false });
+            this.setState({isGeneralUser: false});
           }
         });
 
@@ -99,7 +98,7 @@ class Listings extends React.Component {
             }
 
             var tempUserRating = 0;
-            for(var i = 0; i < doc.data().user_ratings.length; i++){
+            for (var i = 0; i < doc.data().user_ratings.length; i++) {
               var tempValue = parseInt(doc.data().user_ratings[i])
               tempUserRating = tempUserRating + tempValue
             }
@@ -109,7 +108,7 @@ class Listings extends React.Component {
             firebase.firestore().collection("listings").doc(documentId).get()
                 .then((doc) => {
                   var data = doc.data();
-                  if(data.image_url === "" ){
+                  if (data.image_url === "") {
                     this.setState({
                       active: data.active,
                       active_text: data.active ? "Active" : "Disabled",
@@ -126,8 +125,7 @@ class Listings extends React.Component {
                       seller_name: data.seller_name,
                       seller_rating: tempUserRating
                     })
-                  }
-                  else{
+                  } else {
                     this.setState({
                       active: data.active,
                       active_text: data.active ? "Active" : "Disabled",
@@ -152,7 +150,6 @@ class Listings extends React.Component {
     });
 
 
-
     //check to see if its the listing of the logged in user
     var uid = ""
     var userListings = []
@@ -160,12 +157,12 @@ class Listings extends React.Component {
       uid = user.uid
       firebase.firestore().collection("users").where('uid', '==', uid).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          for(let i = 0; i < doc.data().listings.length; i++){
+          for (let i = 0; i < doc.data().listings.length; i++) {
             userListings.push(doc.data().listings[i].id)
           }
         });
-        for(var i = 0; i < userListings.length; i++){
-          if(userListings[i] === sessionStorage.getItem('currentListing')){
+        for (var i = 0; i < userListings.length; i++) {
+          if (userListings[i] === sessionStorage.getItem('currentListing')) {
             this.setState({
               userAuthed: false,
               chatNotNeeded: true,
@@ -214,7 +211,7 @@ class Listings extends React.Component {
     var documentId = sessionStorage.getItem('currentListing')
     var userRef;
 
-    this.setState({ currentlySaved: true });
+    this.setState({currentlySaved: true});
 
     firebase.firestore().collection('listings').doc(documentId).get().then((doc) => {
       var listingRef = doc.id
@@ -250,12 +247,20 @@ class Listings extends React.Component {
   render() {
     return (
         <div>
-          <AppBar style={{ background: badgerRed }} position="static">
+          <AppBar style={{background: badgerRed}} position="static">
             <Toolbar>
-              <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
-                <MenuIcon />
+              <IconButton title="menu_btn" onClick={this.toggleMenu}
+                          style={{zIndex: 1, marginTop: '15px', marginBottom: '15px'}}>
+                <MenuIcon/>
               </IconButton>
-              <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+              <Typography style={{
+                position: 'absolute',
+                fontFamily: 'sans-serif',
+                fontSize: '35px',
+                margin: '15px',
+                left: 0,
+                right: 0
+              }}>
                 <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
               </Typography>
             </Toolbar>
@@ -272,7 +277,8 @@ class Listings extends React.Component {
             <DialogTitle>{"Are you sure you want to delete this listing?"}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Deleting this listing means it will be gone forever (thats a really long time). Are you sure you want to proceed?
+                Deleting this listing means it will be gone forever (thats a really long time). Are you sure
+                you want to proceed?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -287,14 +293,14 @@ class Listings extends React.Component {
 
           <Container>
             <Paper style={{width: '100%', height: '100vh'}}>
-              <Box style={{ width: '100%', height: '60%' }}>
-                <Box style={{ width: '50%', height: '100%', float: 'left' }}>
+              <Box style={{width: '100%', height: '60%'}}>
+                <Box style={{width: '50%', height: '100%', float: 'left'}}>
 
-                  <Box name="image_box" style={{ width: '100%', height: '50%', padding: '20px'}}>
+                  <Box name="image_box" style={{width: '100%', height: '50%', padding: '20px'}}>
                     <img src={this.state.image} width="250" height="250" alt=""/>
                   </Box>
 
-                  <Box name="button_box" style={{ width: '100%', height: '50%', padding: '20px'}}>
+                  <Box name="button_box" style={{width: '100%', height: '50%', padding: '20px'}}>
                     <Box hidden={this.state.userAuthed} style={{margin: '10px'}}>
                       <Grid container>
                         <Grid item style={{width: '25%'}}></Grid>
@@ -326,7 +332,7 @@ class Listings extends React.Component {
                           }}
                           onClick={() => {
                             var documentId = sessionStorage.getItem('currentListing')
-                            sessionStorage.setItem('currentListing',documentId);
+                            sessionStorage.setItem('currentListing', documentId);
                             window.location.href = "/editlisting";
                           }}
                           startIcon={<EditIcon/>}
@@ -365,7 +371,8 @@ class Listings extends React.Component {
                             width: '45%',
                             cursor: 'pointer',
                             color: 'white',
-                            fontSize: '18px'}}
+                            fontSize: '18px'
+                          }}
                           onClick={() => {
                             sessionStorage.setItem("receiverUid", this.state.seller_uid);
                             sessionStorage.setItem("returnLocation", "/listing");
@@ -392,7 +399,7 @@ class Listings extends React.Component {
                             sessionStorage.setItem("listing_title", this.state.title);
                             sessionStorage.setItem("listing_user_id", this.state.seller_uid);
                             var documentId = sessionStorage.getItem('currentListing')
-                            sessionStorage.setItem('currentListing',documentId);
+                            sessionStorage.setItem('currentListing', documentId);
                             window.location.href = "/reportlisting";
                           }}
                           startIcon={<ReportIcon/>}
@@ -421,7 +428,8 @@ class Listings extends React.Component {
                   </Box>
                 </Box>
 
-                <Box name="info_box" style={{ width: '50%', height: '100%', float: 'right', padding: '20px'}}>
+                <Box name="info_box"
+                     style={{width: '50%', height: '100%', float: 'right', padding: '20px'}}>
                   <Box style={{width: '100%', margin: '5px'}}>
                     <Typography variant='h5' align="left">
                       <b>Title: </b>{this.state.title}
@@ -450,18 +458,24 @@ class Listings extends React.Component {
                 </Box>
               </Box>
 
-              <Box name="more_info_box" style={{ width: '100%', height: '40%' }}>
+              <Box name="more_info_box" style={{width: '100%', height: '40%'}}>
                 <Accordion style={{width: "75%", margin: 'auto'}}>
-                  <AccordionSummary style={{backgroundColor: 'lightgrey'}} expandIcon={<ExpandIcon />}>
-                    <Typography style={{fontFamily: 'sans-serif', fontSize:'14px', fontWeight: 'bold', margin:'auto'}}>MORE INFORMATION</Typography>
+                  <AccordionSummary style={{backgroundColor: 'lightgrey'}} expandIcon={<ExpandIcon/>}>
+                    <Typography style={{
+                      fontFamily: 'sans-serif',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      margin: 'auto'
+                    }}>MORE INFORMATION</Typography>
                   </AccordionSummary>
                   <AccordionDetails style={{flexDirection: 'column'}}>
                     <Typography>
                       <b>Seller:</b>
-                      <Link to="/userAccount" title='sellerAccount' style={{cursor: 'pointer'}} onClick={() => {
-                        window.location.href = "/userAccount"
-                        sessionStorage.setItem('userAccountEmail', this.state.seller)
-                      }}
+                      <Link to="/userAccount" title='sellerAccount' style={{cursor: 'pointer'}}
+                            onClick={() => {
+                              window.location.href = "/userAccount"
+                              sessionStorage.setItem('userAccountEmail', this.state.seller)
+                            }}
                             variant="body2"> {this.state.seller_name}</Link>
                     </Typography>
                     <Typography>
@@ -483,6 +497,7 @@ class Listings extends React.Component {
   }
 
 }
+
 export default Listings;
 
 
