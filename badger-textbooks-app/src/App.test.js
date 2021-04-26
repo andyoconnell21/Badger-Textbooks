@@ -1,4 +1,6 @@
 import { render, screen, fireEvent, mockChange, getByTitle } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import { Router, BrowserRouter } from 'react-router-dom';
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -113,6 +115,19 @@ describe("Render and Unit Testing of Login Page", () =>{
     fireEvent.change(passwordTextInput, {target: {value: 'testPassword'}})
 
     expect(passwordTextInput.value).toBe('testPassword')
+  })
+
+  test("Bad Login", () => {
+    const { queryByTitle, getByTestId } = render(<Login />)
+    const emailTextInput = getByTestId('emailTextInput').querySelector('input')
+    const passwordTextInput = getByTestId('passwordTextInput').querySelector('input')
+    const login_btn = queryByTitle("login_btn")
+    const headerText = screen.getByText("Welcome to Badger Textbooks")
+
+    fireEvent.change(emailTextInput, {target: {value: 'testing@wisc.edu'}})
+    fireEvent.change(passwordTextInput, {target: {value: 'testPassword'}})
+    fireEvent.click(login_btn)
+    expect(headerText).toBeInTheDocument();
   })
 });
 

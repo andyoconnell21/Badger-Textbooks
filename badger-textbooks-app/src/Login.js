@@ -79,9 +79,9 @@ class Login extends React.Component{
               window.location.href = '/home'
             }
             //set info in localstorage
-            localStorage.setItem('email', this.state.email);
-            localStorage.setItem('password', this.state.password);
-            localStorage.setItem('userStatus', 'customer');
+            // localStorage.setItem('email', this.state.email);
+            // localStorage.setItem('password', this.state.password);
+            // localStorage.setItem('userStatus', 'customer');
           })
           .catch((error) => {
             //Wrong Account Information
@@ -135,7 +135,6 @@ class Login extends React.Component{
       sendVerificationEmail = (event) => {
         //Send verification email to user
         var user = firebase.auth().currentUser;
-        console.log(user)
         user.sendEmailVerification().then(function() {
           //Email sent.
         }).catch(function(error) {
@@ -164,6 +163,7 @@ class Login extends React.Component{
               <form onSubmit={this.authWithAccountCreds}>
                 <TextField
                   title = 'emailTextInput'
+                  data-testid="emailTextInput"
                   variant="outlined"
                   margin="normal"
                   required
@@ -177,6 +177,7 @@ class Login extends React.Component{
                 />
                 <TextField
                   title = 'passwordTextInput'
+                  data-testid="passwordTextInput"
                   variant="outlined"
                   margin="normal"
                   required
@@ -261,7 +262,7 @@ class Login extends React.Component{
                     <Button onClick={this.navigateCreateAccount} color="primary">
                       Create Account
                     </Button>
-                    <Button onClick={this.handleWrongLoginInfo} color="primary">
+                    <Button onClick={this.handleWrongLoginInfo} title="close_btn" color="primary">
                       Close
                     </Button>
                 </DialogActions>
