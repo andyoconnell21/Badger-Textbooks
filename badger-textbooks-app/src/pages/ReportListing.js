@@ -5,18 +5,21 @@ import '../App.css'
 import firebase from "firebase";
 
 import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
+import Grid from '@material-ui/core/Grid';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
-import Checkbox from '@material-ui/core/Checkbox';
 
+const backgroundGrey = '#dadfe1';
+const badgerRed = '#c5050c';
 
 export class ReportListing extends Component {
     constructor(props) {
@@ -39,7 +42,7 @@ export class ReportListing extends Component {
             }
         });
         var documentId = sessionStorage.getItem('currentListing')
-        document.body.style.backgroundColor = '#dadfe1';
+        document.body.style.backgroundColor = backgroundGrey;
 
         firebase.firestore().collection("listings").doc(documentId).get()
             .then((doc) => {
@@ -47,6 +50,7 @@ export class ReportListing extends Component {
                 this.setState({
                     listing_id: documentId,
                     title: data.title,
+                    sellerName: data.seller_name
                 })
             })
     }
@@ -100,97 +104,95 @@ export class ReportListing extends Component {
 
 
     render() {
-        const {title} = this.state
+        const {title, sellerName} = this.state
 
             return (
             <div>
-                <div>
-                    <AppBar position="static" style={{background: '#c5050c'}}>
-                        <Toolbar>
-                            <IconButton onClick={this.toggleMenu}>
-                                <MenuIcon/>
-                            </IconButton>
-                            <Typography variant='h6'
-                                        style={{fontFamily: 'sans-serif', fontSize: '25px', margin: 'auto'}}>
-                                Report a Listing
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
+                <AppBar style={{ background: badgerRed }} position="static">
+                    <Toolbar>
+                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                            <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
 
-                    <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-                        <NavigationMenu/>
-                    </Drawer>
-                </div>
-                <div>
-                    <React.Fragment>
-                        <form className="form-box" style={{width: "80%", backgroundColor: 'lightgray'}}>
-                            <p style={{background:"whitesmoke",fontSize: '16px',border:'1px'}}>Name of Listing: {title}</p>
-                            <p style={{fontSize: '16px'}}>Select your reason(s) for reporting this listing:  </p>
+                <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
+                    <NavigationMenu/>
+                </Drawer>
 
-                            <label className="container">
-                            <input type="checkbox" class="custom-control-input" id="Inappropriate"
-                                       value="Inappropriate"
-                                       onChange={this.handleCheckboxChange}/>
-                                <span className="checkmark"></span>
-                                <label class="custom-control-label" for="Inappropriate">Listing is inappropriate</label>
-                            </label>
+                <React.Fragment>
+                    <form className="form-box" style={{width: "80%", backgroundColor: 'lightgray'}}>
+                        <p style={{fontSize: '30px'}}>Report Submission Form</p>
+                        <Divider style={{margin: "10px"}}/>
+                        <p style={{fontSize: '25px', border:'1px'}}>Listing Title: {title}</p>
+                        <p style={{fontSize: '20px', border:'1px'}}>Seller: {sellerName}</p>
+                        <Divider style={{margin: "10px"}}/>
+                        <p style={{fontSize: '16px'}}>Select your reason(s) for reporting this listing:  </p>
 
-                            <label className="container">
-                                <input type="checkbox" className="custom-control-input" id="notTextbook"
-                                       value="notTextbook"
-                                       onChange={this.handleCheckboxChange}/>
-                                <span className="checkmark"></span>
-                                <label className="custom-control-label" htmlFor="notTextbook">Not a textbook</label>
-                            </label>
+                        <label className="container">
+                        <input type="checkbox" class="custom-control-input" id="Inappropriate"
+                                    value="Inappropriate"
+                                    onChange={this.handleCheckboxChange}/>
+                            <span className="checkmark"></span>
+                            <label class="custom-control-label" for="Inappropriate">Listing is inappropriate</label>
+                        </label>
 
-                            <label className="container">
-                                <input type="checkbox" className="custom-control-input" id="notSerious"
-                                       value="notSerious"
-                                       onChange={this.handleCheckboxChange}/>
-                                <span className="checkmark"></span>
-                                <label className="custom-control-label" htmlFor="notSerious">Not a serious
-                                    listing</label>
-                            </label>
+                        <label className="container">
+                            <input type="checkbox" className="custom-control-input" id="notTextbook"
+                                    value="notTextbook"
+                                    onChange={this.handleCheckboxChange}/>
+                            <span className="checkmark"></span>
+                            <label className="custom-control-label" htmlFor="notTextbook">Not a textbook</label>
+                        </label>
 
-                            <div>
-                                <label style={{fontSize: '16px',border:'1px'}}> Other Reasons (optional):  </label>
-                                <input className="w3-input w3-hover-light-gray"
-                                       title='titleInput'
-                                       type='text'
-                                       size=""
-                                       onChange={this.handleOtherReasons}
-                                />
-                            </div>
-                            <Divider style={{margin: "10px"}}/>
-                            <Button
-                                style={{color: '#ffffff', backgroundColor: '#c5050c'}}
-                                variant="contained"
-                                fullWidth
-                                onClick={this.handleSubmit}
+                        <label className="container">
+                            <input type="checkbox" className="custom-control-input" id="notSerious"
+                                    value="notSerious"
+                                    onChange={this.handleCheckboxChange}/>
+                            <span className="checkmark"></span>
+                            <label className="custom-control-label" htmlFor="notSerious">Not a serious
+                                listing</label>
+                        </label>
 
-                            >File Report</Button>
-                            <Divider style={{margin: "10px"}}/>
-                            <Button
-                                style={{color: '#ffffff', backgroundColor: '#c5050c'}}
-                                variant="contained"
-                                fullWidth
-                                onClick={() => {
-                                    window.location.href = "/listing";}
-                                }
-                            > Cancel </Button>
-                        </form>
+                        <div>
+                            <label style={{fontSize: '16px',border:'1px'}}> Other Reasons (optional):  </label>
+                            <input className="w3-input w3-hover-light-gray"
+                                    title='titleInput'
+                                    type='text'
+                                    size=""
+                                    onChange={this.handleOtherReasons}
+                            />
+                        </div>
+                        <Divider style={{margin: "10px"}}/>
+                        <Grid container spacing={1}>
+                            <Grid item xs>
+                                <Button
+                                    style={{color: '#ffffff', backgroundColor: '#c5050c'}}
+                                    variant="contained"
+                                    fullWidth
+                                    onClick={() => {
+                                        window.location.href = "/listing";}
+                                    }
+                                > Cancel </Button>
+                            </Grid>
+                            <Grid item xs>
+                                <Button
+                                    style={{color: '#ffffff', backgroundColor: '#c5050c'}}
+                                    variant="contained"
+                                    fullWidth
+                                    onClick={this.handleSubmit}
 
-                    </React.Fragment>
-                </div>
+                                >File Report</Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </React.Fragment>
             </div>
-
-
         )
     }
 }
 
 export default ReportListing;
-
-
-
-
