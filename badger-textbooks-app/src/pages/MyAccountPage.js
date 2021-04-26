@@ -2,69 +2,64 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 import NavigationMenu from './NavigationMenu';
+import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import LogoutIcon from '@material-ui/icons/ExitToApp';
-import BackIcon from '@material-ui/icons/ArrowBackIos';
-import Card from '@material-ui/core/Card';
-import Typography from '@material-ui/core/Typography';
+import {
+  Container,
+  Button,
+  IconButton,
+  Typography,
+  TextField,
+  Grid,
+  AppBar,
+  Toolbar,
+  Drawer,
+  Paper,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@material-ui/core';
+
+import MenuIcon from '@material-ui/icons/Menu';
 import EditIcon from '@material-ui/icons/Edit';
 import AcceptIcon from '@material-ui/icons/Check';
 import CancelIcon from '@material-ui/icons/Close';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Drawer from '@material-ui/core/Drawer';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
 
-import MenuIcon from '@material-ui/icons/Menu';
+const backgroundGrey = '#dadfe1';
+const badgerRed = '#c5050c';
 
 class MyAccountPage extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      password: '',
-      phone: '',
-      email: '',
       uid: '',
+      name: '',
+      email: '',
+      password: '',
+      profilePic: '',
 
-
-      description: '',
-      mood: '',
-      address: '',
       nameInput: '',
       passwordInput: '',
-      emailInput: '',
-      phoneInput: '',
-      descriptionInput: '',
-      moodInput: '',
-      imageURL: '',
-      editVis: '',
-      acceptVis: 'none',
-      cancelVis: 'none',
-      docID: ''
+      conPasswordInput: '',
+
+      editButtonVis: '',
+      accanButtonVis: 'none',
+      docID: '',
+      menuOpen: false,
+      passwordsMismatch: false,
+      badPassword: false
     };
 
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-    this.handleMoodChange = this.handleMoodChange.bind(this);
-    this.handlePhoneChange = this.handlePhoneChange.bind(this);
-    // this.handleAddressChange = this.handleAddressChange.bind(this);
     //this.handleLogout = this.handleLogout.bind(this);
   }
 
   componentDidMount () {
-    document.body.style.backgroundColor = '#494949'
+    document.body.style.backgroundColor = backgroundGrey;
 
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
@@ -78,47 +73,44 @@ class MyAccountPage extends React.Component {
               doc.forEach((i) => {
                 var data = i.data();
                 this.setState({
+                  docID: i.id,
+                  email: data.email,
                   name: data.name,
                   password: data.password,
-                  menuOpen: false,
-                  email: data.email,
-                  phone: data.phone,
-                  docID: i.id
-                  // username: data.username,
-                  // password: data.password,
-                  // description: data.description,
-                  // mood: data.mood,
-                  // address: data.address,
-                  // usernameInput: data.username,
-                  // passwordInput: data.password,
-                  // descriptionInput: data.description,
-                  // moodInput: data.mood,
-                  // addressInput: data.address,
-                  // imageURL: data.imageURL
+                  profilePic: data.imageURL,
+                  
+                  nameInput: data.name,
                 });
               })
             })
       }
     }.bind(this));
-
-
   }
 
-//   handleLogout () {
-//     firebase.auth().signOut().then(() => {
-//       //Sign-out successful.
-//     }).catch((error) => {
-//       //An error happened.
-//     });
-//     window.location.href = '/'
-//   }
+  addDefaultSrc(ev) {
+    ev.target.src = "https://firebasestorage.googleapis.com/v0/b/badgertextbooks-2919f.appspot.com/o/userAccountImage.png?alt=media&token=91c14802-542d-4723-8c55-405b7552c8fa"
+  }
 
-  handleNameChange(event) { this.setState({nameInput: event.target.value}); }
-  handlePasswordChange(event) { this.setState({passwordInput: event.target.value}); }
-  handleDescriptionChange(event) { this.setState({descriptionInput: event.target.value}); }
-  handleMoodChange(event) { this.setState({moodInput: event.target.value}); }
-  handlePhoneChange(event) { this.setState({phoneInput: event.target.value});}
+  handleLogout = () => {
+    firebase.auth().signOut().then(() => {
+      //Sign-out successful.
+      window.location.href = '/'
+    }).catch((error) => {
+      //An error happened.
+    });
+  }
 
+  handleNameChange = (event) => { 
+    this.setState({nameInput: event.target.value}); 
+  }
+
+  handlePasswordChange = (event) => { 
+    this.setState({passwordInput: event.target.value}); 
+  }
+
+  handleConPasswordChange = (event) => { 
+    this.setState({conPasswordInput: event.target.value}); 
+  }
 
   toggleMenu = (event) => {
     var curr_state = this.state.menuOpen;
@@ -127,75 +119,57 @@ class MyAccountPage extends React.Component {
     });
   }
 
+  handleClose = (event) => {
+    this.setState({
+      passwordsMismatch: false,
+      badPassword: false,
+      passwordInput: "",
+      conPasswordInput: ""
+    });
+}
+
   handleEditClick() {
     this.setState({
-      editVis: 'none',
-      acceptVis: 'inline',
-      cancelVis: 'inline'
+      editButtonVis: 'none',
+      accanButtonVis: ''
     })
   }
 
   handleCancelClick() {
     this.setState({
       nameInput: this.state.name,
-      passwordInput: this.state.password,
-      phoneInput: this.state.phone,
-      descriptionInput: this.state.description,
-      moodInput: this.state.mood,
-      imageURL: this.state.imageURL,
-      //   addressInput: this.state.address,
-      editVis: '',
-      acceptVis: 'none',
-      cancelVis: 'none'
+      editButtonVis: '',
+      accanButtonVis: 'none'
     });
   }
 
   handleAcceptClick() {
-
-    var status = localStorage.getItem('userStatus');
-
-    firebase.firestore().collection('users').doc(this.state.docID).update({
-      name: this.state.nameInput != '' ? this.state.nameInput : this.state.name,
-      password: this.state.passwordInput != '' ? this.state.passwordInput : this.state.password,
-      email: this.state.email,
-      phone: this.state.phoneInput != '' ? this.state.phoneInput : this.state.phone,
-      // description: this.state.descriptionInput,
-      // mood: this.state.moodInput,
-      imageURL: this.state.imageURL,
-    }).then(() =>
-        firebase.firestore().collection('users').doc(this.state.docID).get()
-            .then((doc) => {
-              var data = doc.data();
+    if (this.state.passwordInput === this.state.conPasswordInput) {
+      var user = firebase.auth().currentUser;
+      var cred = firebase.auth.EmailAuthProvider.credential(user.email, this.state.password);
+      user.reauthenticateWithCredential(cred).then(() => {
+        user.updatePassword(this.state.passwordInput).then(() => {
+          //success
+          firebase.firestore().collection('users').doc(this.state.docID).update({
+            name: this.state.nameInput !== '' ? this.state.nameInput : this.state.name,
+            password: this.state.passwordInput !== '' ? this.state.passwordInput : this.state.password,
+          }).then(() =>
               this.setState({
-                name: data.name,
-                password: data.password,
-                email: data.email,
-                phone: data.phone,
-                //description: data.description,
-                //mood: data.mood,
-                //imageURL: data.imageURL,
-                nameInput: '',
+                name: this.state.nameInput,
+                password: this.state.passwordInput,
                 passwordInput: '',
-                phoneInput: '',
-                //descriptionInput: '',
-                //moodInput: data.mood,
-
-                editVis: '',
-                acceptVis: 'none',
-                cancelVis: 'none'
+                conPasswordInput: '',
+                editButtonVis: '',
+                accanButtonVis: 'none'
               })
-            })
-    );
-
-    var user = firebase.auth().currentUser;
-    var cred = firebase.auth.EmailAuthProvider.credential(localStorage.getItem('email'), this.state.password);
-    user.reauthenticateWithCredential(cred);
-
-    user.updatePassword(this.state.passwordInput).then(() => {
-      //success
-    }, (error) => {
-      console.log(error.code)
-    });
+          );
+        }, (error) => {
+          this.setState({ badPassword: true })
+        });
+      });
+    } else {
+      this.setState({ passwordsMismatch: true });
+    }
   }
 
   handleImageChange = (event) => {
@@ -212,61 +186,50 @@ class MyAccountPage extends React.Component {
     })
   }
 
-  //change for line 269: {this.displayPayment()}
   render () {
     return (
         <div>
-          <AppBar position="static" style={{ background: '#c5050c' }}>
-            <Toolbar>
-
-              <IconButton title="menu_btn" onClick={this.toggleMenu}>
-                <MenuIcon/>
-              </IconButton>
-
-              <Typography variant='h6' style={{flexGrow: 1}}>
-                My Account
-              </Typography>
-              <IconButton
-                  onClick={this.handleLogout}
-              >
-                <LogoutIcon/>
-              </IconButton>
-            </Toolbar>
+          <AppBar style={{ background: badgerRed }} position="static">
+              <Toolbar>
+                  <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                      <MenuIcon />
+                  </IconButton>
+                  <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
+                      <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+                  </Typography>
+                  <Typography style={{flexGrow: 1}}></Typography>
+                  <IconButton onClick={this.handleLogout} style={{float: 'right'}}>
+                    <LogoutIcon/>
+                  </IconButton>
+              </Toolbar>
           </AppBar>
 
           <Drawer title="nav_menu" anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
             <NavigationMenu/>
           </Drawer>
 
-          {/* <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
-            Email: {localStorage.getItem('email')}
-          </Typography> */}
+          <Container>
+            <Paper variant="outlined" square style={{height: "100vh", padding: "20px"}}>
 
-          {/* <Typography variant='subtitle1' style={{color: '#ffffff', marginTop: '10px'}}>
-            Account Type: {this.state.type}
-          </Typography> */}
-
-          <Card style={{margin: '10px'}}>
-            <Box style={{margin: '15px'}}>
-              <Typography variant='subtitle1' alignment='center' style={{color: '#ffffff', marginTop: '10px'}}>
-
-              </Typography>
+              <img onError={this.addDefaultSrc} className="img-responsive"
+                src={this.state.profilePic} width="150" height="150" alt="" style={{backgroundColor: "#ffffff"}}/>
+              
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
+                <Grid item xs>
+                  <Typography style={{float: 'right'}}>
                     Name:
                   </Typography>
                 </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
+                <Grid item xs style={{display: this.state.editButtonVis}}>
+                  <Typography style={{float: 'left'}}>
                     {this.state.name}
                   </Typography>
                 </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
+                <Grid item xs style={{display: this.state.accanButtonVis}}>
                   <TextField
                       title="nameChange"
-                      inputProps={{"data-testid": "nameChange"}}
                       fullWidth
+                      variant="outlined"
                       value={this.state.nameInput}
                       onChange={this.handleNameChange}
                   />
@@ -274,176 +237,133 @@ class MyAccountPage extends React.Component {
               </Grid>
 
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
+                <Grid item xs>
+                  <Typography style={{float: 'right'}}>
+                    Email:
+                  </Typography>
+                </Grid>
+                <Grid item xs style={{display: this.state.editButtonVis}}>
+                  <Typography style={{float: 'left'}}>
+                    {this.state.email}
+                  </Typography>
+                </Grid>
+                <Grid item xs style={{display: this.state.accanButtonVis}}>
+                  <Typography align="left" style={{color: '#888888', float: 'left'}}>
+                    {this.state.email}
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={1} style={{marginBottom: '10px'}}>
+                <Grid item xs>
+                  <Typography style={{float: 'right'}}>
                     Password:
                   </Typography>
                 </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
+                <Grid item xs style={{display: this.state.editButtonVis}}>
+                  <Typography style={{float: 'left'}}>
                     {this.state.password}
                   </Typography>
                 </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
+                <Grid item xs style={{display: this.state.accanButtonVis}}>
                   <TextField
                       title="passwordChange"
-                      inputProps={{"data-testid": "passwordChange"}}
+                      type="password"
                       fullWidth
+                      variant="outlined"
                       value={this.state.passwordInput}
                       onChange={this.handlePasswordChange}
                   />
                 </Grid>
               </Grid>
-
-              <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
-                    Email:
+              <Grid container spacing={1} style={{marginBottom: '10px', display: this.state.accanButtonVis}}>
+                <Grid item xs>
+                  <Typography style={{float: 'right'}}>
+                    Confirm Password:
                   </Typography>
                 </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
-                    {this.state.email}
-                  </Typography>
-                </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
-                  <Typography align="left">
-                    Email must remain the same
-                  </Typography>
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
-                    Phone:
-                  </Typography>
-                </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
-                    {this.state.phone}
-                  </Typography>
-                </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
+                <Grid item xs style={{display: this.state.accanButtonVis}}>
                   <TextField
-                      title="phoneChange"
-                      inputProps={{"data-testid": "phoneChange"}}
+                      title="passwordChangeConfirm"
+                      type="password"
                       fullWidth
-                      value={this.state.phoneInput}
-                      onChange={this.handlePhoneChange}
+                      variant="outlined"
+                      value={this.state.conPasswordInput}
+                      onChange={this.handleConPasswordChange}
                   />
                 </Grid>
               </Grid>
 
-              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
-                  Description: 
-                  </Typography>
-                </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
-                    {this.state.Description}
-                  </Typography>
-                </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
-                  <TextField
-                    fullWidth
-                    value={this.state.descriptionInput}
-                    onChange={this.handleDescriptionChange}
-                  />
-                </Grid>
-              </Grid> */}
-
-              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
-                  Mood: 
-                  </Typography>
-                </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
-                    
-                  </Typography>
-                </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
-                  <Select
-                    fullWidth
-                    onChange={this.handleMoodChange}
-                    value={this.state.moodInput}
-                    style={{textAlign: 'left'}}
-                  >
-                    <MenuItem value={1}>I feel good</MenuItem>
-                    <MenuItem value={2}>Bad Mood Today</MenuItem>
-                    <MenuItem value={3}>Just SoSo</MenuItem>
-                  </Select>
-                </Grid>
-              </Grid> */}
-
-              {/* <div>
-                        <label>My Profile Photo: </label>
-                        <input className="w3-input w3-hover-light-gray"
-                            type='file'
-                            onChange={this.handleImageChange}
-                        />
-                    </div> */}
-
-              {/* <Grid container spacing={1} style={{marginBottom: '10px'}}>
-                <Grid item>
-                  <Typography>
-                    Address: 
-                  </Typography>
-                </Grid>
-                <Grid item style={{display: this.state.editVis}}>
-                  <Typography>
-                    {this.state.address}
-                  </Typography>
-                </Grid>
-                <Grid item xs style={{display: this.state.acceptVis}}>
-                  <TextField
-                    fullWidth
-                    value={this.state.addressInput}
-                    onChange={this.handleAddressChange}
-                  />
-                </Grid>
-              </Grid> */}
-            </Box>
-
-            <Container>
-              <Divider/>
-            </Container>
-
-            <IconButton
-                style={{display: this.state.editVis, margin: '20px'}}
+            
+            <Button
+                style={{display: this.state.editButtonVis}}
                 variant='contained'
-                starticon={<EditIcon/>}
-                title="update_btn"
                 onClick={() => this.handleEditClick()}
             >
-              Update My Info
-            </IconButton>
-            <Button
-                style={{display: this.state.cancelVis, margin: '20px'}}
-                variant='contained'
-                onClick={() => this.handleCancelClick()}
-            >
-              <CancelIcon/>
+              <EditIcon/>
               <Typography>
-                Cancel
+                Edit My Information
               </Typography>
             </Button>
-            <Button
-                style={{display: this.state.acceptVis, margin: '20px'}}
-                variant='contained'
-                onClick={() => this.handleAcceptClick()}
-            >
-              <AcceptIcon/>
-              <Typography>
-                Confirm
-              </Typography>
-            </Button>
-          </Card>
-        </div>
+
+            <Grid container spacing={1} style={{display: this.state.accanButtonVis}}>
+              <Grid item xs>
+                <Button
+                    variant='contained'
+                    onClick={() => this.handleCancelClick()}
+                    style={{float: 'right'}}
+                >
+                  <CancelIcon/>
+                  <Typography>
+                    Cancel
+                  </Typography>
+                </Button>
+              </Grid>
+              <Grid item xs>
+                <Button
+                    variant='contained'
+                    onClick={() => this.handleAcceptClick()}
+                    style={{float: 'left'}}
+                >
+                  <AcceptIcon/>
+                  <Typography>
+                    Confirm
+                  </Typography>
+                </Button>
+              </Grid>
+            </Grid>
+
+            </Paper>
+          </Container>
+
+          <Dialog open={this.state.passwordsMismatch}>
+            <DialogTitle >{"Uh-Oh!"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    The passwords you entered do not match. Please try again.
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button title='close_btn' onClick={this.handleClose} color="primary">
+                    Ok
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog open={this.state.badPassword}>
+            <DialogTitle >{"Uh-Oh!"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    The password you entered is too short. Make sure that it is at least 6 characters!
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button title='close_btn' onClick={this.handleClose} color="primary">
+                    Ok
+                </Button>
+            </DialogActions>
+        </Dialog>
+      </div>
     );
   }
 }
