@@ -225,6 +225,7 @@ export class CreateNewListing extends Component {
                         <Divider/>
                         <TextField
                             title='titleInput'
+                            data-testid='title'
                             label="Textbook Title*"
                             variant="filled"
                             fullWidth
@@ -235,6 +236,7 @@ export class CreateNewListing extends Component {
                         />
                         <TextField
                             title='authorInput'
+                            data-testid='author'
                             label="Author*"
                             variant="filled"
                             fullWidth
@@ -244,6 +246,7 @@ export class CreateNewListing extends Component {
                         />
                         <TextField
                             title='classInput'
+                            data-testid='class'
                             label="Class Used For*"
                             variant="filled"
                             fullWidth
@@ -253,6 +256,7 @@ export class CreateNewListing extends Component {
                         />
                         <TextField
                             title='priceInput'
+                            data-testid='price'
                             label="Price"
                             variant="filled"
                             fullWidth
@@ -263,6 +267,7 @@ export class CreateNewListing extends Component {
                         />
                         <TextField
                             title='isbnInput'
+                            data-testid='isbn'
                             label="ISBN"
                             variant="filled"
                             fullWidth
@@ -274,8 +279,9 @@ export class CreateNewListing extends Component {
                         <FormControl style={{ width: "100%", marginTop: "10px" }}>
                             <InputLabel id="filter-select-label" style={{marginLeft: "2px"}}>Condition</InputLabel>
                             <Select
+                                title='conditionInput'
+                                data-testid='condition'
                                 labelId="filter-select-label"
-                                data-testid="filter_slct_creat"
                                 variant="filled"
                                 value={this.state.condition}
                                 onChange={this.handleConditionChange}

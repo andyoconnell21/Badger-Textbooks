@@ -66,6 +66,7 @@ class Home extends React.Component {
 
     var tempListings = []
     firebase.firestore().collection("listings").where("active", "==", true).limit(10).get().then((querySnapshot) => {
+        tempListings = [];  
         querySnapshot.forEach((doc) => {
             var gather = [doc.id, doc.data()]
             tempListings.push(gather)

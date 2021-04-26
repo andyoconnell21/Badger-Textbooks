@@ -39,7 +39,6 @@ class Chat extends React.Component {
 
   //LIFECYCLE FUNCTION: Does basic page setup, check user auth, makes call to display initial messages.
   componentDidMount() {
-    console.log(sessionStorage.getItem('receiverUid'));
     document.body.style.backgroundColor = backgroundBeige;
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {

@@ -245,6 +245,7 @@ class MyAccountPage extends React.Component {
                 <Grid item xs style={{display: this.state.accanButtonVis}}>
                   <TextField
                       title="nameChange"
+                      data-testid='nameChange'
                       fullWidth
                       variant="outlined"
                       value={this.state.nameInput}
@@ -285,6 +286,7 @@ class MyAccountPage extends React.Component {
                 <Grid item xs style={{display: this.state.accanButtonVis}}>
                   <TextField
                       title="passwordChange"
+                      data-testid='passwordChange'
                       type="password"
                       fullWidth
                       variant="outlined"
@@ -312,6 +314,7 @@ class MyAccountPage extends React.Component {
               </Grid>
             
             <Button
+                title="edit_btn"
                 style={{display: this.state.editButtonVis}}
                 variant='contained'
                 onClick={() => this.handleEditClick()}

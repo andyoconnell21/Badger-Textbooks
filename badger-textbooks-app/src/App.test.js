@@ -1,4 +1,9 @@
 import { render, screen, fireEvent, mockChange, getByTitle } from '@testing-library/react';
+
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/auth';
+
 import App from './App';
 import Home from './pages/Home';
 import Login from './Login'
@@ -21,6 +26,18 @@ afterEach(() => {
   assignMock.mockClear();
 });
 
+// const { mockFirebase } = require('firestore-jest-mock');
+
+// // Create a fake Firestore with a `users` and `posts` collection
+// mockFirebase({
+//   database: {
+//     listings: [
+//       { title: 'test', seller_name: 't', price: 10, image_url: ""},
+//     ]
+//   }
+// });
+
+// const { mockCollection } = require('firestore-jest-mock/mocks/firestore');
 
 //APP PAGE TESTS
 describe("Render Testing For App Component", () =>{
@@ -48,7 +65,7 @@ describe("Render and Unit Testing of Login Page", () =>{
   })
 
   test("Forgot Password Button", () => {
-    const { queryByTitle, getByTestId } = render(<Login/>);
+    const { queryByTitle } = render(<Login/>);
     const password_btn = queryByTitle("forgotPassword");
     fireEvent.click(password_btn);
     const alertBox_text = screen.getByText("Reset Password");
@@ -96,7 +113,6 @@ describe("Render and Unit Testing of Login Page", () =>{
     fireEvent.change(passwordTextInput, {target: {value: 'testPassword'}})
 
     expect(passwordTextInput.value).toBe('testPassword')
-
   })
 });
 
@@ -110,7 +126,7 @@ describe("Render and Unit Testing of Create Account Page", () =>{
   test("Render CreateAccount Page Text", () => {
     render(<CreateAccount />)
     const headerText = screen.getByText("Welcome to Badger Textbooks")
-    const createAccountText = screen.getByText("Create An Account")
+    const createAccountText = screen.getByText("Create an Account")
     expect(headerText).toBeInTheDocument();
     expect(createAccountText).toBeInTheDocument();
   })
@@ -187,7 +203,7 @@ describe("Testing Home-Page", () => {
 
   test('home page renders text', () => {
     render (<Home/>)
-    const headerText = screen.getByText("Badger-Textbooks")
+    const headerText = screen.getByText("Badger Textbooks")
     expect(headerText).toBeInTheDocument();
   })
 
@@ -195,7 +211,7 @@ describe("Testing Home-Page", () => {
     const { queryByTitle } = render(<Home/>);
     const menu_btn = queryByTitle("menu_btn");
     fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Navigation Menu");
+    const navigation_text = screen.getByText("Menu");
 
     expect(navigation_text).toBeInTheDocument();
   })
@@ -274,8 +290,8 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
   })
 
   test("Rendering of Components", () => {
-    const { getByText, getByTitle} = render(<CreateNewListing />);
-    const headerText = getByText("Create New Listing")
+    const { getByText, getByTitle } = render(<CreateNewListing />);
+    const headerText = getByText("Create a New Listing")
     const titleInput = getByTitle("titleInput")
     const authorInput = getByTitle("authorInput")
     const conditionInput = getByTitle('conditionInput')
@@ -293,28 +309,28 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
   })
 
   test("TextInput fields in Create New Listing Page", () => {
-    const { getByTitle} = render(<CreateNewListing />);
+    const { getByTestId } = render(<CreateNewListing />);
 
-    const titleInput = getByTitle("titleInput")
-    const authorInput = getByTitle("authorInput")
-    const conditionInput = getByTitle('conditionInput')
-    const priceInput = getByTitle('priceInput')
-    const isbnInput = getByTitle('isbnInput')
-    const classInput = getByTitle('classInput')
+    const titleField = getByTestId('title').querySelector('input');
+    const authorField = getByTestId('author').querySelector('input');
+    const conditionField = getByTestId('condition').querySelector('input');
+    const priceField = getByTestId('price').querySelector('input');
+    const isbnField = getByTestId('isbn').querySelector('input');
+    const classField = getByTestId('class').querySelector('input');
 
-    fireEvent.change(titleInput, {target: {value: 'Comp Sci 506 Introduction'}})
-    fireEvent.change(authorInput, {target: {value: 'John Doe'}})
-    fireEvent.change(conditionInput, {target: {value: 'Brand-new'}})
-    fireEvent.change(priceInput, {target: {value: '9.99'}})
-    fireEvent.change(isbnInput, {target: {value: '12345678910'}})
-    fireEvent.change(classInput, {target: {value: 'Comp Sci 506'}})
+    fireEvent.change(titleField, {target: {value: 'Comp Sci 506 Introduction'}})
+    fireEvent.change(authorField, {target: {value: 'John Doe'}})
+    fireEvent.change(conditionField, {target: { value: "Brand_New" }});
+    fireEvent.change(priceField, {target: {value: 9.99}})
+    fireEvent.change(isbnField, {target: {value: '12345678910'}})
+    fireEvent.change(classField, {target: {value: 'Comp Sci 506'}})
 
-    expect(titleInput.value).toBe('Comp Sci 506 Introduction')
-    expect(authorInput.value).toBe('John Doe')
-    expect(conditionInput.value).toBe('Brand-new')
-    expect(priceInput.value).toBe('9.99')
-    expect(isbnInput.value).toBe('12345678910')
-    expect(classInput.value).toBe('Comp Sci 506')
+    expect(titleField.value).toBe('Comp Sci 506 Introduction')
+    expect(authorField.value).toBe('John Doe')
+    expect(conditionField.value).toBe('Brand-New')
+    expect(priceField.value).toBe('9.99');
+    expect(isbnField.value).toBe('12345678910')
+    expect(classField.value).toBe('Comp Sci 506')
   })
 })
 
@@ -339,7 +355,7 @@ describe("Render and Unit Testing of MyListings Page", () => {
     const { queryByTitle } = render(<MyListings/>);
     const menu_btn = queryByTitle("menu_btn");
     fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Navigation Menu");
+    const navigation_text = screen.getByText("Menu");
     expect(navigation_text).toBeInTheDocument();
   })
 
@@ -362,7 +378,7 @@ describe("Testing ChatListPage", () => {
     const { queryByTitle } = render(<ChatListPage/>);
     const menu_btn = queryByTitle("menu_btn");
     fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Navigation Menu");
+    const navigation_text = screen.getByText("Menu");
 
     expect(navigation_text).toBeInTheDocument();
   })
@@ -390,14 +406,15 @@ describe("Render Testing of CreateNewListings Page", () =>{
   })
   test("Render CreateNewListings Text", () => {
     render(<CreateNewListings />);
-    const headerText = screen.getByText("Create New Listing")
-    const bookTitleText = screen.getByText("Book Title*:")
-    const authorText = screen.getByText("Author*:")
-    const ISBNText = screen.getByText("ISBN:")
-    const priceText = screen.getByText("Desired Price:")
-    const classText = screen.getByText("Class Used For*:")
-    const conditionText = screen.getByText("Condition:")
-    const imageText = screen.getByText("Image of Textbook:")
+    const headerText = screen.getByText("Create a New Listing")
+    const bookTitleText = screen.getByText("Textbook Title*")
+    const authorText = screen.getByText("Author*")
+    const ISBNText = screen.getByText("ISBN")
+    const priceText = screen.getByText("Price")
+    const classText = screen.getByText("Class Used For*")
+    const conditionText = screen.getByText("Condition")
+    const imageText = screen.getByText("Textbook Image:")
+
     expect(headerText).toBeInTheDocument();
     expect(bookTitleText).toBeInTheDocument();
     expect(authorText).toBeInTheDocument();
@@ -441,45 +458,37 @@ describe("Testing of MyAccountPage", () => {
   })
 
   test("my account page renders text", () => {
-    const { getByText, getByTitle } = render(<MyAccountPage/>)
-    const headerText = getByText("My Account")
+    const { getByText } = render(<MyAccountPage/>)
     const nameText = getByText("Name:")
     const passwordText = getByText("Password:")
     const emailText = getByText("Email:")
-    const phoneText = getByText("Phone:")
 
-    expect(headerText).toBeInTheDocument();
     expect(nameText).toBeInTheDocument();
     expect(passwordText).toBeInTheDocument();
     expect(emailText).toBeInTheDocument();
-    expect(phoneText).toBeInTheDocument();
   })
 
   test("click menu button", () => {
     const { queryByTitle } = render(<MyAccountPage/>);
     const menu_btn = queryByTitle("menu_btn");
     fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Navigation Menu");
+    const navigation_text = screen.getByText("Menu");
 
     expect(navigation_text).toBeInTheDocument();
   })
 
   test("click update info button", () => {
-    const { queryByTitle, getByTitle, getByTestId } = render(<MyAccountPage/>);
-    const updateInfo_btn = queryByTitle("update_btn");
-    fireEvent.click(updateInfo_btn);
+    const { queryByTitle, getByTestId } = render(<MyAccountPage/>);
+    const edit_btn = queryByTitle("edit_btn");
+    fireEvent.click(edit_btn);
 
-    const nameInput = getByTestId("nameChange");
-    const passwordInput = getByTestId("passwordChange");
-    const phoneInput = getByTestId("phoneChange");
+    const nameInput = getByTestId("nameChange").querySelector('input');;
+    const passwordInput = getByTestId("passwordChange").querySelector('input');;
 
     fireEvent.change(nameInput, {target: {value: 'Test Name'}});
     fireEvent.change(passwordInput, {target: {value: 'Test Password'}});
-    fireEvent.change(phoneInput, {target: {value: 'Test Phone'}});
 
     expect(nameInput.value).toBe('Test Name');
     expect(passwordInput.value).toBe('Test Password');
-    expect(phoneInput.value).toBe('Test Phone');
   })
-
 })
