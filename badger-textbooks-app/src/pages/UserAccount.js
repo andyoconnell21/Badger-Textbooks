@@ -28,6 +28,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 
 import MenuIcon from '@material-ui/icons/Menu';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const backgroundGrey = '#dadfe1';
 const badgerRed = '#c5050c';
@@ -188,23 +189,23 @@ class UserAccount extends React.Component {
         })
     }
 
+    toggleBackButton = (event) => {
+        window.location.href = "/listing"
+    }
+
     render(){
         return(
             <div>
                 <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton title="menu_btn" onClick={this.toggleMenu} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
-                            <MenuIcon />
+                        <IconButton title="menu_btn" onClick={this.toggleBackButton} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                            <ArrowBackIosIcon/>
                         </IconButton>
                         <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
                             <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                         </Typography>
                     </Toolbar>
                 </AppBar>
-
-                <Drawer anchor="left" open={this.state.menuOpen} onClose={this.toggleMenu}>
-                    <NavigationMenu/>
-                </Drawer>
 
                 <Grid>
                     <Grid item style={{margin:'auto', padding:'20px'}}>
