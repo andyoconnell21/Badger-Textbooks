@@ -45,7 +45,6 @@ class MyAccountPage extends React.Component {
       password: '',
       profilePic: '',
       rating: 0,
-      displayPassword: '********',
 
       nameInput: '',
       passwordInput: '',
@@ -64,6 +63,7 @@ class MyAccountPage extends React.Component {
 
   componentDidMount () {
     document.body.style.backgroundColor = backgroundGrey;
+
 
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
@@ -87,7 +87,7 @@ class MyAccountPage extends React.Component {
               email: data.email,
               name: data.name,
               password: data.password,
-              profilePic: data.imageURL,
+              profilePic: "https://firebasestorage.googleapis.com/v0/b/badgertextbooks-2919f.appspot.com/o/userAccountImage.png?alt=media&token=91c14802-542d-4723-8c55-405b7552c8fa",
               rating: ave_rating,
               
               nameInput: data.name,
@@ -197,16 +197,6 @@ class MyAccountPage extends React.Component {
     })
   }
 
-  passwordDisplay = (event) => {
-    var passwordToDisplay = [];
-    for (var i = 0; i < this.state.password.length; i++) {
-      var symbol = ['*'];
-      passwordToDisplay.concat(symbol);
-    }
-    passwordToDisplay.join('');
-    return passwordToDisplay;
-  }
-
   render () {
     return (
         <div>
@@ -216,7 +206,7 @@ class MyAccountPage extends React.Component {
                       <MenuIcon />
                   </IconButton>
                   <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
-                      <img src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
+                      <img onError={this.addDefaultSrc} src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                   </Typography>
                   <Typography style={{flexGrow: 1}}></Typography>
                   <IconButton onClick={this.handleLogout} style={{float: 'right'}}>
@@ -291,7 +281,7 @@ class MyAccountPage extends React.Component {
                 </Grid>
                 <Grid item xs style={{display: this.state.editButtonVis}}>
                   <Typography style={{float: 'left'}}>
-                    {this.state.displayPassword}
+                    {this.state.password}
                   </Typography>
                 </Grid>
                 <Grid item xs style={{display: this.state.accanButtonVis}}>
