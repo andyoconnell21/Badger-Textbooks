@@ -71,7 +71,7 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="My Listings" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="saved_listings_nav" selected={this.state.pageName === "/savedListings"} onClick={() => this.handleClick("/savedListings")}>
+                    <ListItem button key="saved_listings_nav" title="sav_nav_btn" selected={this.state.pageName === "/savedListings"} onClick={() => this.handleClick("/savedListings")}>
                         <ListItemIcon><SavedIcon/></ListItemIcon>
                         <ListItemText primary="Saved Listings" />
                     </ListItem>
@@ -81,7 +81,7 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="My Conversations" />
                     </ListItem>
                     <Divider/>
-                    <ListItem button key="admin_nav"
+                    <ListItem button key="admin_nav" title="admin_nav_btn"
                               style={{display: this.state.adminDisplay}}
                               selected={this.state.pageName === "/admin"}
                               onClick={() => this.handleClick("/admin")}
@@ -90,7 +90,7 @@ class NavigationMenu extends React.Component {
                         <ListItemText primary="Manage Reports" />
                     </ListItem>
                     <Divider style={{display: this.state.adminDisplay}}/>
-                    <ListItem button key="account_nav" selected={this.state.pageName === "/myAccount"} onClick={() => this.handleClick("/myAccount")}>
+                    <ListItem button key="account_nav" title="account_nav_btn" selected={this.state.pageName === "/myAccount"} onClick={() => this.handleClick("/myAccount")}>
                         <ListItemIcon><AccountIcon/></ListItemIcon>
                         <ListItemText primary="Account" />
                     </ListItem>

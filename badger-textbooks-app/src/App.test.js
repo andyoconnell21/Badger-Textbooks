@@ -19,6 +19,10 @@ import ChatPage from './pages/ChatPage';
 import EditListing from "./pages/EditListing";
 import CreateNewListings from "./pages/CreateNewListings";
 import MyAccountPage from './pages/MyAccountPage';
+import Admin from './pages/AdminPage';
+import ReportListing from './pages/ReportListing';
+import SavedListings from './pages/SavedListings';
+import UserAccount from './pages/UserAccount';
 
 
 let assignMock = jest.fn();
@@ -41,12 +45,12 @@ afterEach(() => {
 
 // const { mockCollection } = require('firestore-jest-mock/mocks/firestore');
 
-//APP PAGE TESTS
-describe("Render Testing For App Component", () =>{
-  test("Basic Render Test For App", () => {
-    render(<App />);
-  })
-});
+// //APP PAGE TESTS
+// describe("Render Testing For App Component", () =>{
+//   test("Basic Render Test For App", () => {
+//     render(<App />);
+//   })
+// });
 
 
 //LOGIN PAGE TESTS
@@ -207,6 +211,27 @@ describe("Testing Navigation Menu", () => {
     fireEvent.click(chat_nav_btn);
     expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
+
+  test('click saved button', () => {
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const sav_nav_btn = queryByTitle("sav_nav_btn");
+    fireEvent.click(sav_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+
+  test('click account button', () => {
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const account_nav_btn = queryByTitle("account_nav_btn");
+    fireEvent.click(account_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+
+  test('click admin button', () => {
+    const { queryByTitle } = render(<NavigationMenu/>);
+    const admin_nav_btn = queryByTitle("admin_nav_btn");
+    fireEvent.click(admin_nav_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
 });
 
 
@@ -295,6 +320,18 @@ describe("Testing Home-Page", () => {
 
 //LISTINGS PAGE TESTS
 describe("Render Testing of Listings Page", () => {
+  test("Basic Render Test of Listing Page", () => {
+    render(<Listing />);
+  })
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<Listing/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
 });
 
 
@@ -302,6 +339,15 @@ describe("Render Testing of Listings Page", () => {
 describe("Render and Unit Testing of Create New Listing Page", () => {
   test("Basic Render Test of Create Account Page", () => {
     render(<CreateNewListing />)
+  })
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<CreateNewListings/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
   })
 
   test("Rendering of Components", () => {
@@ -347,6 +393,15 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
     expect(isbnField.value).toBe('12345678910')
     expect(classField.value).toBe('Comp Sci 506')
   })
+
+  test("Bad Submit", () => {
+    const { queryByTitle } = render(<CreateNewListings/>);
+    const create_btn = queryByTitle("create_btn");
+    fireEvent.click(create_btn);
+    
+    const alertBox_text = screen.getByText("Oops! Looks like we are missing some information.");
+    expect(alertBox_text).toBeInTheDocument();
+  })
 })
 
 
@@ -356,16 +411,6 @@ describe("Render and Unit Testing of MyListings Page", () => {
     render(<MyListings />);
   });
 
-  // test("Render MyListing Text", () => {
-  //   const headerText = screen.getByText("'s Listings");
-  //   const activeText = screen.getByText("Active Listings");
-  //   const disabledText = screen.getByText("Disabled Listings");
-
-  //   expect(headerText).toBeInTheDocument();
-  //   expect(activeText).toBeInTheDocument();
-  //   expect(disabledText).toBeInTheDocument();
-  // })
-
   test("Click menu button", () => {
     const { queryByTitle } = render(<MyListings/>);
     const menu_btn = queryByTitle("menu_btn");
@@ -373,14 +418,6 @@ describe("Render and Unit Testing of MyListings Page", () => {
     const navigation_text = screen.getByText("Menu");
     expect(navigation_text).toBeInTheDocument();
   })
-
-  // test("Click details button", () => {
-  //   const {queryByTitle} = render(<MyListings/>);
-  //   const details_button = queryByTitle("details_button");
-  //   fireEvent.click(details_button);
-  //   const details_text = screen.getByText("Listing of Textbook");
-  //   expect(details_text).toBeInTheDocument();
-  // })
 })
 
 //CHAT LIST PAGE TESTS
@@ -414,58 +451,31 @@ describe("Testing ChatPage", () => {
   })
 });
 
-
-describe("Render Testing of CreateNewListings Page", () =>{
-  test("Basic Render Test of CreateNewListings Page", () => {
-    render(<CreateNewListings />);
-  })
-  test("Render CreateNewListings Text", () => {
-    render(<CreateNewListings />);
-    const headerText = screen.getByText("Create a New Listing")
-    const bookTitleText = screen.getByText("Textbook Title*")
-    const authorText = screen.getByText("Author*")
-    const ISBNText = screen.getByText("ISBN")
-    const priceText = screen.getByText("Price")
-    const classText = screen.getByText("Class Used For*")
-    const conditionText = screen.getByText("Condition")
-    const imageText = screen.getByText("Textbook Image:")
-
-    expect(headerText).toBeInTheDocument();
-    expect(bookTitleText).toBeInTheDocument();
-    expect(authorText).toBeInTheDocument();
-    expect(ISBNText).toBeInTheDocument();
-    expect(priceText).toBeInTheDocument();
-    expect(classText).toBeInTheDocument();
-    expect(conditionText).toBeInTheDocument();
-    expect(imageText).toBeInTheDocument();
-  })
+//EDIT LISTING PAGE
+describe("Render Testing of EditListing Page", () =>{
+  test("Basic Render Test of EditListing Page", () => {
+    render(<EditListing />);
+  });
+  // test("Render EditListing Text", () => {
+  //   render(<EditListing />);
+  //   const headerText = screen.getByText("Edit Listing")
+  //   const bookTitleText = screen.getByText("Book Title*:")
+  //   const authorText = screen.getByText("Author*:")
+  //   const ISBNText = screen.getByText("ISBN:")
+  //   const priceText = screen.getByText("Desired Price:")
+  //   const classText = screen.getByText("Class Used For*:")
+  //   const conditionText = screen.getByText("Condition:")
+  //   const imageText = screen.getByText("Image of Textbook:")
+  //   expect(headerText).toBeInTheDocument();
+  //   expect(bookTitleText).toBeInTheDocument();
+  //   expect(authorText).toBeInTheDocument();
+  //   expect(ISBNText).toBeInTheDocument();
+  //   expect(priceText).toBeInTheDocument();
+  //   expect(classText).toBeInTheDocument();
+  //   expect(conditionText).toBeInTheDocument();
+  //   expect(imageText).toBeInTheDocument();
+  // })
 });
-
-// test not passing
-// describe("Render Testing of EditListing Page", () =>{
-//   test("Basic Render Test of EditListing Page", () => {
-//     render(<EditListing />);
-//   })
-//   test("Render EditListing Text", () => {
-//     render(<EditListing />);
-//     const headerText = screen.getByText("Edit Listing")
-//     const bookTitleText = screen.getByText("Book Title*:")
-//     const authorText = screen.getByText("Author*:")
-//     const ISBNText = screen.getByText("ISBN:")
-//     const priceText = screen.getByText("Desired Price:")
-//     const classText = screen.getByText("Class Used For*:")
-//     const conditionText = screen.getByText("Condition:")
-//     const imageText = screen.getByText("Image of Textbook:")
-//     expect(headerText).toBeInTheDocument();
-//     expect(bookTitleText).toBeInTheDocument();
-//     expect(authorText).toBeInTheDocument();
-//     expect(ISBNText).toBeInTheDocument();
-//     expect(priceText).toBeInTheDocument();
-//     expect(classText).toBeInTheDocument();
-//     expect(conditionText).toBeInTheDocument();
-//     expect(imageText).toBeInTheDocument();
-//   })
-// });
 
 describe("Testing of MyAccountPage", () => {
   test("basic render test", () => {
@@ -506,4 +516,84 @@ describe("Testing of MyAccountPage", () => {
     expect(nameInput.value).toBe('Test Name');
     expect(passwordInput.value).toBe('Test Password');
   })
+
+  test("click update info button > click cancel", () => {
+    const { queryByTitle, getByTestId } = render(<MyAccountPage/>);
+    const edit_btn = queryByTitle("edit_btn");
+    fireEvent.click(edit_btn);
+    const cancel = queryByTitle("cancel_edit_btn");
+    fireEvent.click(cancel);
+  })
+
+  test("click update info button > click submit", () => {
+    const { queryByTitle, getByTestId } = render(<MyAccountPage/>);
+    const edit_btn = queryByTitle("edit_btn");
+    fireEvent.click(edit_btn);
+    const confirm = queryByTitle("submit_edit_btn");
+    fireEvent.click(confirm);
+  })
 })
+
+//ADMIN PAGE TESTS
+describe("Tests for AdminPage", () => {
+  test("Basic Render Test for Admin Page", () => {
+    render(<Admin/>)
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<Admin/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+});
+
+//REPORT TESTS
+describe("Tests for Report a Listing Page", () => {
+  test("Basic Render Test for Report a Listing Page", () => {
+    render(<ReportListing/>)
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<ReportListing/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+});
+
+//SAVED PAGE TESTS
+describe("Tests for Saved Listings Page", () => {
+  test("Basic Render Test for Saved Listings Page", () => {
+    render(<SavedListings/>)
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<SavedListings/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+});
+
+//USER ACCOUNT PAGE TESTS
+describe("Tests for User Account Page", () => {
+  test("Basic Render Test for User Account Page", () => {
+    render(<UserAccount/>)
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<UserAccount/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+});

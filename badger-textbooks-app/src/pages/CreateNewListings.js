@@ -303,6 +303,7 @@ export class CreateNewListing extends Component {
                         </div>
                         <Divider/>
                         <Button 
+                            title="create_btn"
                             style={{color: '#ffffff', backgroundColor: '#c5050c', marginTop: "20px", width: "50%"}}
                             variant="contained" 
                             fullWidth 
