@@ -98,14 +98,25 @@ class Login extends React.Component{
       forgotPassword = (event) => {
         event.preventDefault()
 
-        firebase.auth().sendPasswordResetEmail(this.state.forgotPasswordEmail).then((userCredential) => {
-          // Email sent.
-          this.setState({passwordError: false})
+        firebase.firestore().collection('users').get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            if(this.state.forgotPasswordEmail == doc.data().email){
+              firebase.auth().sendPasswordResetEmail(this.state.forgotPasswordEmail).then((userCredential) => {
+                // Email sent.
+                this.setState({passwordError: false})
+              })
+              .catch((error) => {
+                //Error Caught
+                this.setErrorHandler(true);
+              });
+            }
+            else{
+              this.setErrorHandler(true)
+            }
+          })
         })
-        .catch((error) => {
-          //Error Caught
-          this.setErrorHandler(true);
-        });
+
+
       }
 
       handleOpen = (event) => {
