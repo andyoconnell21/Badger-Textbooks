@@ -45,6 +45,7 @@ class MyAccountPage extends React.Component {
       password: '',
       profilePic: '',
       rating: 0,
+      displayPassword: '********',
 
       nameInput: '',
       passwordInput: '',
@@ -196,6 +197,16 @@ class MyAccountPage extends React.Component {
     })
   }
 
+  passwordDisplay = (event) => {
+    var passwordToDisplay = [];
+    for (var i = 0; i < this.state.password.length; i++) {
+      var symbol = ['*'];
+      passwordToDisplay.concat(symbol);
+    }
+    passwordToDisplay.join('');
+    return passwordToDisplay;
+  }
+
   render () {
     return (
         <div>
@@ -280,7 +291,7 @@ class MyAccountPage extends React.Component {
                 </Grid>
                 <Grid item xs style={{display: this.state.editButtonVis}}>
                   <Typography style={{float: 'left'}}>
-                    {this.state.password}
+                    {this.state.displayPassword}
                   </Typography>
                 </Grid>
                 <Grid item xs style={{display: this.state.accanButtonVis}}>
