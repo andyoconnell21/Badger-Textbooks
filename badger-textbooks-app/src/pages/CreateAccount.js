@@ -31,6 +31,7 @@ class CreateAccount extends React.Component{
             hidden: false,
             createAccountError: false,
             invalidEmail: false,
+            invalidPassword: false,
         };
         this.setErrorHandler = this.setErrorHandler.bind(this)
     }
@@ -69,6 +70,9 @@ class CreateAccount extends React.Component{
         var splitEmail = this.state.email.split("@")
         if(splitEmail[1] !== 'wisc.edu'){
             this.setState({invalidEmail: true})
+        }
+        else if (this.state.password.length < 6) {
+            this.setState({invalidPassword: true})
         }
         else{
             //Create the user account with email and password
@@ -116,6 +120,10 @@ class CreateAccount extends React.Component{
 
     closeInvalidEmail = (event) => {
         this.setState({invalidEmail: false})
+    }
+
+    closeInvalidPassword = (event) => {
+        this.setState({invalidPassword: false})
     }
 
     render(){
@@ -215,6 +223,19 @@ class CreateAccount extends React.Component{
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={this.closeInvalidEmail} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={this.state.invalidPassword}>
+                        <DialogTitle >{"Invalid Password"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Password must contain at least 6 characters.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.closeInvalidPassword} color="primary">
                                 Close
                             </Button>
                         </DialogActions>
