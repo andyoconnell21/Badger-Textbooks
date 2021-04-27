@@ -387,7 +387,7 @@ class Listings extends React.Component {
                       </Button>
                     </Box>
 
-                    <Box>
+                    <Box hidden={this.state.chatNotNeeded}>
                       <Button
                           fullWidth
                           style={{
@@ -411,7 +411,7 @@ class Listings extends React.Component {
                       </Button>
                     </Box>
 
-                    <Box hidden={this.state.isGeneralUser}>
+                    <Box hidden={this.state.userAuthed}>
                       <Button
                           fullWidth
                           style={{
