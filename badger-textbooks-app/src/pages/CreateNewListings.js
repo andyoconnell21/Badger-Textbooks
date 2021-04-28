@@ -156,27 +156,40 @@ export class CreateNewListing extends Component {
         })
     }
 
+    // handleImageChange = (e) => {
+    //     //Adds image to storage
+    //     const file = e.target.files[0]
+    //     var storage = firebase.storage()
+    //     var storageRef = storage.ref()
+    //     const fileRef = storageRef.child(file.name)
+    //     fileRef.put(file).on('state_changed', (snapshot) => {
+    //         //console.log(snapshot.bytesTransferred);
+    //         this.setState({imageProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100});
+    //         if (snapshot.bytesTransferred >= snapshot.totalBytes) {
+    //             storageRef.child(file.name).getDownloadURL().then((url) => {
+    //                 this.setState({imageURL: url});
+    //             })
+    //         }
+    //     })
+    //     // .then(() => {
+    //     //     //Saved image file path
+    //     //     storageRef.child(file.name).getDownloadURL().then((url) => {
+    //     //         this.setState({imageURL: url})
+    //     //     })
+    //     // })
+    // }
     handleImageChange = (e) => {
         //Adds image to storage
         const file = e.target.files[0]
         var storage = firebase.storage()
         var storageRef = storage.ref()
         const fileRef = storageRef.child(file.name)
-        fileRef.put(file).on('state_changed', (snapshot) => {
-            //console.log(snapshot.bytesTransferred);
-            this.setState({imageProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100});
-            if (snapshot.bytesTransferred === snapshot.totalBytes) {
-                storageRef.child(file.name).getDownloadURL().then((url) => {
-                    this.setState({imageURL: url});
-                })
-            }
-        });
-        // }).then(() => {
-        //     //Saved image file path
-        //     storageRef.child(file.name).getDownloadURL().then((url) => {
-        //         this.setState({imageURL: url})
-        //     })
-        // })
+        fileRef.put(file).then(() => {
+            //Saved image file path
+            storageRef.child(file.name).getDownloadURL().then((url) => {
+                this.setState({imageURL: url})
+            })
+        })
     }
 
     render() {
@@ -199,7 +212,6 @@ export class CreateNewListing extends Component {
 
                 <Dialog
                     open={this.state.alertOpen}
-                    onClose={() => {this.setState({alertOpen: false})}}
                 >
                     <DialogTitle>{"Oops! Looks like we are missing some information."}</DialogTitle>
                     <DialogContent>
@@ -209,6 +221,7 @@ export class CreateNewListing extends Component {
                     </DialogContent>
                     <DialogActions>
                     <Button 
+                        title="alert_missing_close"
                         style={{color: '#c5050c'}}
                         onClick={() => {this.setState({alertOpen: false})}} 
                         color="primary" 
@@ -299,7 +312,7 @@ export class CreateNewListing extends Component {
                                 type='file'
                                 onChange={this.handleImageChange}
                             />
-                            <progress id="progressBar" value={this.state.imageProgress} max="100"></progress>
+                            {/* <progress id="progressBar" value={this.state.imageProgress} max="100"></progress> */}
                         </div>
                         <Divider/>
                         <Button 
