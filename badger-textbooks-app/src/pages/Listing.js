@@ -37,7 +37,6 @@ import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ChatIcon from '@material-ui/icons/Chat';
 import ReportIcon from '@material-ui/icons/Report';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import {style} from "@material-ui/system";
 
 const backgroundBeige = '#d2b48c';
 const badgerRed = '#c5050c';
@@ -241,6 +240,7 @@ class Listings extends React.Component {
     this.setState({deleteWarningOpen: false});
 
     var documentId = sessionStorage.getItem('currentListing');
+    console.log(documentId, "documentId")
 
     firebase.firestore().collection('listings').doc(documentId).delete().then(() => {
       window.location.href = "/home";

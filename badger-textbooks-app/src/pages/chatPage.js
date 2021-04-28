@@ -4,17 +4,17 @@ import 'firebase/auth';
 
 import React from "react";
 import {
-  Box,
-  Grid,
-  Paper,
-  Card,
-  AppBar,
-  Toolbar,
-  Container,
-  Typography,
-  TextField,
-  Button,
-  IconButton
+    AppBar,
+    Box,
+    Button,
+    Card,
+    Container,
+    Grid,
+    IconButton,
+    Paper,
+    TextField,
+    Toolbar,
+    Typography
 } from '@material-ui/core';
 
 import SendIcon from '@material-ui/icons/Send';
@@ -77,23 +77,28 @@ class Chat extends React.Component {
         receiver_uid: sessionStorage.getItem('receiverUid'),
         text: this.state.currentText,
         date: Date().toLocaleString()
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.error('Error writing new message to database', error);
     }).then(() => {
-        this.setState({ currentText: "" });
+        this.setState({currentText: ""});
         this.updateDisplayedMessages();
     });
   }
+    onKeyPress = (e) => {
+        if (e.which === 13) {
+            this.handleMessageSend();
+        }
+    }
 
-  //FUNCTION: Gets all relevant messages (sent and recieved) and sorts them by date before placing them in state for display.
-  updateDisplayedMessages() {
-    var tempMessages = [];
-    firebase.firestore().collection("messages")
-      .where("sender_uid", "==", this.state.senderUid)
-      .where("receiver_uid", '==', sessionStorage.getItem('receiverUid'))
-      .get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            var gather = doc.data();
+    //FUNCTION: Gets all relevant messages (sent and recieved) and sorts them by date before placing them in state for display.
+    updateDisplayedMessages() {
+        var tempMessages = [];
+        firebase.firestore().collection("messages")
+            .where("sender_uid", "==", this.state.senderUid)
+            .where("receiver_uid", '==', sessionStorage.getItem('receiverUid'))
+            .get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var gather = doc.data();
             tempMessages.push(gather)
         });
         firebase.firestore().collection("messages")
@@ -159,6 +164,7 @@ class Chat extends React.Component {
                                     variant='outlined'
                                     value={this.state.currentText}
                                     onChange={this.updateText}
+                                    onKeyPress={this.onKeyPress}
                                 />
                             </Card>
                           </Box>
