@@ -24,6 +24,10 @@ import {
   DialogTitle
 } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import EditIcon from '@material-ui/icons/Edit';
@@ -33,6 +37,10 @@ import LogoutIcon from '@material-ui/icons/ExitToApp';
 
 const backgroundGrey = '#dadfe1';
 const badgerRed = '#c5050c';
+
+
+const idIndex = 0;
+const dataIndex = 1;
 
 class MyAccountPage extends React.Component {
 
@@ -45,6 +53,8 @@ class MyAccountPage extends React.Component {
       password: '',
       profilePic: '',
       rating: 0,
+      userListingsArray: [],
+      hiddenPassword: '',
 
       nameInput: '',
       passwordInput: '',
@@ -77,6 +87,7 @@ class MyAccountPage extends React.Component {
           doc.forEach((i) => {
             var data = i.data();
             var total_rating = 0;
+            var temp_pass = '';
             data.user_ratings.forEach((r) => {
               total_rating += r;
             });
@@ -92,6 +103,29 @@ class MyAccountPage extends React.Component {
               
               nameInput: data.name,
             });
+
+              //Get some of the users current listings
+              firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    var userListingsRef = doc.data().listings
+                    var tempUserListingArray = []
+                    var userListingArray = [];
+                    for(let i = 0; i < userListingsRef.length; i++){
+                        tempUserListingArray.push(userListingsRef[i].id)
+                    }
+                    firebase.firestore().collection('listings').where('active', '==', true).get().then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            for(let i = 0; i < tempUserListingArray.length; i++){
+                                if(tempUserListingArray[i] === doc.id && userListingArray.length !== 3){
+                                    var gather = [doc.id, doc.data()]
+                                    userListingArray.push(gather)
+                                }
+                            }
+                            this.setState({userListingsArray: userListingArray})
+                        })
+                    })
+                })
+            })
           })
         })
       }
@@ -225,12 +259,19 @@ class MyAccountPage extends React.Component {
               <img onError={this.addDefaultSrc} className="img-responsive"
                 src={this.state.profilePic} width="150" height="150" alt="" style={{backgroundColor: "#ffffff"}}/>
 
+                <Grid item>
+                  <Typography style={{fontSize: '50px'}}>
+                      {this.state.name}
+                  </Typography>
+              </Grid>
+
               <Box style={{marginTop: "20px", marginBottom: '20px'}}>
                 <Rating name="read-only" value={this.state.rating} readOnly />
                 <Typography>
                     ({this.state.rating}/5)
                 </Typography>
               </Box>
+              
               
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item xs>
@@ -275,7 +316,9 @@ class MyAccountPage extends React.Component {
 
               <Grid container spacing={1} style={{marginBottom: '10px'}}>
                 <Grid item xs>
-                  <Typography style={{float: 'right'}}>
+                  <Typography style={{float: 'right'}}
+                    type='password'
+                    >
                     Password:
                   </Typography>
                 </Grid>
@@ -353,6 +396,71 @@ class MyAccountPage extends React.Component {
               </Grid>
             </Grid>
 
+            <Grid item>
+              <Typography variant="h5" style={{fontFamily:'sans-serif', marginTop:' 30px'}}>
+                  Here are some of your current listings
+              </Typography>
+            </Grid>
+
+            <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
+              {this.state.userListingsArray.map((item) => (
+                  <Grid item>
+                      <Card style={{width: "300px"}}>
+                          <CardContent>
+                              <Grid container style={{height: '60px'}}>
+                                  <Grid item>
+                                      <img onError={this.addDefaultSrc} className="img-responsive"
+                                            src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                                  </Grid>
+                                  <Grid item xs>
+                                      <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}>
+                                          <Typography variant='h6'>
+                                              {item[dataIndex].title}
+                                          </Typography>
+                                      </div>
+                                  </Grid>
+                              </Grid>
+                              <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                              <Grid container>
+                                  <Grid item xs>
+                                      <Typography color="textSecondary" style={{left: 0}}>
+                                          Price:
+                                      </Typography>
+                                  </Grid>
+                                  <Grid item xs>
+                                      <Typography color="textSecondary">
+                                          ${item[dataIndex].price}
+                                      </Typography>
+                                  </Grid>
+                              </Grid>
+                              <Grid container>
+                                  <Grid item xs>
+                                      <Typography color="textSecondary">
+                                          Seller:
+                                      </Typography>
+                                  </Grid>
+                                  <Grid item xs>
+                                      <Typography color="textSecondary">
+                                          {item[dataIndex].seller}
+                                      </Typography>
+                                  </Grid>
+                              </Grid>
+                          </CardContent>
+
+                          <CardActions>
+                              <Button fullWidth style = {{backgroundColor: '#c5050c', color: '#ffffff'}} onClick={() => {
+                                  sessionStorage.setItem('currentListing', item[idIndex]);
+                                  window.location.href = "/listing";
+                              }}>
+                                  See Details
+                              </Button>
+                          </CardActions>
+                      </Card>
+                  </Grid>
+              ))}
+          </Grid>
+
+            
             </Paper>
           </Container>
 
@@ -383,6 +491,7 @@ class MyAccountPage extends React.Component {
                 </Button>
             </DialogActions>
         </Dialog>
+
       </div>
     );
   }
