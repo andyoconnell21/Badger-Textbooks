@@ -71,7 +71,7 @@ export class EditListing extends Component {
                     date: data.time_created,
                     title: data.title,
                     condition: data.condition,
-                    image: data.image_url,
+                    imageURL: data.image_url,
                     ISBN: data.ISBN
                 })
             })
@@ -109,18 +109,6 @@ export class EditListing extends Component {
             )
         }
     }
-    // handleRemoveSubmit = (e) => {
-    //     var user_email = firebase.auth().currentUser.email;
-    //     var date = Date().toLocaleString();
-    //
-    //     var documentId = sessionStorage.getItem('currentListing')
-    //     console.log(firebase.firestore().collection('listings').doc(documentId))
-    //     firebase.firestore().collection('listings').doc(documentId).delete().then(() => {
-    //             window.location = "/mylistings";
-    //         }
-    //     )
-    // }
-
 
     handleTitleChange = (e) => {
         this.setState({
@@ -287,15 +275,15 @@ export class EditListing extends Component {
                         <div style={{marginTop: "10px", marginBottom: "20px", backgroundColor: "#ededed"}}>
                             <label style={{float: "left", marginLeft: "10px"}}>Textbook Image: </label>
                             <input className="w3-input w3-hover-light-gray"
-                                type='file'
-                                onChange={this.handleImageChange}
+                                   type='file'
+                                   onChange={this.handleImageChange}
                             />
                         </div>
                         <Divider/>
-                        <Button 
+                        <Button
                             style={{color: '#ffffff', backgroundColor: '#c5050c', marginTop: "20px", width: "50%"}}
-                            variant="contained" 
-                            fullWidth 
+                            variant="contained"
+                            fullWidth
                             onClick={this.handleSubmit}
                         >Confirm Edit</Button>
                     </Paper>

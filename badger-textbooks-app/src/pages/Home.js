@@ -7,23 +7,23 @@ import Logo from '../BadgerTextbooksLogoV1.png';
 
 import React from "react";
 import {
-  Grid,
+  AppBar,
   Box,
+  Button,
   Card,
   CardActions,
   CardContent,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  AppBar,
-  Toolbar,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Divider,
-  Drawer
+  Drawer,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Toolbar,
+  Typography
 } from '@material-ui/core';
 
 import SearchIcon from '@material-ui/icons/Search';
@@ -55,7 +55,7 @@ class Home extends React.Component {
   }
 
   componentDidMount () {
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function (user) {
       if (!user) {
         //User is not siged in...redirect to login page
         window.location.href = "/";
@@ -65,16 +65,18 @@ class Home extends React.Component {
     document.body.style.backgroundColor = backgroundBeige;
 
     var tempListings = []
-    firebase.firestore().collection("listings").where("active", "==", true).limit(10).get().then((querySnapshot) => {
-        tempListings = [];  
-        querySnapshot.forEach((doc) => {
-            var gather = [doc.id, doc.data()]
-            tempListings.push(gather)
-        });
-        tempListings.sort(function(a,b){
-          // Turn your strings into dates, and then subtract them
-          // to get a value that is either negative, positive, or zero.
-          return new Date(b[dataIndex].time_created) - new Date(a[dataIndex].time_created);
+    // firebase.firestore().collection("listings").where("active", "==", true).limit(10).get().then((querySnapshot) => {
+    firebase.firestore().collection("listings").where("active", "==", true).get().then((querySnapshot) => {
+
+      tempListings = [];
+      querySnapshot.forEach((doc) => {
+        var gather = [doc.id, doc.data()]
+        tempListings.push(gather)
+      });
+      tempListings.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(b[dataIndex].time_created) - new Date(a[dataIndex].time_created);
         }); 
         this.setState({
             listings: tempListings

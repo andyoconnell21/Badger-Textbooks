@@ -37,6 +37,7 @@ import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ChatIcon from '@material-ui/icons/Chat';
 import ReportIcon from '@material-ui/icons/Report';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import {style} from "@material-ui/system";
 
 const backgroundBeige = '#d2b48c';
 const badgerRed = '#c5050c';
@@ -103,12 +104,10 @@ class Listings extends React.Component {
               tempUserRating = tempUserRating + tempValue
             }
             tempUserRating = tempUserRating / doc.data().user_ratings.length
-            console.log("herhe",tempUserRating)
             tempUserRating = tempUserRating.toFixed(1)
 
             if (isNaN(tempUserRating)) {
-              tempUserRating = "Not Applicable for"
-              console.log(tempUserRating)
+              tempUserRating = "Not applicable for"
             }
 
 
@@ -149,6 +148,7 @@ class Listings extends React.Component {
                       seller_name: data.seller_name,
                       seller_rating: tempUserRating
                     })
+                    console.log("image_url",this.state.image)
                   }
                 })
           });
@@ -299,7 +299,7 @@ class Listings extends React.Component {
               <Box style={{width: '100%', height: '60%'}}>
                 <Box style={{width: '50%', height: '100%', float: 'left'}}>
 
-                  <Box name="image_box" style={{width: '100%', height: '50%', padding: '20px'}}>
+                  <Box name="image_box" style={{width: '100%', height: '50%', padding: '10px'}}>
                     <img src={this.state.image} width="250" height="250" alt=""/>
                   </Box>
 
@@ -432,7 +432,8 @@ class Listings extends React.Component {
                 </Box>
 
                 <Box name="info_box"
-                     style={{width: '50%', height: '100%', float: 'right', padding: '20px'}}>
+                     // style={{width: '50%', height: '100%', padding: '20px', float: 'right',top: '-20px',position: 'relative'}}>
+                  style={{width: '50%', height: '100%', padding: '80px', float:'right',position: 'relative',}}>
                   <Box style={{width: '100%', margin: '5px'}}>
                     <Typography variant='h5' align="left">
                       <b>Title: </b>{this.state.title}
