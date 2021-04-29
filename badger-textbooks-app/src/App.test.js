@@ -332,8 +332,23 @@ describe("Render Testing of Listings Page", () => {
 
     expect(navigation_text).toBeInTheDocument();
   })
-});
+  test("render listing text", () => {
+    render(<Listing />);
+    const titleText = screen.getByText("Title:")
+    const authorText = screen.getByText("Author:")
+    const isbnText = screen.getByText("ISBN:")
+    const classText = screen.getByText("Class:")
+    const conditionText = screen.getByText("Condition:")
+    const priceText = screen.getByText(/Price:/)
+    expect(titleText).toBeInTheDocument();
+    expect(authorText).toBeInTheDocument();
+    expect(isbnText).toBeInTheDocument();
+    expect(classText).toBeInTheDocument();
+    expect(conditionText).toBeInTheDocument();
+    expect(priceText).toBeInTheDocument();
+  })
 
+});
 
 //CREATE NEW LISTING PAGE TESTS
 describe("Render and Unit Testing of Create New Listing Page", () => {
@@ -398,7 +413,7 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
     const { queryByTitle } = render(<CreateNewListings/>);
     const create_btn = queryByTitle("create_btn");
     fireEvent.click(create_btn);
-    
+
     const alertBox_text = screen.getByText("Oops! Looks like we are missing some information.");
     expect(alertBox_text).toBeInTheDocument();
   })
