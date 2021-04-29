@@ -209,7 +209,6 @@ export class EditListing extends Component {
                         <Typography variant="h5" style={{marginTop: '20px', marginBottom: '10px'}}>Edit Your Listing</Typography>
                         <Divider/>
                         <TextField
-                            inputProps ={{"data-testid": "testId"}}
                             title='titleInput'
                             label="Textbook Title*"
                             variant="filled"
