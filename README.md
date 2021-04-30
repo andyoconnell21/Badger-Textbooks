@@ -14,9 +14,9 @@ Instructions for running locally:
 
 2.) In your local terminal, navigate to /Badger-Textbooks/badger-textbooks-app
   
-  a.) Run 'npm install' in your terminal to install the required dependencies
+3.) Run 'npm install' in your terminal to install the required dependencies
   
-  b.) Run 'npm start' to launch the application through localhost.
+4.) Run 'npm start' to launch the application through localhost.
 
 -----------------------------------------------------------------------------
 
