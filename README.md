@@ -35,3 +35,8 @@ Instructions for running our Test Suite:
 1.) After cloning the repo to your local machine, navigate to /Badger-Textbooks/badger-textbooks-app in your local terminal window
 
 2.) Run 'npm test' to run all tests. Code coverage report will be included.
+
+-----------------------------------------------------------------------------
+
+To use the app as a normal user, simply create a new account with your @wisc email.
+To use the app as an admin user (all of the same priveleges/functionaility as the normal user, but also including admin privelges) login with the provided admin account...username: mewhirter@wisc.edu, password: password
