@@ -1,10 +1,12 @@
 # Badger-Textbooks
 Official source code of the Badger Textbooks Application
 
+-----------------------------------------------------------------------------
 
 Instructions for accessing the hosted version (Recommended):
  - Follow this link: https://badgertextbooks-2919f.web.app/
 
+-----------------------------------------------------------------------------
 
 Instructions for running locally:
 
@@ -16,6 +18,7 @@ Instructions for running locally:
   
   b.) Run 'npm start' to launch the application through localhost.
 
+-----------------------------------------------------------------------------
 
 Instructions for accessing Firebase:
 
@@ -25,6 +28,7 @@ Instructions for accessing Firebase:
 
 3.) Navigate to the Firestore tab (we are using the cloud firestore instead of the realtime database for this application)
 
+-----------------------------------------------------------------------------
 
 Instructions for running our Test Suite:
 
