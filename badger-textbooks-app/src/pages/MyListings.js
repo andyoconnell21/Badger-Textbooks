@@ -92,9 +92,6 @@ class MyListings extends React.Component {
                             updatedListKeys = listKeys.filter((check_key) => {
                                 return check_key !== key;
                             });
-                            firebase.firestore().collection('users').doc(id).update({
-                                listings: updatedListKeys
-                            });
                         });
                         
                     });
