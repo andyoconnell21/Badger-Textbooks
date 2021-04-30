@@ -1,10 +1,4 @@
-import { render, screen, fireEvent, mockChange, getByTitle } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
-import { Router, BrowserRouter } from 'react-router-dom';
-
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/auth';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import App from './App';
 import Home from './pages/Home';
@@ -24,7 +18,6 @@ import ReportListing from './pages/ReportListing';
 import SavedListings from './pages/SavedListings';
 import UserAccount from './pages/UserAccount';
 
-
 let assignMock = jest.fn();
 delete window.location;
 window.location = { assign: assignMock };
@@ -32,28 +25,7 @@ afterEach(() => {
   assignMock.mockClear();
 });
 
-// const { mockFirebase } = require('firestore-jest-mock');
-
-// // Create a fake Firestore with a `users` and `posts` collection
-// mockFirebase({
-//   database: {
-//     listings: [
-//       { title: 'test', seller_name: 't', price: 10, image_url: ""},
-//     ]
-//   }
-// });
-
-// const { mockCollection } = require('firestore-jest-mock/mocks/firestore');
-
-// //APP PAGE TESTS
-// describe("Render Testing For App Component", () =>{
-//   test("Basic Render Test For App", () => {
-//     render(<App />);
-//   })
-// });
-
-
-//LOGIN PAGE TESTS
+//>>>>>LOGIN
 describe("Render and Unit Testing of Login Page", () =>{
   test("Basic Render Test of Login Page", () => {
     render(<Login />);
@@ -71,10 +43,12 @@ describe("Render and Unit Testing of Login Page", () =>{
   })
 
   test("Forgot Password Button", () => {
-    const { queryByTitle } = render(<Login/>);
+    const { queryByTitle, getByTestId } = render(<Login/>);
     const password_btn = queryByTitle("forgotPassword");
     fireEvent.click(password_btn);
     const alertBox_text = screen.getByText("Reset Password");
+    const emailTextInput = getByTestId('forgot_email').querySelector('input');
+    fireEvent.change(emailTextInput, {target: {value: 'email'}})
 
     expect(alertBox_text).toBeInTheDocument();
   })
@@ -126,17 +100,16 @@ describe("Render and Unit Testing of Login Page", () =>{
     const emailTextInput = getByTestId('emailTextInput').querySelector('input')
     const passwordTextInput = getByTestId('passwordTextInput').querySelector('input')
     const login_btn = queryByTitle("login_btn")
-    const headerText = screen.getByText("Welcome to Badger Textbooks")
 
     fireEvent.change(emailTextInput, {target: {value: 'testing@wisc.edu'}})
     fireEvent.change(passwordTextInput, {target: {value: 'testPassword'}})
     fireEvent.click(login_btn)
-    expect(headerText).toBeInTheDocument();
   })
 });
+//////////////////////////////////////////////////////////////////////
 
 
-//CREATE ACCOUNT PAGE TESTS
+//>>>>>CREATE ACCOUNT
 describe("Render and Unit Testing of Create Account Page", () =>{
   test("Basic Render Test of Create Account Page", () => {
     render(<CreateAccount />)
@@ -175,11 +148,39 @@ describe("Render and Unit Testing of Create Account Page", () =>{
     expect(emailInput.value).toBe('jdoe5@wisc.edu')
     expect(passwordInput.value).toBe('JohnDoeAccount')
   })
+
+  test("bad username", () => {
+    const { queryByTitle } = render(<CreateAccount/>);
+    const submit_btn = queryByTitle("submit_btn");
+    fireEvent.click(submit_btn);
+    const alert_text = screen.getByText("Not a valid email. Your email must be a @wisc.edu email account.");
+    expect(alert_text).toBeInTheDocument();
+    const close_btn = queryByTitle("close_email");
+    fireEvent.click(close_btn);
+  })
+
+  test("bad password", () => {
+    const { queryByTitle, getByTitle } = render(<CreateAccount/>);
+    const firstNameInput = getByTitle('firstNameInput').querySelector('input');
+    const lastNameInput = getByTitle('lastNameInput').querySelector('input');
+    const emailInput = getByTitle('emailInput').querySelector('input');
+    const submit_btn = queryByTitle("submit_btn");
+    fireEvent.change(firstNameInput, {target: {value: 'John'}})
+    fireEvent.change(lastNameInput, {target: {value: 'Doe'}})
+    fireEvent.change(emailInput, {target: {value: 'jdoe5@wisc.edu'}})
+    fireEvent.click(submit_btn);
+
+    const alert_text = screen.getByText("Password must contain at least 6 characters.");
+    expect(alert_text).toBeInTheDocument();
+    const close_btn = queryByTitle("close_password");
+    fireEvent.click(close_btn);
+  })
 });
+//////////////////////////////////////////////////////////////////////
 
 
-//NAVIGATION MENU TESTS
-describe("Testing Navigation Menu", () => {
+//>>>>>NAVIGATION
+describe("Render and Unit Testing of Navigation Menu", () => {
   test('basic render test', () => {
     render(<NavigationMenu/>)
   })
@@ -233,12 +234,13 @@ describe("Testing Navigation Menu", () => {
     expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
 });
+//////////////////////////////////////////////////////////////////////
 
 
-//HOME PAGE TESTS
-describe("Testing Home-Page", () => {
+//>>>>>HOME
+describe("Render and Unit Testing of Home Page", () => {
   test('basic render test', () => {
-    render(<Home/>)
+    render(<Home/>);
   })
 
   test('home page renders text', () => {
@@ -316,42 +318,12 @@ describe("Testing Home-Page", () => {
     expect(field.value).toBe('')
   })
 });
+//////////////////////////////////////////////////////////////////////
 
 
-//LISTINGS PAGE TESTS
-describe("Render Testing of Listings Page", () => {
-  test("Basic Render Test of Listing Page", () => {
-    render(<Listing />);
-  })
+//>>>>>CREATE NEW LISTING
+describe("Render and Unit Testing of Create-Listing Page", () => {
 
-  test("click menu button", () => {
-    const { queryByTitle } = render(<Listing/>);
-    const menu_btn = queryByTitle("menu_btn");
-    fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Menu");
-
-    expect(navigation_text).toBeInTheDocument();
-  })
-  test("render listing text", () => {
-    render(<Listing />);
-    const titleText = screen.getByText("Title:")
-    const authorText = screen.getByText("Author:")
-    const isbnText = screen.getByText("ISBN:")
-    const classText = screen.getByText("Class:")
-    const conditionText = screen.getByText("Condition:")
-    const priceText = screen.getByText(/Price:/)
-    expect(titleText).toBeInTheDocument();
-    expect(authorText).toBeInTheDocument();
-    expect(isbnText).toBeInTheDocument();
-    expect(classText).toBeInTheDocument();
-    expect(conditionText).toBeInTheDocument();
-    expect(priceText).toBeInTheDocument();
-  })
-
-});
-
-g//CREATE NEW LISTING PAGE TESTS
-describe("Render and Unit Testing of Create New Listing Page", () => {
   test("Basic Render Test of Create Account Page", () => {
     render(<CreateNewListing />)
   })
@@ -396,14 +368,14 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
 
     fireEvent.change(titleField, {target: {value: 'Comp Sci 506 Introduction'}})
     fireEvent.change(authorField, {target: {value: 'John Doe'}})
-    fireEvent.change(conditionField, {target: { value: "Brand_New" }});
+    fireEvent.change(conditionField, {target: { value: "Like-New" }});
     fireEvent.change(priceField, {target: {value: 9.99}})
     fireEvent.change(isbnField, {target: {value: '12345678910'}})
     fireEvent.change(classField, {target: {value: 'Comp Sci 506'}})
 
     expect(titleField.value).toBe('Comp Sci 506 Introduction')
     expect(authorField.value).toBe('John Doe')
-    expect(conditionField.value).toBe('Brand-New')
+    expect(conditionField.value).toBe('Like-New')
     expect(priceField.value).toBe('9.99');
     expect(isbnField.value).toBe('12345678910')
     expect(classField.value).toBe('Comp Sci 506')
@@ -414,14 +386,125 @@ describe("Render and Unit Testing of Create New Listing Page", () => {
     const create_btn = queryByTitle("create_btn");
     fireEvent.click(create_btn);
 
+    const close_btn = queryByTitle("alert_missing_close");
+    
     const alertBox_text = screen.getByText("Oops! Looks like we are missing some information.");
     expect(alertBox_text).toBeInTheDocument();
+    fireEvent.click(close_btn);
   })
 })
+//////////////////////////////////////////////////////////////////////
 
 
-// MYLISTINGS PAGE TESTS
-describe("Render and Unit Testing of MyListings Page", () => {
+//>>>>>LISTING
+describe("Render and Unit Testing of Listing Page", () => {
+  test("Basic Render Test of Listing Page", () => {
+    render(<Listing />);
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<Listing/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  });
+
+  test("toggle active switch", () => {
+    const { queryByTitle } = render(<Listing/>);
+    const swtch = queryByTitle("active_switch");
+    const delete_btn = queryByTitle("delete_btn");
+    fireEvent.click(swtch);
+    fireEvent.click(delete_btn);
+  });
+
+  test('click chat button', () => {
+    const { queryByTitle } = render(<Listing/>);
+    const chat_btn = queryByTitle("chat_btn");
+    fireEvent.click(chat_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  });
+
+  test('click edit button', () => {
+    const { queryByTitle } = render(<Listing/>);
+    const edit_btn = queryByTitle("edit_btn");
+    fireEvent.click(edit_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  });
+
+  test('click report button', () => {
+    const { queryByTitle } = render(<Listing/>);
+    const report_btn = queryByTitle("report_btn");
+    fireEvent.click(report_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  });
+
+  test('expand info and click link', () => {
+    const { queryByTitle } = render(<Listing/>);
+    const more_info = queryByTitle("more_info");
+    const user_link = queryByTitle("seller_link");
+    fireEvent.click(more_info);
+    fireEvent.click(user_link);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  });
+});
+//////////////////////////////////////////////////////////////////////
+
+
+//>>>>>EDIT-LISTING
+describe("Render and Unit Testing of Edit-Listing Page", () =>{
+  test("Basic Render Test of EditListing Page", () => {
+    render(<EditListing />);
+  });
+
+  test("click back button", () => {
+    const { queryByTitle } = render(<EditListing/>);
+    const back_btn = queryByTitle("back_btn");
+    fireEvent.click(back_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  });
+
+  test("testing text input fields", () => {
+    const { getByTestId } = render(<EditListing />);
+
+    const titleField = getByTestId('title').querySelector('input');
+    const authorField = getByTestId('author').querySelector('input');
+    const conditionField = getByTestId('condition').querySelector('input');
+    const priceField = getByTestId('price').querySelector('input');
+    const isbnField = getByTestId('isbn').querySelector('input');
+    const classField = getByTestId('class').querySelector('input');
+
+    fireEvent.change(titleField, {target: {value: 'Comp Sci 506 Introduction'}})
+    fireEvent.change(authorField, {target: {value: 'John Doe'}})
+    fireEvent.change(conditionField, {target: { value: "Like-New" }});
+    fireEvent.change(priceField, {target: {value: 9.99}})
+    fireEvent.change(isbnField, {target: {value: '12345678910'}})
+    fireEvent.change(classField, {target: {value: 'Comp Sci 506'}})
+
+    expect(titleField.value).toBe('Comp Sci 506 Introduction')
+    expect(authorField.value).toBe('John Doe')
+    expect(conditionField.value).toBe('Like-New')
+    expect(priceField.value).toBe('9.99');
+    expect(isbnField.value).toBe('12345678910')
+    expect(classField.value).toBe('Comp Sci 506')
+  })
+
+  test("empty submit", () => {
+    const { getByTitle } = render(<EditListing/>);
+    const submit_btn = getByTitle('submit_btn');
+    fireEvent.click(submit_btn);
+    const alert_text = screen.getByText("Make sure that all fields marked by a * have been filled out.");
+    expect(alert_text).toBeInTheDocument();
+    const alert_close_btn = getByTitle('alert_close_btn');
+    fireEvent.click(alert_close_btn);
+  })
+});
+//////////////////////////////////////////////////////////////////////
+
+
+//>>>>>MY-LISTINGS
+describe("Render and Unit Testing of My-Listings Page", () => {
   test("Basic Render Test of MyListings Page", () => {
     render(<MyListings />);
   });
@@ -434,9 +517,62 @@ describe("Render and Unit Testing of MyListings Page", () => {
     expect(navigation_text).toBeInTheDocument();
   })
 })
+//////////////////////////////////////////////////////////////////////
 
-//CHAT LIST PAGE TESTS
-describe("Testing ChatListPage", () => {
+
+//>>>>>SAVED-LISTINGS
+describe("Render and Unit Testing of Saved-Listings Page", () => {
+  test("Basic Render Test for Saved Listings Page", () => {
+    render(<SavedListings/>)
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<SavedListings/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  })
+});
+//////////////////////////////////////////////////////////////////////
+
+
+//>>>>>REPORT-LISTING
+describe("Render and Unit Testing of Report-Listing Page", () => {
+  test("Basic Render Test for Report a Listing Page", () => {
+    render(<ReportListing/>)
+  });
+
+  test("click menu button", () => {
+    const { queryByTitle } = render(<ReportListing/>);
+    const menu_btn = queryByTitle("menu_btn");
+    fireEvent.click(menu_btn);
+    const navigation_text = screen.getByText("Menu");
+
+    expect(navigation_text).toBeInTheDocument();
+  });
+
+  test("btn click tests box", () => {
+    const { queryByTitle } = render(<ReportListing/>);
+    const check_box = queryByTitle("inap_check");
+    const cancel_btn = queryByTitle("cancel_btn");
+    fireEvent.click(check_box);
+    fireEvent.click(cancel_btn);
+  });
+
+  test("update other reasons", () => {
+    const { getByTitle } = render(<ReportListing/>);
+    const other_field = getByTitle('other');
+    fireEvent.change(other_field, { target: { value: "test" } });
+    expect(other_field.value).toBe("test")
+  });
+});
+//////////////////////////////////////////////////////////////////////
+
+
+//>>>>>CHAT-LIST
+describe("Render and Unit Testing of Chat-List Page", () => {
   test('basic render test', () => {
     render(<ChatListPage/>)
   })
@@ -450,9 +586,11 @@ describe("Testing ChatListPage", () => {
     expect(navigation_text).toBeInTheDocument();
   })
 });
+//////////////////////////////////////////////////////////////////////
 
-//CHAT PAGE TESTS
-describe("Testing ChatPage", () => {
+
+//>>>>>CHAT
+describe("Render and Unit Testing of Chat Page", () => {
   test('basic render test', () => {
     render(<ChatPage/>)
   })
@@ -464,35 +602,21 @@ describe("Testing ChatPage", () => {
 
     expect(window.location.assign).toHaveBeenCalledTimes(1);
   })
-});
 
-//EDIT LISTING PAGE
-describe("Render Testing of EditListing Page", () =>{
-  test("Basic Render Test of EditListing Page", () => {
-    render(<EditListing />);
-  });
-  // test("Render EditListing Text", () => {
-  //   render(<EditListing />);
-  //   const headerText = screen.getByText("Edit Listing")
-  //   const bookTitleText = screen.getByText("Book Title*:")
-  //   const authorText = screen.getByText("Author*:")
-  //   const ISBNText = screen.getByText("ISBN:")
-  //   const priceText = screen.getByText("Desired Price:")
-  //   const classText = screen.getByText("Class Used For*:")
-  //   const conditionText = screen.getByText("Condition:")
-  //   const imageText = screen.getByText("Image of Textbook:")
-  //   expect(headerText).toBeInTheDocument();
-  //   expect(bookTitleText).toBeInTheDocument();
-  //   expect(authorText).toBeInTheDocument();
-  //   expect(ISBNText).toBeInTheDocument();
-  //   expect(priceText).toBeInTheDocument();
-  //   expect(classText).toBeInTheDocument();
-  //   expect(conditionText).toBeInTheDocument();
-  //   expect(imageText).toBeInTheDocument();
-  // })
+  test("enter text > hit send", () => {
+    const { queryByTitle, getByTestId } = render(<ChatPage/>);
+    const send_btn = queryByTitle("send_chat");
+    const chat_textbox = getByTestId('chat_text_box').querySelector('input');
+    fireEvent.click(send_btn);
+    fireEvent.change(chat_textbox, { target: { value: "test" } });
+    expect(chat_textbox.value).toBe('test');
+  })
 });
+//////////////////////////////////////////////////////////////////////
 
-describe("Testing of MyAccountPage", () => {
+
+//>>>>>ACCOUNT
+describe("Render and Unit Testing of Account Page", () => {
   test("basic render test", () => {
     render(<MyAccountPage/>)
   })
@@ -517,23 +641,31 @@ describe("Testing of MyAccountPage", () => {
     expect(navigation_text).toBeInTheDocument();
   })
 
+  test("click logout button", () => {
+    const { queryByTitle } = render(<MyAccountPage/>);
+    const logout_btn = queryByTitle("logout_btn");
+    fireEvent.click(logout_btn);
+  })
+
   test("click update info button", () => {
     const { queryByTitle, getByTestId } = render(<MyAccountPage/>);
     const edit_btn = queryByTitle("edit_btn");
     fireEvent.click(edit_btn);
 
-    const nameInput = getByTestId("nameChange").querySelector('input');;
-    const passwordInput = getByTestId("passwordChange").querySelector('input');;
+    const nameInput = getByTestId("nameChange").querySelector('input');
+    const passwordInput = getByTestId("passwordChange").querySelector('input');
+    const passwordConfirmInput = getByTestId("passwordChangeConfirm").querySelector('input');
 
     fireEvent.change(nameInput, {target: {value: 'Test Name'}});
     fireEvent.change(passwordInput, {target: {value: 'Test Password'}});
+    fireEvent.change(passwordConfirmInput, {target: {value: 'Test Password'}});
 
     expect(nameInput.value).toBe('Test Name');
     expect(passwordInput.value).toBe('Test Password');
   })
 
   test("click update info button > click cancel", () => {
-    const { queryByTitle, getByTestId } = render(<MyAccountPage/>);
+    const { queryByTitle } = render(<MyAccountPage/>);
     const edit_btn = queryByTitle("edit_btn");
     fireEvent.click(edit_btn);
     const cancel = queryByTitle("cancel_edit_btn");
@@ -541,16 +673,87 @@ describe("Testing of MyAccountPage", () => {
   })
 
   test("click update info button > click submit", () => {
-    const { queryByTitle, getByTestId } = render(<MyAccountPage/>);
+    const { queryByTitle } = render(<MyAccountPage/>);
     const edit_btn = queryByTitle("edit_btn");
     fireEvent.click(edit_btn);
-    const confirm = queryByTitle("submit_edit_btn");
+    const confirm = queryByTitle("confirm_edit_btn");
     fireEvent.click(confirm);
+    //const close_btn = queryByTitle("close_bad_btn");
+    //fireEvent.click(close_btn);
   })
-})
+});
+//////////////////////////////////////////////////////////////////////
 
-//ADMIN PAGE TESTS
-describe("Tests for AdminPage", () => {
+
+//>>>>>USER-ACCOUNT
+describe("Render and Unit Testing of User-Account Page", () => {
+  test("Basic Render Test for User Account Page", () => {
+    render(<UserAccount/>)
+  });
+
+  test("click back button", () => {
+    const { queryByTitle } = render(<UserAccount/>);
+    const back_btn = queryByTitle("back_btn");
+    fireEvent.click(back_btn);
+    expect(window.location.assign).toHaveBeenCalledTimes(1);
+  })
+
+  test("click rate button > close", () => {
+    const { queryByTitle } = render(<UserAccount/>);
+    const rate_btn = queryByTitle("rateUser_btn");
+    fireEvent.click(rate_btn);
+    const close_btn = queryByTitle("close_rate_btn");
+    const alert_text = screen.getByText("Rate User");
+    expect(alert_text).toBeInTheDocument();
+    fireEvent.click(close_btn);
+  })
+
+  test("click rate button > send", () => {
+    const { queryByTitle } = render(<UserAccount/>);
+    const rate_btn = queryByTitle("rateUser_btn");
+    fireEvent.click(rate_btn);
+    const send_btn = queryByTitle("send_rate_btn");
+    const alert_text = screen.getByText("Rate User");
+    expect(alert_text).toBeInTheDocument();
+    fireEvent.click(send_btn);
+  })
+
+  test("click report button > close", () => {
+    const { queryByTitle } = render(<UserAccount/>);
+    const report_btn = queryByTitle("reportUser_btn");
+    fireEvent.click(report_btn);
+    const close_btn = queryByTitle("close_report_btn");
+    const alert_text = screen.getByText("Report Your Experience With This User");
+    expect(alert_text).toBeInTheDocument();
+    fireEvent.click(close_btn);
+  })
+
+  test("click report button > send", () => {
+    const { queryByTitle, getByTestId } = render(<UserAccount/>);
+    const report_btn = queryByTitle("reportUser_btn");
+    fireEvent.click(report_btn);
+    const send_btn = queryByTitle("send_report_btn");
+    const report_text = getByTestId('report_text').querySelector('input');
+    fireEvent.change(report_text, { target: { value: "Test" } });
+    const alert_text = screen.getByText("Report Your Experience With This User");
+    expect(alert_text).toBeInTheDocument();
+    fireEvent.click(send_btn);
+  })
+
+  test("click rate button > give rating", () => {
+    const { queryByTitle, getByTestId } = render(<UserAccount/>);
+    const rate_btn = queryByTitle("rateUser_btn");
+    fireEvent.click(rate_btn);
+    const alert_text = screen.getByText("Rate User");
+    expect(alert_text).toBeInTheDocument();
+    const rating = getByTestId('rating').querySelector('input');
+    fireEvent.change(rating, { target: { value: 3 } });
+  })
+});
+//////////////////////////////////////////////////////////////////////
+
+//>>>>>ADMIN
+describe("Render and Unit Testing of Admin Page", () => {
   test("Basic Render Test for Admin Page", () => {
     render(<Admin/>)
   });
@@ -564,51 +767,4 @@ describe("Tests for AdminPage", () => {
     expect(navigation_text).toBeInTheDocument();
   })
 });
-
-//REPORT TESTS
-describe("Tests for Report a Listing Page", () => {
-  test("Basic Render Test for Report a Listing Page", () => {
-    render(<ReportListing/>)
-  });
-
-  test("click menu button", () => {
-    const { queryByTitle } = render(<ReportListing/>);
-    const menu_btn = queryByTitle("menu_btn");
-    fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Menu");
-
-    expect(navigation_text).toBeInTheDocument();
-  })
-});
-
-//SAVED PAGE TESTS
-describe("Tests for Saved Listings Page", () => {
-  test("Basic Render Test for Saved Listings Page", () => {
-    render(<SavedListings/>)
-  });
-
-  test("click menu button", () => {
-    const { queryByTitle } = render(<SavedListings/>);
-    const menu_btn = queryByTitle("menu_btn");
-    fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Menu");
-
-    expect(navigation_text).toBeInTheDocument();
-  })
-});
-
-//USER ACCOUNT PAGE TESTS
-describe("Tests for User Account Page", () => {
-  test("Basic Render Test for User Account Page", () => {
-    render(<UserAccount/>)
-  });
-
-  test("click menu button", () => {
-    const { queryByTitle } = render(<UserAccount/>);
-    const menu_btn = queryByTitle("menu_btn");
-    fireEvent.click(menu_btn);
-    const navigation_text = screen.getByText("Menu");
-
-    expect(navigation_text).toBeInTheDocument();
-  })
-});
+//////////////////////////////////////////////////////////////////////

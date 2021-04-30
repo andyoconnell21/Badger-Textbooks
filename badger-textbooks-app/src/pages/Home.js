@@ -65,7 +65,7 @@ class Home extends React.Component {
     document.body.style.backgroundColor = backgroundBeige;
 
     var tempListings = []
-    // firebase.firestore().collection("listings").where("active", "==", true).limit(10).get().then((querySnapshot) => {
+
     firebase.firestore().collection("listings").where("active", "==", true).get().then((querySnapshot) => {
 
       tempListings = [];
@@ -77,10 +77,11 @@ class Home extends React.Component {
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
         return new Date(b[dataIndex].time_created) - new Date(a[dataIndex].time_created);
-        }); 
-        this.setState({
-            listings: tempListings
-        });
+      }); 
+      var slicedListings = tempListings.slice(0, 9);
+      this.setState({
+          listings: slicedListings
+      });
     });
   }
 
@@ -154,6 +155,68 @@ class Home extends React.Component {
 
   addDefaultSrc(ev) {
     ev.target.src = "https://badgerchemistnews.chem.wisc.edu/wp-content/themes/uw-theme/dist/images/bucky-head.png"
+  }
+
+  display_listings(listings) {
+    return(
+      <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
+        {listings.map((item) => (
+          <Grid item>
+            <Card style={{width: "300px"}}>
+              <CardContent>
+                <Grid container>
+                  <Grid item>
+                    <img onError={this.addDefaultSrc} className="img-responsive"
+                      src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
+                  </Grid>
+                  <Grid item xs >
+                    <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
+                      <Typography variant='h6'>
+                        {item[dataIndex].title}
+                      </Typography>
+                    </div>
+                  </Grid>
+                </Grid>
+                <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
+                <Grid container>
+                  <Grid item xs>
+                    <Typography color="textSecondary" style={{}}>
+                      Price:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography color="textSecondary">
+                      ${item[dataIndex].price}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Grid container>
+                  <Grid item xs>
+                    <Typography color="textSecondary">
+                      Seller:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography color="textSecondary">
+                      {item[dataIndex].seller_name}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            
+              <CardActions>
+                <Button fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
+                  sessionStorage.setItem('currentListing', item[idIndex]);
+                  window.location.href = "/listing";
+                }}>
+                  See Details 
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    )
   }
 
   render() {
@@ -240,126 +303,14 @@ class Home extends React.Component {
           <Typography variant='h4' color="textSecondary" style={{ margin: "10px"}}>
             Results ({this.state.searchResults.length})
           </Typography>
-          <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
-            {this.state.searchResults.map((item) => (
-              <Grid item>
-                <Card style={{width: "300px"}}>
-                  <CardContent>
-                    <Grid container>
-                      <Grid item>
-                        <img onError={this.addDefaultSrc} className="img-responsive"
-                          src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
-                      </Grid>
-                      <Grid item xs >
-                        <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
-                          <Typography variant='h6'>
-                            {item[dataIndex].title}
-                          </Typography>
-                        </div>
-                      </Grid>
-                    </Grid>
-                    <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
-                    <Grid container>
-                      <Grid item xs>
-                        <Typography color="textSecondary" style={{}}>
-                          Price:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs>
-                        <Typography color="textSecondary">
-                          ${item[dataIndex].price}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container>
-                      <Grid item xs>
-                        <Typography color="textSecondary">
-                          Seller:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs>
-                        <Typography color="textSecondary">
-                          {item[dataIndex].seller_name}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                
-                  <CardActions>
-                    <Button fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
-                      sessionStorage.setItem('currentListing', item[idIndex]);
-                      window.location.href = "/listing";
-                    }}>
-                      See Details 
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          {this.display_listings(this.state.searchResults)}
         </Box>
 
         <Box style={{display: this.state.defaultDisplay, margin:'20px'}}>
           <Typography variant='h4' style={{ margin: "10px" }}>
             Check out these recent listings...
           </Typography>
-          <Grid container spacing={3} justify='center' style={{ marginTop: "10px" }}>
-            {this.state.listings.map((item) => (
-              <Grid item>
-                <Card style={{width: "300px"}}>
-                  <CardContent>
-                    <Grid container style={{height: '60px'}}>
-                      <Grid item>
-                        <img onError={this.addDefaultSrc} className="img-responsive"
-                             src={item[dataIndex].image_url} width="50" height="60" alt="" style={{backgroundColor: "#eeeeee"}}/>
-                      </Grid>
-                      <Grid item xs>
-                        <div style={{overflow: 'auto', textOverflow: "ellipsis", height: '4rem'}}> 
-                          <Typography variant='h6'>
-                            {item[dataIndex].title}
-                          </Typography>
-                        </div>
-                      </Grid>
-                    </Grid>
-                    <Divider style={{marginTop: "10px", marginBottom: "10px"}}/>
-                    <Grid container>
-                      <Grid item xs>
-                        <Typography color="textSecondary" style={{left: 0}}>
-                          Price:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs>
-                        <Typography color="textSecondary">
-                          ${item[dataIndex].price}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container>
-                      <Grid item xs>
-                        <Typography color="textSecondary">
-                          Seller:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs>
-                        <Typography color="textSecondary">
-                          {item[dataIndex].seller_name}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                
-                  <CardActions>
-                    <Button fullWidth style = {{backgroundColor: badgerRed, color: white}} onClick={() => {
-                      sessionStorage.setItem('currentListing', item[idIndex]);
-                      window.location.href = "/listing";
-                    }}>
-                      See Details 
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          {this.display_listings(this.state.listings)}
         </Box>
       </div>
     );

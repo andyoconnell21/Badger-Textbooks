@@ -45,7 +45,6 @@ class Chat extends React.Component {
         //User is not siged in...redirect to login page
         window.location.href = "/";
       } else {
-        console.log(user.uid);
         this.setState({ senderUid: user.uid });
         this.updateDisplayedMessages();
         
@@ -159,6 +158,7 @@ class Chat extends React.Component {
                           <Box style={{flexGrow: 1, marginTop: '15px', marginBottom: '15px'}}>
                             <Card>
                                 <TextField
+                                    data-testid="chat_text_box"
                                     fullWidth
                                     placeholder="Enter your message here..."
                                     variant='outlined'
@@ -171,6 +171,7 @@ class Chat extends React.Component {
                         </Grid>
                         <Grid item xs={1} style={{paddingTop: '15px', paddingBottom: '15px'}}>
                           <Button
+                            title="send_chat"
                             style={{height: '100%'}}
                             variant="contained"
                             onClick={this.handleMessageSend}

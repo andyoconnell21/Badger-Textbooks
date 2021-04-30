@@ -2,7 +2,6 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-import NavigationMenu from './NavigationMenu';
 import Logo from '../BadgerTextbooksLogoV1.png';
 import emailjs from 'emailjs-com';
 
@@ -12,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box';
@@ -27,7 +25,6 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 
-import MenuIcon from '@material-ui/icons/Menu';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const backgroundGrey = '#dadfe1';
@@ -44,8 +41,8 @@ class UserAccount extends React.Component {
             userAccountName: '',
             userAccountImage: '',
             hiddenRateUser: false,
-            setUserRating: '',
-            userAccountRating: '',
+            setUserRating: 0,
+            userAccountRating: 0,
             hiddenReportUser: false,
             reportText: '',
             emailSent: false,
@@ -74,7 +71,7 @@ class UserAccount extends React.Component {
                             tempUserRating = tempUserRating + tempValue
                         }
                         tempUserRating = tempUserRating / doc.data().user_ratings.length
-                        tempUserRating = tempUserRating.toFixed(1)
+                        tempUserRating = parseFloat(tempUserRating.toFixed(1))
                         this.setState({userAccountRating: tempUserRating})
 
                         //Get some of the users current listings
@@ -106,13 +103,6 @@ class UserAccount extends React.Component {
         this.setState({userAccountEmail: sessionStorage.getItem('userAccountEmail')})
         document.body.style.backgroundColor = backgroundGrey;
 
-    }
-
-    toggleMenu = (event) => {
-        var curr_state = this.state.menuOpen;
-        this.setState({
-            menuOpen: !curr_state
-        });
     }
 
     addDefaultPfp(ev) {
@@ -190,7 +180,7 @@ class UserAccount extends React.Component {
     }
 
     toggleBackButton = (event) => {
-        window.location.href = "/listing"
+        window.location.assign("/listing");
     }
 
     render(){
@@ -198,7 +188,7 @@ class UserAccount extends React.Component {
             <div>
                 <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton title="menu_btn" onClick={this.toggleBackButton} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                        <IconButton title="back_btn" onClick={this.toggleBackButton} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
                             <ArrowBackIosIcon/>
                         </IconButton>
                         <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
@@ -299,13 +289,13 @@ class UserAccount extends React.Component {
                         <DialogContentText>
                             Rate Your Experience With This User
                         </DialogContentText>
-                        <Rating name='simple-controlled' onChange={this.setRatingValue} value={this.state.setUserRating}></Rating>
+                        <Rating name='simple-controlled' data-testid="rating" onChange={this.setRatingValue} value={this.state.setUserRating}></Rating>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.sendUserRating} color="primary">
+                        <Button title='send_rate_btn' onClick={this.sendUserRating} color="primary">
                             Send
                         </Button>
-                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        <Button title='close_rate_btn' onClick={this.handleClose} color="primary">
                             Close
                         </Button>
                     </DialogActions>
@@ -318,15 +308,16 @@ class UserAccount extends React.Component {
                             Report Your Experience With This User
                         </DialogContentText>
                         <TextField
+                            data-testid="report_text"
                             type="text"
                             onChange={this.setReportText}>
                         </TextField>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.sendUserReport} color="primary">
+                        <Button title='send_report_btn' onClick={this.sendUserReport} color="primary">
                             Send
                         </Button>
-                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        <Button title='close_report_btn' onClick={this.handleClose} color="primary">
                             Close
                         </Button>
                     </DialogActions>
@@ -340,7 +331,7 @@ class UserAccount extends React.Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        <Button title='close_email_report_btn' onClick={this.handleClose} color="primary">
                             Close
                         </Button>
                     </DialogActions>
@@ -354,7 +345,7 @@ class UserAccount extends React.Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button title='close_btn' onClick={this.handleClose} color="primary">
+                        <Button title='close_report_confirm_btn' onClick={this.handleClose} color="primary">
                             Close
                         </Button>
                     </DialogActions>

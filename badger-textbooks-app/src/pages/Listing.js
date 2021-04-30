@@ -309,9 +309,10 @@ class Listings extends React.Component {
                         <Grid item style={{width: '25%'}}></Grid>
                         <Grid item style={{width: '25%'}}>
                           <Switch
+                              title="active_switch"
                               color="primary"
                               checked={this.state.active}
-                              onChange={() => this.toggleActive()}
+                              onChange={this.toggleActive}
                           />
                         </Grid>
                         <Grid item style={{width: '50%'}}>
@@ -324,6 +325,7 @@ class Listings extends React.Component {
 
                     <Box hidden={this.state.userAuthed}>
                       <Button
+                          title="edit_btn"
                           fullWidth
                           style={{
                             margin: "10px",
@@ -336,7 +338,7 @@ class Listings extends React.Component {
                           onClick={() => {
                             var documentId = sessionStorage.getItem('currentListing')
                             sessionStorage.setItem('currentListing', documentId);
-                            window.location.href = "/editlisting";
+                            window.location.assign("/editlisting");
                           }}
                           startIcon={<EditIcon/>}
                       >
@@ -346,6 +348,7 @@ class Listings extends React.Component {
 
                     <Box hidden={this.state.chatNotNeeded}>
                       <Button
+                          title="save_btn"
                           fullWidth
                           disabled={this.state.currentlySaved}
                           style={{
@@ -365,6 +368,7 @@ class Listings extends React.Component {
 
                     <Box hidden={this.state.chatNotNeeded}>
                       <Button
+                          title="chat_btn"
                           fullWidth
                           style={{
                             marginTop: '10px',
@@ -379,7 +383,7 @@ class Listings extends React.Component {
                           onClick={() => {
                             sessionStorage.setItem("receiverUid", this.state.seller_uid);
                             sessionStorage.setItem("returnLocation", "/listing");
-                            window.location.href = "/chat";
+                            window.location.assign("/chat");
                           }}
                           startIcon={<ChatIcon/>}
                       >
@@ -389,6 +393,7 @@ class Listings extends React.Component {
 
                     <Box hidden={this.state.chatNotNeeded}>
                       <Button
+                          title="report_btn"
                           fullWidth
                           style={{
                             margin: "10px",
@@ -403,7 +408,7 @@ class Listings extends React.Component {
                             sessionStorage.setItem("listing_user_id", this.state.seller_uid);
                             var documentId = sessionStorage.getItem('currentListing')
                             sessionStorage.setItem('currentListing', documentId);
-                            window.location.href = "/reportlisting";
+                            window.location.assign("/reportlisting");
                           }}
                           startIcon={<ReportIcon/>}
                       >
@@ -413,6 +418,7 @@ class Listings extends React.Component {
 
                     <Box hidden={this.state.userAuthed}>
                       <Button
+                          title="delete_btn"
                           fullWidth
                           style={{
                             margin: "10px",
@@ -468,7 +474,7 @@ class Listings extends React.Component {
               </Box>
 
               <Box name="more_info_box" style={{width: '100%', height: '40%'}}>
-                <Accordion style={{width: "75%", margin: 'auto'}}>
+                <Accordion title="more_info" style={{width: "75%", margin: 'auto'}}>
                   <AccordionSummary style={{backgroundColor: 'lightgrey'}} expandIcon={<ExpandIcon/>}>
                     <Typography style={{
                       fontFamily: 'sans-serif',
@@ -480,10 +486,10 @@ class Listings extends React.Component {
                   <AccordionDetails style={{flexDirection: 'column'}}>
                     <Typography>
                       <b>Seller:</b>
-                      <Link to="/userAccount" title='sellerAccount' style={{cursor: 'pointer'}}
+                      <Link to="/userAccount" title='seller_link' style={{cursor: 'pointer'}}
                             onClick={() => {
-                              window.location.href = "/userAccount"
-                              sessionStorage.setItem('userAccountEmail', this.state.seller)
+                              sessionStorage.setItem('userAccountEmail', this.state.seller);
+                              window.location.assign("/userAccount");
                             }}
                             variant="body2"> {this.state.seller_name}</Link>
                     </Typography>

@@ -54,18 +54,31 @@ class SavedListing extends React.Component {
                 var listKeys = [];
                 var tempList = [];
 
-                firebase.firestore().collection("users").where("uid", "==", uid).get().then((querySnapshot) => {
+                firebase.firestore().collection("users").where("uid", "==", user.uid).get().then((querySnapshot) => {
+                    var id = "";
                     querySnapshot.forEach((doc) => {
+                        id = doc.id;
                         var data = doc.data();
                         listKeys = data.saved_listings;
                     });
+                    var updatedListKeys = listKeys;
                     listKeys.forEach((key) => {
                         firebase.firestore().collection("listings").doc(key).get().then((nextQuerySnapshot) => {
                             var gather = [nextQuerySnapshot.id, nextQuerySnapshot.data()];
-                            tempList.push(gather);
+                            tempList.push(gather); 
 
                             this.setState({ savedListings: tempList });
+
+                        }).catch((error) => {
+                            console.error("Listing DNE. Removing from list of keys.", error);
+                            updatedListKeys = listKeys.filter((check_key) => {
+                                return check_key !== key;
+                            });
+                            firebase.firestore().collection('users').doc(id).update({
+                                saved_listings: updatedListKeys
+                            });
                         });
+                        
                     });
                 });
             }
@@ -77,10 +90,6 @@ class SavedListing extends React.Component {
         this.setState({
             menuOpen: !curr_state
         });
-    }
-
-    removeSavedListing = (event) => {
-        console.log(this.state.savedListings)
     }
 
     addDefaultSrc(ev) {

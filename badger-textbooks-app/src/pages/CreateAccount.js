@@ -56,12 +56,8 @@ class CreateAccount extends React.Component{
         this.setState({password: event.target.value})
     }
 
-    handleOpen = (event) => {
-        this.setState({hidden:true})
-    }
-
     backToLogin = (event) => {
-        window.location.href = '/'
+        window.location.assign('/');
     }
 
     createAccount = (event) => {
@@ -112,10 +108,6 @@ class CreateAccount extends React.Component{
                     this.setErrorHandler(true)
                 });
         }
-    }
-
-    loginPage = (event) => {
-        window.location.href = '/'
     }
 
     closeInvalidEmail = (event) => {
@@ -191,9 +183,9 @@ class CreateAccount extends React.Component{
                             type="password"
                             onChange = {this.setPassword}
                         />
-                        <Button type="submit" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Create Account</Button>
+                        <Button type="submit" title="submit_btn" style={{marginTop: "10px", marginBottom: '10px', border: '0', backgroundColor: '#c5050c', width: '50%', marginRight: '25%', marginLeft: '25%', cursor: 'pointer', color: 'white', fontSize: '18px'}}>Create Account</Button>
                         <Grid item xs>
-                            <Link href="#" title='backToLogin' onClick={this.loginPage} variant="body2">
+                            <Link href="#" title='backToLogin' onClick={this.backToLogin} variant="body2">
                                 Back to Login Page
                             </Link>
                         </Grid>
@@ -222,7 +214,7 @@ class CreateAccount extends React.Component{
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={this.closeInvalidEmail} color="primary">
+                            <Button title="close_email" onClick={this.closeInvalidEmail} color="primary">
                                 Close
                             </Button>
                         </DialogActions>
@@ -235,7 +227,7 @@ class CreateAccount extends React.Component{
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={this.closeInvalidPassword} color="primary">
+                            <Button title="close_password" onClick={this.closeInvalidPassword} color="primary">
                                 Close
                             </Button>
                         </DialogActions>

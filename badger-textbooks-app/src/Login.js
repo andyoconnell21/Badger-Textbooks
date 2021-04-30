@@ -100,7 +100,7 @@ class Login extends React.Component{
 
         firebase.firestore().collection('users').get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            if(this.state.forgotPasswordEmail == doc.data().email){
+            if(this.state.forgotPasswordEmail === doc.data().email){
               firebase.auth().sendPasswordResetEmail(this.state.forgotPasswordEmail).then((userCredential) => {
                 // Email sent.
                 this.setState({passwordError: false})
@@ -151,10 +151,6 @@ class Login extends React.Component{
         }).catch(function(error) {
           //An error happened.
         });
-      }
-
-      navigateCreateAccount = (event) => {
-        window.location.href = './createaccount'
       }
 
     render() {
@@ -226,6 +222,7 @@ class Login extends React.Component{
                     required
                     fullWidth
                     id="email"
+                    data-testid="forgot_email"
                     label="Email Address"
                     name="email"
                     type="email"
@@ -270,7 +267,7 @@ class Login extends React.Component{
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.navigateCreateAccount} color="primary">
+                    <Button onClick={this.createAccount} color="primary">
                       Create Account
                     </Button>
                     <Button onClick={this.handleWrongLoginInfo} title="close_btn" color="primary">

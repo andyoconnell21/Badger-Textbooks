@@ -21,7 +21,7 @@ import Button from "@material-ui/core/Button";
 const backgroundGrey = '#dadfe1';
 const badgerRed = '#c5050c';
 
-export class ReportListing extends Component {
+class ReportListing extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,10 +41,10 @@ export class ReportListing extends Component {
                 window.location.href = "/";
             }
         });
-        var documentId = sessionStorage.getItem('currentListing')
+        var documentId = sessionStorage.getItem('currentListing');
         document.body.style.backgroundColor = backgroundGrey;
 
-        firebase.firestore().collection("listings").doc(documentId).get()
+        firebase.firestore().collection("listings").doc(documentId ? documentId : "0").get()
             .then((doc) => {
                 var data = doc.data();
                 this.setState({
@@ -80,8 +80,7 @@ export class ReportListing extends Component {
                     window.location = "/home";
                 });
             });
-
-        });
+        })
     }
 
 
@@ -133,11 +132,12 @@ export class ReportListing extends Component {
                         <p style={{fontSize: '16px'}}>Select your reason(s) for reporting this listing:  </p>
 
                         <label className="container">
-                        <input type="checkbox" class="custom-control-input" id="Inappropriate"
+                        <input type="checkbox" className="custom-control-input" id="Inappropriate"
+                                    title="inap_check"
                                     value="Inappropriate"
                                     onChange={this.handleCheckboxChange}/>
                             <span className="checkmark"></span>
-                            <label class="custom-control-label" for="Inappropriate">Listing is inappropriate</label>
+                            <label className="custom-control-label" htmlFor="Inappropriate">Listing is inappropriate</label>
                         </label>
 
                         <label className="container">
@@ -160,7 +160,7 @@ export class ReportListing extends Component {
                         <div>
                             <label style={{fontSize: '16px',border:'1px'}}> Other Reasons (optional):  </label>
                             <input className="w3-input w3-hover-light-gray"
-                                    title='titleInput'
+                                    title="other"
                                     type='text'
                                     size=""
                                     onChange={this.handleOtherReasons}
@@ -170,6 +170,7 @@ export class ReportListing extends Component {
                         <Grid container spacing={1}>
                             <Grid item xs>
                                 <Button
+                                    title="cancel_btn"
                                     style={{color: '#ffffff', backgroundColor: '#c5050c'}}
                                     variant="contained"
                                     fullWidth
@@ -180,6 +181,7 @@ export class ReportListing extends Component {
                             </Grid>
                             <Grid item xs>
                                 <Button
+                                    title="file_btn"
                                     style={{color: '#ffffff', backgroundColor: '#c5050c'}}
                                     variant="contained"
                                     fullWidth

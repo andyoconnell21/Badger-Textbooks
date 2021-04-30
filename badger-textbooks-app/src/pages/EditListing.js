@@ -3,7 +3,6 @@ import '../w3.css'
 import '../App.css'
 import firebase from "firebase";
 
-import NavigationMenu from './NavigationMenu.js';
 import Logo from '../BadgerTextbooksLogoV1.png';
 
 import {
@@ -12,7 +11,6 @@ import {
     Container,
     Paper,
     Typography,
-    Drawer,
     Divider,
     TextField,
     Button,
@@ -42,10 +40,9 @@ export class EditListing extends Component {
             author: '',
             ISBN: 0,
             price: 0,
-            condition: 'brand-new',
+            condition: 'Brand-New',
             class_used: '',
-            alerOpen: false,
-            menuOpen: false,
+            alertOpen: false,
             imageURL: '',
         }
     }
@@ -60,7 +57,7 @@ export class EditListing extends Component {
         var documentId = sessionStorage.getItem('currentListing')
         document.body.style.backgroundColor = backgroundBeige;
 
-        firebase.firestore().collection("listings").doc(documentId).get()
+        firebase.firestore().collection("listings").doc(documentId ? documentId : "0").get() //necessary for testing purposes...0 should never fire
             .then((doc) => {
                 var data = doc.data();
                 this.setState({
@@ -76,12 +73,7 @@ export class EditListing extends Component {
                 })
             })
     }
-    toggleMenu = (event) => {
-        var curr_state = this.state.menuOpen;
-        this.setState({
-            menuOpen: !curr_state
-        });
-    }
+
     handleSubmit = (e) => {
         if (this.state.author === "" || this.state.class === "" || this.state.title === "") {
             this.setState({
@@ -160,8 +152,8 @@ export class EditListing extends Component {
         })
     }
 
-    toggleBackButton = (event) => {
-        window.location.href = "/listing"
+    clickBackButton = (event) => {
+        window.location.assign("/listing");
     }
 
     render() {
@@ -169,7 +161,7 @@ export class EditListing extends Component {
             <div>
                 <AppBar style={{ background: badgerRed }} position="static">
                     <Toolbar>
-                        <IconButton title="menu_btn" onClick={this.toggleBackButton} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
+                        <IconButton title="back_btn" onClick={this.clickBackButton} style={{ zIndex: 1, marginTop: '15px', marginBottom: '15px' }}>
                             <ArrowBackIosIcon/>
                         </IconButton>
                         <Typography style={{position: 'absolute', fontFamily: 'sans-serif', fontSize: '35px', margin: '15px', left: 0, right: 0}}>
@@ -180,9 +172,6 @@ export class EditListing extends Component {
 
                 <Dialog
                     open={this.state.alertOpen}
-                    onClose={() => {
-                        this.setState({alertOpen: false})
-                    }}
                 >
                     <DialogTitle>{"Oops! Looks like we are missing some information."}</DialogTitle>
                     <DialogContent>
@@ -192,6 +181,7 @@ export class EditListing extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button
+                            title="alert_close_btn"
                             style={{color: '#c5050c'}}
                             onClick={() => {
                                 this.setState({alertOpen: false})
@@ -209,7 +199,7 @@ export class EditListing extends Component {
                         <Typography variant="h5" style={{marginTop: '20px', marginBottom: '10px'}}>Edit Your Listing</Typography>
                         <Divider/>
                         <TextField
-                            title='titleInput'
+                            data-testid='title'
                             label="Textbook Title*"
                             variant="filled"
                             fullWidth
@@ -219,7 +209,7 @@ export class EditListing extends Component {
                             autoFocus
                         />
                         <TextField
-                            title='authorInput'
+                            data-testid='author'
                             label="Author*"
                             variant="filled"
                             fullWidth
@@ -228,7 +218,7 @@ export class EditListing extends Component {
                             onChange={this.handleAuthorChange}
                         />
                         <TextField
-                            title='classInput'
+                            data-testid='class'
                             label="Class Used For*"
                             variant="filled"
                             fullWidth
@@ -237,7 +227,7 @@ export class EditListing extends Component {
                             onChange={this.handleClassChange}
                         />
                         <TextField
-                            title='priceInput'
+                            data-testid='price'
                             label="Price"
                             variant="filled"
                             fullWidth
@@ -247,7 +237,7 @@ export class EditListing extends Component {
                             type="number"
                         />
                         <TextField
-                            title='isbnInput'
+                            data-testid='isbn'
                             label="ISBN"
                             variant="filled"
                             fullWidth
@@ -260,7 +250,7 @@ export class EditListing extends Component {
                             <InputLabel id="filter-select-label" style={{marginLeft: "2px"}}>Condition</InputLabel>
                             <Select
                                 labelId="filter-select-label"
-                                data-testid="filter_slct_creat"
+                                data-testid="condition"
                                 variant="filled"
                                 value={this.state.condition}
                                 onChange={this.handleConditionChange}
@@ -280,7 +270,9 @@ export class EditListing extends Component {
                             />
                         </div>
                         <Divider/>
-                        <Button
+
+                        <Button 
+                            title="submit_btn"
                             style={{color: '#ffffff', backgroundColor: '#c5050c', marginTop: "20px", width: "50%"}}
                             variant="contained"
                             fullWidth

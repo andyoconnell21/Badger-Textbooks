@@ -92,7 +92,7 @@ class MyAccountPage extends React.Component {
               total_rating += r;
             });
             var ave_rating = total_rating / data.user_ratings.length;
-            ave_rating = ave_rating.toFixed(1);
+            ave_rating = parseFloat(ave_rating.toFixed(1));
             this.setState({
               docID: i.id,
               email: data.email,
@@ -191,45 +191,48 @@ class MyAccountPage extends React.Component {
   handleAcceptClick() {
     if (this.state.passwordInput === this.state.conPasswordInput) {
       var user = firebase.auth().currentUser;
-      var cred = firebase.auth.EmailAuthProvider.credential(user.email, this.state.password);
-      user.reauthenticateWithCredential(cred).then(() => {
-        user.updatePassword(this.state.passwordInput).then(() => {
-          //success
-          firebase.firestore().collection('users').doc(this.state.docID).update({
-            name: this.state.nameInput !== '' ? this.state.nameInput : this.state.name,
-            password: this.state.passwordInput !== '' ? this.state.passwordInput : this.state.password,
-          }).then(() =>
-              this.setState({
-                name: this.state.nameInput,
-                password: this.state.passwordInput,
-                passwordInput: '',
-                conPasswordInput: '',
-                editButtonVis: '',
-                accanButtonVis: 'none'
-              })
-          );
-        }, (error) => {
-          this.setState({ badPassword: true })
+      if (user !== null) {
+        var cred = firebase.auth.EmailAuthProvider.credential(user.email, this.state.password);
+        user.reauthenticateWithCredential(cred).then(() => {
+          user.updatePassword(this.state.passwordInput).then(() => {
+            //success
+            firebase.firestore().collection('users').doc(this.state.docID).update({
+              name: this.state.nameInput !== '' ? this.state.nameInput : this.state.name,
+              password: this.state.passwordInput !== '' ? this.state.passwordInput : this.state.password,
+            }).then(() =>
+                this.setState({
+                  name: this.state.nameInput,
+                  password: this.state.passwordInput,
+                  passwordInput: '',
+                  conPasswordInput: '',
+                  editButtonVis: '',
+                  accanButtonVis: 'none'
+                })
+            );
+          }, (error) => {
+            this.setState({ badPassword: true })
+          });
         });
-      });
+      }
     } else {
       this.setState({ passwordsMismatch: true });
     }
   }
 
-  handleImageChange = (event) => {
-    //Adds image to storage
-    const file = event.target.files[0]
-    var storage = firebase.storage()
-    var storageRef = storage.ref()
-    const fileRef = storageRef.child(file.name)
-    fileRef.put(file).then(() => {
-      //Saved image file path
-      storageRef.child(file.name).getDownloadURL().then((url) => {
-        this.setState({imageURL: url})
-      })
-    })
-  }
+  //FEATURE NOT CURRENLTY IMPLEMENTED
+  // handleImageChange = (event) => {
+  //   //Adds image to storage
+  //   const file = event.target.files[0]
+  //   var storage = firebase.storage()
+  //   var storageRef = storage.ref()
+  //   const fileRef = storageRef.child(file.name)
+  //   fileRef.put(file).then(() => {
+  //     //Saved image file path
+  //     storageRef.child(file.name).getDownloadURL().then((url) => {
+  //       this.setState({imageURL: url})
+  //     })
+  //   })
+  // }
 
   render () {
     return (
@@ -243,7 +246,7 @@ class MyAccountPage extends React.Component {
                       <img onError={this.addDefaultSrc} src={Logo} style={{height: '50px', width: '50px'}} alt=""/> Badger Textbooks
                   </Typography>
                   <Typography style={{flexGrow: 1}}></Typography>
-                  <IconButton onClick={this.handleLogout} style={{float: 'right'}}>
+                  <IconButton title="logout_btn" onClick={this.handleLogout} style={{float: 'right'}}>
                     <LogoutIcon/>
                   </IconButton>
               </Toolbar>
@@ -348,6 +351,7 @@ class MyAccountPage extends React.Component {
                 <Grid item xs style={{display: this.state.accanButtonVis}}>
                   <TextField
                       title="passwordChangeConfirm"
+                      data-testid="passwordChangeConfirm"
                       type="password"
                       fullWidth
                       variant="outlined"
@@ -372,6 +376,7 @@ class MyAccountPage extends React.Component {
             <Grid container spacing={1} style={{display: this.state.accanButtonVis}}>
               <Grid item xs>
                 <Button
+                    title="cancel_edit_btn"
                     variant='contained'
                     onClick={() => this.handleCancelClick()}
                     style={{float: 'right'}}
@@ -384,6 +389,7 @@ class MyAccountPage extends React.Component {
               </Grid>
               <Grid item xs>
                 <Button
+                    title="confirm_edit_btn"
                     variant='contained'
                     onClick={() => this.handleAcceptClick()}
                     style={{float: 'left'}}
@@ -472,7 +478,7 @@ class MyAccountPage extends React.Component {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button title='close_btn' onClick={this.handleClose} color="primary">
+                <Button title='close_nomatch_btn' onClick={this.handleClose} color="primary">
                     Ok
                 </Button>
             </DialogActions>
@@ -486,7 +492,7 @@ class MyAccountPage extends React.Component {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button title='close_btn' onClick={this.handleClose} color="primary">
+                <Button title='close_bad_btn' onClick={this.handleClose} color="primary">
                     Ok
                 </Button>
             </DialogActions>
